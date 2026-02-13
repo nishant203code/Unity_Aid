@@ -43,3 +43,24 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Archive and compressed files
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# OS specific files
+Thumbs.db
+.DS_Store
+*.swp
+*~
+
+# Local environment variables
+.env
+.env.local
+
+# IDE cache folders
+.gradle/
+*.gradle
+local.properties
