@@ -68,3 +68,94 @@ Thumbs.db
 frontend/.gradle/
 frontend/*.gradle
 frontend/local.properties
+
+# ===== Unity specific =====
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+*.sln
+*.csproj
+*.unitypackage
+
+# ===== Firebase & Google Services =====
+# Do NOT commit Firebase config files; use environment variables or CI/CD secrets
+google-services.json
+GoogleService-Info.plist
+.runtimeconfig.json
+.firebaserc
+
+# Firebase tools & emulator
+firebase-emulator-*.log
+emulator-data/
+.firebase/
+functions/lib/
+
+# Node modules & npm
+node_modules/
+package-lock.json
+yarn.lock
+*.local
+
+# ===== Flutter/Dart specific =====
+frontend/.dart_tool/
+frontend/.flutter-plugins-dependencies
+frontend/.metadata
+frontend/build/
+frontend/pubspec.lock
+frontend/.packages
+frontend/ios/Flutter/Generated.xcconfig
+frontend/ios/Flutter/flutter_export_environment.sh
+
+# Android build output
+frontend/android/.gradle/
+frontend/android/app/debug/
+frontend/android/app/profile/
+frontend/android/app/release/
+*.apk
+*.aab
+*.aar
+
+# iOS build output
+frontend/ios/Pods/
+frontend/ios/Pods/
+frontend/ios/Flutter/Flutter.framework
+Pods/
+*.xcworkspace/
+*.xcodeproj/
+
+# Web build output
+frontend/web/js/
+frontend/web/wasm/
+
+# DataConnect generated code
+frontend/lib/dataconnect_generated/
+**/dataconnect_generated/
+
+# TypeScript/JavaScript build
+functions/lib/
+*.js.map
+typings/
+
+# Gradle
+frontend/android/.gradle/
+frontend/android/local.properties
+frontend/android/gradlew
+frontend/android/gradlew.bat
+
+# IDE-specific
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+*.xcworkspace/
+*.xcodeproj/
+.gradle/
+*.swp
+*~
+.DS_Store
+Thumbs.db
