@@ -44,6 +44,10 @@ frontend/android/app/debug
 frontend/android/app/profile
 frontend/android/app/release
 
+# Build directories
+/build/
+frontend/build/
+
 # Archive and compressed files
 *.zip
 *.tar.gz
