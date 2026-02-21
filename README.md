@@ -56,7 +56,7 @@ UnityAid is a mobile application designed to bridge the gap between donors and N
 ### Authentication Screens
 | User Dashboard | Login | Sign Up |
 |:------------:|:-----:|:-------:|
-| ![User Dashboard](user_dashboard.jpg) | ![Login](screenshots/login.jpg) | ![Sign Up](screenshots/signup.jpg) |
+| ![User Dashboard](screenshots/user_dashboard.jpg) | ![Login](screenshots/login.jpg) | ![Sign Up](screenshots/signup.jpg) |
 
 ### User Interface
 | Home Feed | Donation Cases | NGO Profile |
