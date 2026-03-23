@@ -23,6 +23,7 @@ class DonationTargetSelector extends StatefulWidget {
 class _DonationTargetSelectorState extends State<DonationTargetSelector> {
   DonationTarget selectedTarget = DonationTarget.ngo;
   final TextEditingController caseIdController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -38,7 +39,6 @@ class _DonationTargetSelectorState extends State<DonationTargetSelector> {
   @override
   void didUpdateWidget(covariant DonationTargetSelector oldWidget) {
     super.didUpdateWidget(oldWidget);
-    print(widget.prefilledCaseId);
     if (widget.prefilledCaseId != null &&
         widget.prefilledCaseId != oldWidget.prefilledCaseId) {
       setState(() {
@@ -47,6 +47,12 @@ class _DonationTargetSelectorState extends State<DonationTargetSelector> {
         // if implemented
       });
     }
+  }
+
+  @override
+  void dispose() {
+    caseIdController.dispose();
+    super.dispose();
   }
 
   @override

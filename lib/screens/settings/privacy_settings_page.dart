@@ -250,42 +250,47 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
   void _showVisibilityDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Profile Visibility'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RadioListTile<String>(
-              title: const Text('Public'),
-              subtitle: const Text('Everyone can see your profile'),
-              value: 'Public',
-              groupValue: _profileVisibility,
-              onChanged: (value) {
-                setState(() => _profileVisibility = value!);
-                Navigator.pop(context);
-              },
-            ),
-            RadioListTile<String>(
-              title: const Text('Friends Only'),
-              subtitle: const Text('Only your connections'),
-              value: 'Friends Only',
-              groupValue: _profileVisibility,
-              onChanged: (value) {
-                setState(() => _profileVisibility = value!);
-                Navigator.pop(context);
-              },
-            ),
-            RadioListTile<String>(
-              title: const Text('Private'),
-              subtitle: const Text('Only you can see your profile'),
-              value: 'Private',
-              groupValue: _profileVisibility,
-              onChanged: (value) {
-                setState(() => _profileVisibility = value!);
-                Navigator.pop(context);
-              },
-            ),
-          ],
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('Profile Visibility'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RadioListTile<String>(
+                title: const Text('Public'),
+                subtitle: const Text('Everyone can see your profile'),
+                value: 'Public',
+                groupValue: _profileVisibility,
+                onChanged: (value) {
+                  setDialogState(() {});
+                  setState(() => _profileVisibility = value!);
+                  Navigator.pop(context);
+                },
+              ),
+              RadioListTile<String>(
+                title: const Text('Friends Only'),
+                subtitle: const Text('Only your connections'),
+                value: 'Friends Only',
+                groupValue: _profileVisibility,
+                onChanged: (value) {
+                  setDialogState(() {});
+                  setState(() => _profileVisibility = value!);
+                  Navigator.pop(context);
+                },
+              ),
+              RadioListTile<String>(
+                title: const Text('Private'),
+                subtitle: const Text('Only you can see your profile'),
+                value: 'Private',
+                groupValue: _profileVisibility,
+                onChanged: (value) {
+                  setDialogState(() {});
+                  setState(() => _profileVisibility = value!);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

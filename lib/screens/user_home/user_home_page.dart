@@ -22,15 +22,18 @@ class _UserHomePageState extends State<UserHomePage> {
   int selectedIndex = 0;
   String? selectedCaseId;
 
+  /// Controls whether the bottom nav bar is visible
+  bool _isNavBarVisible = true;
+
   List<Widget> get pages => [
         const HomePage(isNGO: false),
         NewsFeedPage(
-          onDonateTap: openDonateWithCase, // 🔥 NEW
+          onDonateTap: openDonateWithCase,
         ),
         const CreatePostPage(),
         const NGOSearchPage(),
         DonatePage(
-          prefilledCaseId: selectedCaseId, // 🔥 NEW
+          prefilledCaseId: selectedCaseId,
         ),
       ];
 
@@ -40,6 +43,8 @@ class _UserHomePageState extends State<UserHomePage> {
       if (index != 4) {
         selectedCaseId = null;
       }
+      // Always show the bar when switching tabs
+      _isNavBarVisible = true;
     });
   }
 
@@ -55,42 +60,66 @@ class _UserHomePageState extends State<UserHomePage> {
   void openDonateWithCase(String caseId) {
     setState(() {
       selectedCaseId = caseId;
-      selectedIndex = 4; // Donate tab index
+      selectedIndex = 4;
+      _isNavBarVisible = true;
     });
+  }
+
+  /// Called on each scroll notification — hides bar on scroll down, shows on scroll up
+  bool _onScrollNotification(ScrollNotification notification) {
+    if (notification is ScrollUpdateNotification) {
+      final delta = notification.scrollDelta ?? 0;
+      if (delta > 0 && _isNavBarVisible) {
+        // Scrolling DOWN → hide
+        setState(() => _isNavBarVisible = false);
+      } else if (delta < 0 && !_isNavBarVisible) {
+        // Scrolling UP → show
+        setState(() => _isNavBarVisible = true);
+      }
+    }
+    return false; // don't absorb the notification
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: Colors.transparent,
-      extendBody: true, // ⭐⭐⭐ CRITICAL
-      drawer: const SideDrawer(
-        role: AppRole.user,
-      ),
-      appBar: HomeAppBar(
-        onMenuTap: () => _scaffoldKey.currentState!.openDrawer(),
-        onProfileTap: openUserProfile,
-      ),
-      body: Container(
-        color: AppColors.background, // use your theme color
-        child: IndexedStack(
-          index: selectedIndex,
-          children: pages,
+    return NotificationListener<ScrollNotification>(
+      onNotification: _onScrollNotification,
+      child: Scaffold(
+        key: _scaffoldKey,
+        backgroundColor: Colors.transparent,
+        extendBody: true,
+        drawer: const SideDrawer(
+          role: AppRole.user,
         ),
-      ),
-      floatingActionButton: const AskAI(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          color: Colors.transparent, // ⭐ kills white background
-          padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-          child: BottomNavBar(
-            selectedIndex: selectedIndex,
-            onItemTapped: onItemTapped,
-            isNGO: false,
+        appBar: HomeAppBar(
+          onMenuTap: () => _scaffoldKey.currentState!.openDrawer(),
+          onProfileTap: openUserProfile,
+        ),
+        body: Container(
+          color: AppColors.background,
+          child: IndexedStack(
+            index: selectedIndex,
+            children: pages,
+          ),
+        ),
+        floatingActionButton: const AskAI(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        bottomNavigationBar: AnimatedSlide(
+          offset: _isNavBarVisible ? Offset.zero : const Offset(0, 1),
+          duration: const Duration(milliseconds: 280),
+          curve: Curves.easeInOut,
+          child: SafeArea(
+            child: Container(
+              color: Colors.transparent,
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+              child: BottomNavBar(
+                selectedIndex: selectedIndex,
+                onItemTapped: onItemTapped,
+                isNGO: false,
+              ),
+            ),
           ),
         ),
       ),

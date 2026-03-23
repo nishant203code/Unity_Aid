@@ -93,6 +93,7 @@ class NGOCard extends StatelessWidget {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
                     ),
                     onPressed: () {},
                     child: const Text("Donate"),

@@ -48,6 +48,20 @@ class UnityAidApp extends StatelessWidget {
               secondary: AppColors.primary,
               background: AppColors.background,
               surface: Colors.white,
+              onPrimary: Colors.white,
+            ),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+              ),
             ),
             textTheme: const TextTheme(
               displayLarge: TextStyle(color: Colors.black87),
@@ -86,6 +100,20 @@ class UnityAidApp extends StatelessWidget {
               surface: AppColors.darkSurface,
               onSurface: Colors.white,
               onBackground: Colors.white,
+              onPrimary: Colors.white,
+            ),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+              ),
             ),
             textTheme: const TextTheme(
               displayLarge: TextStyle(color: Colors.white),

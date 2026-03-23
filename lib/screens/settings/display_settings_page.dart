@@ -287,60 +287,32 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Select Theme'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RadioListTile<String>(
-              title: const Text('Light'),
-              value: 'Light',
-              groupValue: _themeMode,
-              onChanged: (value) {
-                setState(() => _themeMode = value!);
-                themeProvider.setThemeMode(value!);
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Theme changed to Light mode'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
-            ),
-            RadioListTile<String>(
-              title: const Text('Dark'),
-              value: 'Dark',
-              groupValue: _themeMode,
-              onChanged: (value) {
-                setState(() => _themeMode = value!);
-                themeProvider.setThemeMode(value!);
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Theme changed to Dark mode'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
-            ),
-            RadioListTile<String>(
-              title: const Text('System Default'),
-              value: 'System Default',
-              groupValue: _themeMode,
-              onChanged: (value) {
-                setState(() => _themeMode = value!);
-                themeProvider.setThemeMode(value!);
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Theme set to System Default'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
-            ),
-          ],
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('Select Theme'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final option in ['Light', 'Dark', 'System Default'])
+                RadioListTile<String>(
+                  title: Text(option),
+                  value: option,
+                  groupValue: _themeMode,
+                  onChanged: (value) {
+                    setDialogState(() {});
+                    setState(() => _themeMode = value!);
+                    themeProvider.setThemeMode(value!);
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Theme changed to $value'),
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -349,42 +321,45 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
   void _showFontSizeDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Select Font Size'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            'Small',
-            'Medium',
-            'Large',
-            'Extra Large',
-          ].map((size) {
-            return RadioListTile<String>(
-              title: Text(size),
-              value: size,
-              groupValue: _fontSize,
-              onChanged: (value) {
-                setState(() {
-                  _fontSize = value!;
-                  switch (value) {
-                    case 'Small':
-                      _fontSizeValue = 12.0;
-                      break;
-                    case 'Medium':
-                      _fontSizeValue = 16.0;
-                      break;
-                    case 'Large':
-                      _fontSizeValue = 20.0;
-                      break;
-                    case 'Extra Large':
-                      _fontSizeValue = 24.0;
-                      break;
-                  }
-                });
-                Navigator.pop(context);
-              },
-            );
-          }).toList(),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('Select Font Size'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              'Small',
+              'Medium',
+              'Large',
+              'Extra Large',
+            ].map((size) {
+              return RadioListTile<String>(
+                title: Text(size),
+                value: size,
+                groupValue: _fontSize,
+                onChanged: (value) {
+                  setDialogState(() {});
+                  setState(() {
+                    _fontSize = value!;
+                    switch (value) {
+                      case 'Small':
+                        _fontSizeValue = 12.0;
+                        break;
+                      case 'Medium':
+                        _fontSizeValue = 16.0;
+                        break;
+                      case 'Large':
+                        _fontSizeValue = 20.0;
+                        break;
+                      case 'Extra Large':
+                        _fontSizeValue = 24.0;
+                        break;
+                    }
+                  });
+                  Navigator.pop(context);
+                },
+              );
+            }).toList(),
+          ),
         ),
       ),
     );
@@ -393,28 +368,33 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
   void _showLanguageDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Select Language'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            'English',
-            'हिन्दी (Hindi)',
-            'বাংলা (Bengali)',
-            'తెలుగు (Telugu)',
-            'मराठी (Marathi)',
-            'தமிழ் (Tamil)',
-          ].map((lang) {
-            return RadioListTile<String>(
-              title: Text(lang),
-              value: lang.split(' ')[0],
-              groupValue: _language,
-              onChanged: (value) {
-                setState(() => _language = lang);
-                Navigator.pop(context);
-              },
-            );
-          }).toList(),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('Select Language'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                'English',
+                'हिन्दी (Hindi)',
+                'বাংলা (Bengali)',
+                'తెలుగు (Telugu)',
+                'मराठी (Marathi)',
+                'தமிழ் (Tamil)',
+              ].map((lang) {
+                return RadioListTile<String>(
+                  title: Text(lang),
+                  value: lang,        // use full string — matches _language
+                  groupValue: _language,
+                  onChanged: (value) {
+                    setDialogState(() {});
+                    setState(() => _language = value!);
+                    Navigator.pop(context);
+                  },
+                );
+              }).toList(),
+            ),
+          ),
         ),
       ),
     );
