@@ -25,10 +25,23 @@ class SideDrawer extends StatelessWidget {
     IconData icon,
     String title,
     String route,
+    bool isSelected,
   ) {
     return ListTile(
-      leading: Icon(icon, color: AppColors.primary),
-      title: Text(title),
+      leading: Icon(
+        icon,
+        color: isSelected ? AppColors.primary : Colors.grey.shade700,
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+          color: isSelected ? AppColors.primary : null,
+        ),
+      ),
+      selected: isSelected,
+      selectedTileColor: AppColors.primary.withValues(alpha: 0.1),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       onTap: () => navigate(context, route),
     );
   }
@@ -36,6 +49,8 @@ class SideDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isUser = role == AppRole.user;
+    final currentRoute =
+        ModalRoute.of(context)?.settings.name ?? (isUser ? '/userHome' : '/ngoHome');
 
     return Drawer(
       child: SafeArea(
@@ -69,6 +84,7 @@ class SideDrawer extends StatelessWidget {
               Icons.home,
               "Home",
               isUser ? '/userHome' : '/ngoHome',
+              currentRoute == (isUser ? '/userHome' : '/ngoHome'),
             ),
 
             drawerItem(
@@ -76,13 +92,32 @@ class SideDrawer extends StatelessWidget {
               Icons.newspaper,
               "News",
               '/news',
+              currentRoute == '/news',
             ),
 
             /// USER ONLY
             if (isUser) ...[
-              drawerItem(context, Icons.add_box, "Post", '/post'),
-              drawerItem(context, Icons.volunteer_activism, "NGOs", '/ngos'),
-              drawerItem(context, Icons.favorite, "Donate", '/donate'),
+              drawerItem(
+                context,
+                Icons.add_box,
+                "Post",
+                '/post',
+                currentRoute == '/post',
+              ),
+              drawerItem(
+                context,
+                Icons.volunteer_activism,
+                "NGOs",
+                '/ngos',
+                currentRoute == '/ngos',
+              ),
+              drawerItem(
+                context,
+                Icons.favorite,
+                "Donate",
+                '/donate',
+                currentRoute == '/donate',
+              ),
             ],
 
             /// NGO ONLY
@@ -92,6 +127,7 @@ class SideDrawer extends StatelessWidget {
                 Icons.dashboard,
                 "Dashboard",
                 '/dashboard',
+                currentRoute == '/dashboard',
               ),
 
             /// Shared
@@ -100,6 +136,7 @@ class SideDrawer extends StatelessWidget {
               Icons.info,
               "About Us",
               '/about',
+              currentRoute == '/about',
             ),
 
             drawerItem(
@@ -107,6 +144,7 @@ class SideDrawer extends StatelessWidget {
               Icons.settings,
               "Settings",
               '/settings',
+              currentRoute == '/settings',
             ),
           ],
         ),
