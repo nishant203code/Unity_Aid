@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../models/ngo_model.dart';
-import '../../widgets/theme/app_colors.dart';
 import '../../widgets/ngo_search/ngo_card.dart';
 import '../../widgets/ngo_search/ngo_search_bar.dart';
 

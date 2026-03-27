@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../widgets/theme/app_colors.dart';
 import '../../models/ngo_model.dart';
 import '../../data/sample_ngo_data.dart';
@@ -345,7 +345,7 @@ class NGOProfilePage extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             blurRadius: 15,
-            color: Theme.of(context).shadowColor.withOpacity(0.1),
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.1),
           )
         ],
       ),
@@ -375,7 +375,7 @@ class NGOProfilePage extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             blurRadius: 10,
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
           )
         ],
       ),
@@ -409,7 +409,7 @@ class NGOProfilePage extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             blurRadius: 10,
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
           )
         ],
       ),
@@ -436,7 +436,7 @@ class NGOProfilePage extends StatelessWidget {
             itemBuilder: (context, index) {
               return ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: Colors.green.withOpacity(0.1),
+                  backgroundColor: Colors.green.withValues(alpha: 0.1),
                   child: const Icon(Icons.verified, color: Colors.green),
                 ),
                 title: Text(ngo.certificates![index]),
@@ -458,7 +458,7 @@ class NGOProfilePage extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             blurRadius: 10,
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
           )
         ],
       ),
@@ -506,7 +506,7 @@ class NGOProfilePage extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             blurRadius: 10,
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
           )
         ],
       ),
@@ -534,7 +534,7 @@ class NGOProfilePage extends StatelessWidget {
               final project = ngo.projects![index];
               return ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: AppColors.primary.withOpacity(0.1),
+                  backgroundColor: AppColors.primary.withValues(alpha: 0.1),
                   child: const Icon(Icons.folder, color: AppColors.primary),
                 ),
                 title: Text(project.title),
@@ -561,7 +561,7 @@ class NGOProfilePage extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             blurRadius: 10,
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
           )
         ],
       ),
@@ -765,7 +765,7 @@ class _InfoTile extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: AppColors.primary, size: 20),
@@ -802,3 +802,4 @@ class _InfoTile extends StatelessWidget {
     );
   }
 }
+

@@ -21,8 +21,6 @@ class UserHomePage extends StatefulWidget {
 class _UserHomePageState extends State<UserHomePage> {
   int selectedIndex = 0;
   String? selectedCaseId;
-  bool _navBarVisible = true;
-  double _lastScrollOffset = 0;
 
   /// Controls whether the bottom nav bar is visible
   bool _isNavBarVisible = true;

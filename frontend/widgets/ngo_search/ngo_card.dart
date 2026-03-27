@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../models/ngo_model.dart';
+import 'package:unityaid/models/ngo_model.dart';
 import '../theme/app_colors.dart';
-import '../../screens/ngo_search/ngo_detail_page.dart';
+import 'package:unityaid/screens/ngo_search/ngo_detail_page.dart';
 
 class NGOCard extends StatelessWidget {
   final NGO ngo;

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../models/post_model.dart';
 import '../../widgets/theme/app_colors.dart';
 import 'widgets/post_card.dart';
@@ -79,7 +79,7 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
 
   List<Post> get _filteredPosts {
     switch (_selectedFilter) {
-      case 1: // Most Upvoted — sort by raised (proxy for upvotes in demo)
+      case 1: // Most Upvoted â€” sort by raised (proxy for upvotes in demo)
         final sorted = List<Post>.from(_allPosts);
         sorted.sort((a, b) => b.raised.compareTo(a.raised));
         return sorted;
@@ -87,9 +87,9 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
         return _allPosts
             .where((p) => p.status == VerificationStatus.verified)
             .toList();
-      case 3: // Nearby — just show all in demo
+      case 3: // Nearby â€” just show all in demo
         return _allPosts;
-      case 4: // Critical — highest goal gap
+      case 4: // Critical â€” highest goal gap
         final sorted = List<Post>.from(_allPosts);
         sorted.sort(
             (a, b) => (b.goal - b.raised).compareTo(a.goal - a.raised));
@@ -154,12 +154,12 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
               decoration: BoxDecoration(
                 color: selected
                     ? AppColors.primary
-                    : AppColors.primary.withOpacity(0.08),
+                    : AppColors.primary.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(
                   color: selected
                       ? AppColors.primary
-                      : AppColors.primary.withOpacity(0.2),
+                      : AppColors.primary.withValues(alpha: 0.2),
                   width: 1.2,
                 ),
               ),
@@ -217,3 +217,4 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
     });
   }
 }
+

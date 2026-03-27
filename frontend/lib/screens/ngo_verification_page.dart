@@ -1,4 +1,4 @@
-import 'dart:ui';
+﻿import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -32,10 +32,10 @@ class _NgoVerificationPageState extends State<NgoVerificationPage> {
       hintStyle: const TextStyle(color: Colors.white70),
       prefixIcon: Icon(icon, color: Colors.white70),
       filled: true,
-      fillColor: Colors.white.withOpacity(0.08),
+      fillColor: Colors.white.withValues(alpha: 0.08),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: BorderSide(color: Colors.white.withOpacity(0.2)),
+        borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
@@ -149,10 +149,10 @@ class _NgoVerificationPageState extends State<NgoVerificationPage> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 22, vertical: 26),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.06),
+                        color: Colors.white.withValues(alpha: 0.06),
                         borderRadius: BorderRadius.circular(24),
                         border: Border.all(
-                          color: Colors.white.withOpacity(0.15),
+                          color: Colors.white.withValues(alpha: 0.15),
                         ),
                       ),
 
@@ -265,3 +265,4 @@ class _NgoVerificationPageState extends State<NgoVerificationPage> {
     );
   }
 }
+

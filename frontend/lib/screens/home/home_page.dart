@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../widgets/theme/app_colors.dart';
 import 'widgets/home_stat_card.dart';
 import 'widgets/animated_circular_stat.dart';
 
 class HomePage extends StatelessWidget {
-  final bool isNGO; // ⭐ NEW
+  final bool isNGO; // â­ NEW
 
   const HomePage({
     super.key,
@@ -21,21 +21,21 @@ class HomePage extends StatelessWidget {
           children: [
             const SizedBox(height: 10),
 
-            /// 🔥 HERO SECTION
+            /// ðŸ”¥ HERO SECTION
             Container(
               padding: const EdgeInsets.all(22),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(28),
                 gradient: LinearGradient(
                   colors: [
-                    AppColors.primary.withOpacity(0.15),
-                    Theme.of(context).cardColor.withOpacity(0.6),
+                    AppColors.primary.withValues(alpha: 0.15),
+                    Theme.of(context).cardColor.withValues(alpha: 0.6),
                   ],
                 ),
                 boxShadow: [
                   BoxShadow(
                     blurRadius: 25,
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                   )
                 ],
               ),
@@ -46,7 +46,7 @@ class HomePage extends StatelessWidget {
                     width: 90,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColors.primary.withOpacity(0.12),
+                      color: AppColors.primary.withValues(alpha: 0.12),
                     ),
                     child: const Icon(
                       Icons.volunteer_activism,
@@ -124,7 +124,7 @@ class HomePage extends StatelessWidget {
 
             const HomeStatCard(
               title: "Total Donations",
-              value: "₹12.4L",
+              value: "â‚¹12.4L",
               subtitle: "Across all campaigns",
               icon: Icons.favorite,
             ),
@@ -140,7 +140,7 @@ class HomePage extends StatelessWidget {
 
             const SizedBox(height: 40),
 
-            /// ⭐ ROLE-AWARE BUTTON
+            /// â­ ROLE-AWARE BUTTON
             SizedBox(
               width: double.infinity,
               height: 58,
@@ -154,12 +154,12 @@ class HomePage extends StatelessWidget {
                 ),
                 onPressed: () {},
 
-                /// 🔥 DYNAMIC ICON
+                /// ðŸ”¥ DYNAMIC ICON
                 icon: Icon(
                   isNGO ? Icons.warning_amber_rounded : Icons.map,
                 ),
 
-                /// 🔥 DYNAMIC TEXT
+                /// ðŸ”¥ DYNAMIC TEXT
                 label: Text(
                   isNGO ? "Locate Nearby Emergencies" : "Locate Nearby NGO",
                   style: const TextStyle(
@@ -177,3 +177,4 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+

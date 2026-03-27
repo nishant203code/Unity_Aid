@@ -46,7 +46,6 @@ class UnityAidApp extends StatelessWidget {
             colorScheme: ColorScheme.light(
               primary: AppColors.primary,
               secondary: AppColors.primary,
-              background: AppColors.background,
               surface: Colors.white,
               onPrimary: Colors.white,
             ),
@@ -58,7 +57,7 @@ class UnityAidApp extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   fontSize: 15,
                 ),
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
               ),
@@ -96,10 +95,8 @@ class UnityAidApp extends StatelessWidget {
             colorScheme: const ColorScheme.dark(
               primary: AppColors.primary,
               secondary: AppColors.primary,
-              background: AppColors.darkBackground,
               surface: AppColors.darkCard,
               onSurface: Colors.white,
-              onBackground: Colors.white,
               onPrimary: Colors.white,
             ),
             elevatedButtonTheme: ElevatedButtonThemeData(
@@ -110,7 +107,7 @@ class UnityAidApp extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   fontSize: 15,
                 ),
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
               ),

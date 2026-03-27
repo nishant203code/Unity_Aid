@@ -23,13 +23,14 @@ class _PasswordStrengthFieldState extends State<PasswordStrengthField> {
             setState(() {
               if (value.length < 6) {
                 strength = 0.25;
-              } else if (value.length < 8)
+              } else if (value.length < 8) {
                 strength = 0.5;
-              else if (RegExp(r'[A-Z]').hasMatch(value) &&
-                  RegExp(r'[0-9]').hasMatch(value))
+              } else if (RegExp(r'[A-Z]').hasMatch(value) &&
+                  RegExp(r'[0-9]').hasMatch(value)) {
                 strength = 1;
-              else
+              } else {
                 strength = 0.75;
+              }
             });
           },
           style: const TextStyle(color: Colors.white),

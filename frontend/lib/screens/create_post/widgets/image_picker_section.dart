@@ -1,4 +1,4 @@
-import 'dart:io';
+﻿import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../widgets/theme/app_colors.dart';
@@ -66,7 +66,7 @@ class _ImagePickerSectionState extends State<ImagePickerSection> {
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.6),
+                            color: Colors.black.withValues(alpha: 0.6),
                             shape: BoxShape.circle,
                           ),
                           padding: const EdgeInsets.all(4),
@@ -103,3 +103,4 @@ class _ImagePickerSectionState extends State<ImagePickerSection> {
     );
   }
 }
+

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../../models/post_model.dart';
 import 'media_carousel.dart';
 import '../../../widgets/theme/app_colors.dart';
@@ -23,7 +23,7 @@ class _PostCardState extends State<PostCard> {
   bool _upvoted = false;
   int _upvoteCount = 128;
 
-  // ── Report reasons ─────────────────────────────────────────────────────────
+  // â”€â”€ Report reasons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   static const List<Map<String, dynamic>> _reportCategories = [
     {
       'icon': Icons.cancel_outlined,
@@ -62,7 +62,7 @@ class _PostCardState extends State<PostCard> {
     },
   ];
 
-  // ── Verification badge ──────────────────────────────────────────────────────
+  // â”€â”€ Verification badge â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   Widget buildVerificationBadge(VerificationStatus status) {
     Color color;
     IconData icon;
@@ -88,7 +88,7 @@ class _PostCardState extends State<PostCard> {
       margin: const EdgeInsets.only(left: 6),
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.12),
+        color: AppColors.primary.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -104,7 +104,7 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  // ── Report bottom sheet ─────────────────────────────────────────────────────
+  // â”€â”€ Report bottom sheet â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   void _showReportSheet(BuildContext context) {
     String? selectedReason;
     final detailsController = TextEditingController();
@@ -147,7 +147,7 @@ class _PostCardState extends State<PostCard> {
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.1),
+                          color: Colors.red.withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(Icons.flag_outlined,
@@ -189,7 +189,7 @@ class _PostCardState extends State<PostCard> {
                                 horizontal: 14, vertical: 12),
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? (cat['color'] as Color).withOpacity(0.1)
+                                  ? (cat['color'] as Color).withValues(alpha: 0.1)
                                   : theme.cardColor,
                               borderRadius: BorderRadius.circular(14),
                               border: Border.all(
@@ -236,7 +236,7 @@ class _PostCardState extends State<PostCard> {
                         controller: detailsController,
                         maxLines: 3,
                         decoration: InputDecoration(
-                          hintText: 'Describe the issue in more detail…',
+                          hintText: 'Describe the issue in more detailâ€¦',
                           filled: true,
                           fillColor: theme.brightness == Brightness.dark
                               ? Colors.white10
@@ -281,7 +281,7 @@ class _PostCardState extends State<PostCard> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                         foregroundColor: Colors.white,
-                        disabledBackgroundColor: Colors.red.withOpacity(0.3),
+                        disabledBackgroundColor: Colors.red.withValues(alpha: 0.3),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -300,7 +300,7 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  // ── Comment sheet ───────────────────────────────────────────────────────────
+  // â”€â”€ Comment sheet â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   void _showCommentSheet(BuildContext context) {
     final theme = Theme.of(context);
     final controller = TextEditingController();
@@ -339,11 +339,11 @@ class _PostCardState extends State<PostCard> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   children: [
                     _commentItem(context, "Priya S.",
-                        "Praying for your recovery 🙏",
+                        "Praying for your recovery ðŸ™",
                         "https://i.pravatar.cc/150?img=1"),
                     _commentItem(context, "Amit K.", "Shared this with friends!",
                         "https://i.pravatar.cc/150?img=2"),
-                    _commentItem(context, "Sunita R.", "Stay strong ❤️",
+                    _commentItem(context, "Sunita R.", "Stay strong â¤ï¸",
                         "https://i.pravatar.cc/150?img=3"),
                   ],
                 ),
@@ -368,7 +368,7 @@ class _PostCardState extends State<PostCard> {
                       child: TextField(
                         controller: controller,
                         decoration: InputDecoration(
-                          hintText: "Write a comment…",
+                          hintText: "Write a commentâ€¦",
                           filled: true,
                           fillColor: theme.brightness == Brightness.dark
                               ? Colors.white10
@@ -431,7 +431,7 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  // ── BUILD ───────────────────────────────────────────────────────────────────
+  // â”€â”€ BUILD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   @override
   Widget build(BuildContext context) {
     final post = widget.post;
@@ -516,7 +516,7 @@ class _PostCardState extends State<PostCard> {
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   child: Row(
                     children: [
-                      const Text('❤️', style: TextStyle(fontSize: 14)),
+                      const Text('â¤ï¸', style: TextStyle(fontSize: 14)),
                       const SizedBox(width: 4),
                       Text("$_upvoteCount upvotes",
                           style: TextStyle(color: subtleColor, fontSize: 12)),
@@ -573,7 +573,7 @@ class _PostCardState extends State<PostCard> {
                               label: "Comment",
                               color: iconColor,
                               onTap: () => _showCommentSheet(context)),
-                          // REPORT  ← replaced React
+                          // REPORT  â† replaced React
                           _iconTextButton(
                               icon: Icons.flag_outlined,
                               label: "Report",
@@ -595,8 +595,8 @@ class _PostCardState extends State<PostCard> {
           height: 8,
           thickness: 8,
           color: isDark
-              ? Colors.white.withOpacity(0.05)
-              : Colors.grey.withOpacity(0.1),
+              ? Colors.white.withValues(alpha: 0.05)
+              : Colors.grey.withValues(alpha: 0.1),
         ),
       ],
     );
@@ -631,3 +631,4 @@ class _PostCardState extends State<PostCard> {
     );
   }
 }
+

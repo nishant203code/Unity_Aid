@@ -26,6 +26,7 @@ class _LoginPageState extends State<LoginPage> {
     await Future.delayed(const Duration(seconds: 2));
     setState(() => isLoading = false);
 
+    if (!mounted) return;
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -45,6 +46,7 @@ class _LoginPageState extends State<LoginPage> {
 
     setState(() => isLoading = false);
 
+    if (!mounted) return;
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(

@@ -39,6 +39,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     await _revealController.forward();
 
+    if (!mounted) return;
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
@@ -116,10 +117,10 @@ class _SplashScreenState extends State<SplashScreen>
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.15),
+                          color: Colors.white.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(40),
                           border: Border.all(
-                            color: Colors.white.withOpacity(0.2),
+                            color: Colors.white.withValues(alpha: 0.2),
                           ),
                         ),
                         child: const Center(

@@ -1,4 +1,4 @@
-import 'dart:ui';
+﻿import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 
@@ -11,7 +11,7 @@ class AskAI extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
         child: Material(
-          color: Colors.white.withOpacity(0.15), // glass tint
+          color: Colors.white.withValues(alpha: 0.15), // glass tint
           child: InkWell(
             onTap: () {},
             child: Container(
@@ -19,7 +19,7 @@ class AskAI extends StatelessWidget {
               width: 56,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.primary.withOpacity(0.85),
+                color: AppColors.primary.withValues(alpha: 0.85),
               ),
               child: const Icon(
                 Icons.psychology_alt,
@@ -33,3 +33,4 @@ class AskAI extends StatelessWidget {
     );
   }
 }
+

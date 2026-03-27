@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../widgets/theme/app_colors.dart';
 import '../../models/chat_message_model.dart';
 import 'dart:async';
@@ -20,14 +20,14 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
   final Map<String, String> _aiResponses = {
     'hello': 'Hello! I\'m UnityAid AI Assistant. How can I help you today?',
     'hi': 'Hi there! I\'m here to help you with donations, NGOs, and any questions about UnityAid.',
-    'help': 'I can assist you with:\n• Finding NGOs\n• Making donations\n• Understanding donation cases\n• Navigating the app\n• General queries about UnityAid\n\nWhat would you like to know?',
+    'help': 'I can assist you with:\nâ€¢ Finding NGOs\nâ€¢ Making donations\nâ€¢ Understanding donation cases\nâ€¢ Navigating the app\nâ€¢ General queries about UnityAid\n\nWhat would you like to know?',
     'donate': 'To make a donation:\n1. Go to the Donate tab\n2. Browse available cases\n3. Select a case you want to support\n4. Choose your donation amount\n5. Complete the payment\n\nWould you like me to guide you through the process?',
-    'ngo': 'You can find NGOs by:\n• Using the NGO Search tab\n• Filtering by category or location\n• Viewing verified NGOs\n• Checking NGO profiles and their work\n\nWould you like to search for a specific type of NGO?',
-    'payment': 'UnityAid supports multiple payment methods:\n• Credit/Debit Cards\n• UPI\n• Net Banking\n• Digital Wallets\n\nAll transactions are secure and encrypted.',
+    'ngo': 'You can find NGOs by:\nâ€¢ Using the NGO Search tab\nâ€¢ Filtering by category or location\nâ€¢ Viewing verified NGOs\nâ€¢ Checking NGO profiles and their work\n\nWould you like to search for a specific type of NGO?',
+    'payment': 'UnityAid supports multiple payment methods:\nâ€¢ Credit/Debit Cards\nâ€¢ UPI\nâ€¢ Net Banking\nâ€¢ Digital Wallets\n\nAll transactions are secure and encrypted.',
     'profile': 'To manage your profile:\n1. Tap the menu icon (hamburger)\n2. Go to Profile\n3. Edit your details\n\nYou can update your name, photo, contact info, and preferences.',
-    'cases': 'Donation cases are verified needs posted by NGOs. Each case includes:\n• Description of the need\n• Required amount\n• Beneficiary details\n• NGO verification\n• Progress tracking\n\nYou can browse cases in the News Feed or Donate section.',
-    'verify': 'Verified accounts have a green checkmark. This means:\n• The account has been authenticated\n• Documents have been verified\n• The entity is legitimate\n\nAll verified NGOs undergo a thorough verification process.',
-    'security': 'Your security is our priority:\n✓ End-to-end encryption\n✓ Secure payment gateway\n✓ Two-factor authentication\n✓ Regular security audits\n✓ Data privacy compliance\n\nYou can manage security settings in Settings > Security.',
+    'cases': 'Donation cases are verified needs posted by NGOs. Each case includes:\nâ€¢ Description of the need\nâ€¢ Required amount\nâ€¢ Beneficiary details\nâ€¢ NGO verification\nâ€¢ Progress tracking\n\nYou can browse cases in the News Feed or Donate section.',
+    'verify': 'Verified accounts have a green checkmark. This means:\nâ€¢ The account has been authenticated\nâ€¢ Documents have been verified\nâ€¢ The entity is legitimate\n\nAll verified NGOs undergo a thorough verification process.',
+    'security': 'Your security is our priority:\nâœ“ End-to-end encryption\nâœ“ Secure payment gateway\nâœ“ Two-factor authentication\nâœ“ Regular security audits\nâœ“ Data privacy compliance\n\nYou can manage security settings in Settings > Security.',
   };
 
   final List<String> _quickReplies = [
@@ -55,7 +55,7 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
       _messages.add(
         ChatMessage(
           id: '0',
-          message: 'Hello! 👋 I\'m your UnityAid AI Assistant. I\'m here to help you with donations, finding NGOs, and answering any questions about the app. How can I assist you today?',
+          message: 'Hello! ðŸ‘‹ I\'m your UnityAid AI Assistant. I\'m here to help you with donations, finding NGOs, and answering any questions about the app. How can I assist you today?',
           isUser: false,
           timestamp: DateTime.now(),
         ),
@@ -114,7 +114,7 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
     }
 
     // Default response
-    return 'I\'m here to help! Could you please provide more details or choose from these topics:\n\n• Donations\n• NGO search\n• Payment methods\n• Profile settings\n• Security\n\nOr type "help" to see all available options.';
+    return 'I\'m here to help! Could you please provide more details or choose from these topics:\n\nâ€¢ Donations\nâ€¢ NGO search\nâ€¢ Payment methods\nâ€¢ Profile settings\nâ€¢ Security\n\nOr type "help" to see all available options.';
   }
 
   void _scrollToBottom() {
@@ -138,7 +138,7 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -237,7 +237,7 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
           if (!message.isUser) ...[
             CircleAvatar(
               radius: 16,
-              backgroundColor: AppColors.primary.withOpacity(0.1),
+              backgroundColor: AppColors.primary.withValues(alpha: 0.1),
               child: const Icon(
                 Icons.psychology_alt,
                 size: 16,
@@ -269,7 +269,7 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
+                        color: Colors.black.withValues(alpha: 0.05),
                         blurRadius: 5,
                         offset: const Offset(0, 2),
                       ),
@@ -299,7 +299,7 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
             const SizedBox(width: 8),
             CircleAvatar(
               radius: 16,
-              backgroundColor: AppColors.primary.withOpacity(0.1),
+              backgroundColor: AppColors.primary.withValues(alpha: 0.1),
               child: const Icon(
                 Icons.person,
                 size: 16,
@@ -320,7 +320,7 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
         children: [
           CircleAvatar(
             radius: 16,
-            backgroundColor: AppColors.primary.withOpacity(0.1),
+            backgroundColor: AppColors.primary.withValues(alpha: 0.1),
             child: const Icon(
               Icons.psychology_alt,
               size: 16,
@@ -335,7 +335,7 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 5,
                   offset: const Offset(0, 2),
                 ),
@@ -400,7 +400,7 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
                 label: Text(reply),
                 onPressed: () => _sendMessage(reply),
                 backgroundColor: Theme.of(context).cardColor,
-                side: BorderSide(color: AppColors.primary.withOpacity(0.3)),
+                side: BorderSide(color: AppColors.primary.withValues(alpha: 0.3)),
                 labelStyle: const TextStyle(
                   color: AppColors.primary,
                   fontSize: 12,
@@ -420,7 +420,7 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
         color: Theme.of(context).cardColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -484,3 +484,4 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
     }
   }
 }
+

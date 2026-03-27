@@ -136,7 +136,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
               const Divider(height: 1),
               ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: Colors.red.withOpacity(0.1),
+                  backgroundColor: Colors.red.withValues(alpha: 0.1),
                   child: const Icon(Icons.exit_to_app, color: Colors.red, size: 22),
                 ),
                 title: const Text(
@@ -222,7 +222,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
   }) {
     return SwitchListTile(
       secondary: CircleAvatar(
-        backgroundColor: AppColors.primary.withOpacity(0.1),
+        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
         child: Icon(icon, color: AppColors.primary, size: 22),
       ),
       title: Text(
@@ -232,7 +232,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
       subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
       value: value,
       onChanged: onChanged,
-      activeColor: AppColors.primary,
+      activeThumbColor: AppColors.primary,
     );
   }
 
@@ -244,7 +244,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
   }) {
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: AppColors.primary.withOpacity(0.1),
+        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
         child: Icon(icon, color: AppColors.primary, size: 22),
       ),
       title: Text(
@@ -253,7 +253,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
       ),
       subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
       trailing: Icon(Icons.chevron_right, 
-        color: Theme.of(context).iconTheme.color?.withOpacity(0.5)),
+        color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.5)),
       onTap: onTap,
     );
   }
@@ -268,8 +268,8 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
     return ListTile(
       leading: CircleAvatar(
         backgroundColor: isCurrent
-            ? Colors.green.withOpacity(0.1)
-            : Colors.grey.withOpacity(0.1),
+            ? Colors.green.withValues(alpha: 0.1)
+            : Colors.grey.withValues(alpha: 0.1),
         child: Icon(
           isCurrent ? Icons.phone_android : Icons.devices,
           color: isCurrent ? Colors.green : Colors.grey,

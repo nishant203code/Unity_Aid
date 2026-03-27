@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../widgets/theme/app_colors.dart';
 import '../../widgets/theme/input_decoration.dart';
 import 'widgets/image_picker_section.dart';
 import 'widgets/post_submit_button.dart';

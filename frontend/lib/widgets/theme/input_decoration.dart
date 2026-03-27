@@ -6,7 +6,7 @@ class AppInputDecoration {
     return InputDecoration(
       labelText: label,
       filled: true,
-      fillColor: Colors.grey.withOpacity(0.06),
+      fillColor: Colors.grey.withValues(alpha: 0.06),
       contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(18),

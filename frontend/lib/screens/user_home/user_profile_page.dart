@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../widgets/theme/app_colors.dart';
 import '../../models/user_model.dart';
 import '../../models/ngo_model.dart';
@@ -127,7 +127,7 @@ class UserProfilePage extends StatelessWidget {
                 _InfoTile(
                   icon: Icons.verified_user,
                   label: "Verification Status",
-                  value: currentUser.isVerified ? "Verified ✓" : "Not Verified",
+                  value: currentUser.isVerified ? "Verified âœ“" : "Not Verified",
                   valueColor:
                       currentUser.isVerified ? Colors.green : Colors.orange,
                 ),
@@ -214,7 +214,7 @@ class UserProfilePage extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             blurRadius: 15,
-            color: Theme.of(context).shadowColor.withOpacity(0.1),
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.1),
           )
         ],
       ),
@@ -223,7 +223,7 @@ class UserProfilePage extends StatelessWidget {
         children: [
           _Stat(
               title: "Total Donated",
-              value: "₹${user.totalDonated.toStringAsFixed(0)}"),
+              value: "â‚¹${user.totalDonated.toStringAsFixed(0)}"),
           _Stat(title: "Joined NGOs", value: "${user.joinedNGOIds.length}"),
           _Stat(
               title: "Member Days",
@@ -245,7 +245,7 @@ class UserProfilePage extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             blurRadius: 10,
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
           )
         ],
       ),
@@ -291,7 +291,7 @@ class UserProfilePage extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             blurRadius: 10,
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
           )
         ],
       ),
@@ -326,7 +326,7 @@ class UserProfilePage extends StatelessWidget {
 
               return ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: AppColors.primary.withOpacity(0.1),
+                  backgroundColor: AppColors.primary.withValues(alpha: 0.1),
                   child: const Icon(Icons.volunteer_activism,
                       color: AppColors.primary),
                 ),
@@ -532,7 +532,7 @@ class _InfoTile extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: AppColors.primary, size: 20),
@@ -569,3 +569,4 @@ class _InfoTile extends StatelessWidget {
     );
   }
 }
+

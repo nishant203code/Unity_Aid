@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../../models/donation_case_model.dart';
 import '../../../widgets/theme/app_colors.dart';
 import '../donate_page.dart';
@@ -115,7 +115,7 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 12, vertical: 6),
                                   decoration: BoxDecoration(
-                                    color: AppColors.primary.withOpacity(0.1),
+                                    color: AppColors.primary.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Text(
@@ -134,7 +134,7 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
                                   decoration: BoxDecoration(
                                     color: _getUrgencyColor(
                                             donationCase.urgencyLevel)
-                                        .withOpacity(0.2),
+                                        .withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Text(
@@ -466,7 +466,7 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
                             ),
                           ),
                           Text(
-                            'â‚¹${_formatAmount(donationCase.remainingAmount)}',
+                            'Ã¢â€šÂ¹${_formatAmount(donationCase.remainingAmount)}',
                             style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -540,14 +540,14 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'â‚¹${_formatAmount(donationCase.raisedAmount)}',
+                    'Ã¢â€šÂ¹${_formatAmount(donationCase.raisedAmount)}',
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    'raised of â‚¹${_formatAmount(donationCase.targetAmount)}',
+                    'raised of Ã¢â€šÂ¹${_formatAmount(donationCase.targetAmount)}',
                     style: TextStyle(
                       color: Colors.grey.shade600,
                       fontSize: 12,
@@ -558,7 +558,7 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppColors.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Text(
@@ -694,5 +694,6 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
     }
   }
 }
+
 
 

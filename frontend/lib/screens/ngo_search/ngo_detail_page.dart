@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../models/ngo_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -46,7 +46,7 @@ class _NGODetailPageState extends State<NGODetailPage> {
         gradient: LinearGradient(
           colors: [
             Theme.of(context).primaryColor,
-            Theme.of(context).primaryColor.withOpacity(0.7),
+            Theme.of(context).primaryColor.withValues(alpha: 0.7),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -128,7 +128,7 @@ class _NGODetailPageState extends State<NGODetailPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2),
+        color: Colors.white.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -403,10 +403,10 @@ class _NGODetailPageState extends State<NGODetailPage> {
                               child: Column(
                                 children: [
                                   _buildInfoRow('Total Revenue',
-                                      'â‚¹${report.totalRevenue.toStringAsFixed(2)}'),
+                                      'Ã¢â€šÂ¹${report.totalRevenue.toStringAsFixed(2)}'),
                                   const Divider(),
                                   _buildInfoRow('Total Expenses',
-                                      'â‚¹${report.totalExpenses.toStringAsFixed(2)}'),
+                                      'Ã¢â€šÂ¹${report.totalExpenses.toStringAsFixed(2)}'),
                                   const SizedBox(height: 8),
                                   ElevatedButton.icon(
                                     icon: const Icon(Icons.download),
@@ -1074,5 +1074,6 @@ class _NGODetailPageState extends State<NGODetailPage> {
     }
   }
 }
+
 
 

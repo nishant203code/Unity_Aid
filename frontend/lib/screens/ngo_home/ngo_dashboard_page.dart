@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../widgets/theme/app_colors.dart';
 
 class NGODashboardPage extends StatefulWidget {
@@ -51,13 +51,13 @@ class _NGODashboardPageState extends State<NGODashboardPage> {
             child: SizedBox(height: 20),
           ),
 
-          /// 🔥 STATS GRID (ZERO OVERFLOW GUARANTEED)
+          /// ðŸ”¥ STATS GRID (ZERO OVERFLOW GUARANTEED)
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 18),
             sliver: SliverGrid(
               delegate: SliverChildListDelegate([
                 statCard("Active Cases", "3", Icons.medical_services, context),
-                statCard("Funds Managed", "₹8.2L", Icons.account_balance, context),
+                statCard("Funds Managed", "â‚¹8.2L", Icons.account_balance, context),
                 statCard("Verification Queue", "12", Icons.verified, context),
                 statCard("Nearby Emergencies", "5", Icons.warning_amber, context),
               ]),
@@ -66,7 +66,7 @@ class _NGODashboardPageState extends State<NGODashboardPage> {
                 mainAxisSpacing: 14,
                 crossAxisSpacing: 14,
 
-                /// ⭐ MAGIC LINE — prevents overflow forever
+                /// â­ MAGIC LINE â€” prevents overflow forever
                 mainAxisExtent: 130,
               ),
             ),
@@ -106,7 +106,7 @@ class _NGODashboardPageState extends State<NGODashboardPage> {
     );
   }
 
-  /// ⭐ PREMIUM STAT CARD
+  /// â­ PREMIUM STAT CARD
   Widget statCard(String title, String value, IconData icon, BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -115,7 +115,7 @@ class _NGODashboardPageState extends State<NGODashboardPage> {
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 16,
             offset: const Offset(0, 6),
           )
@@ -126,7 +126,7 @@ class _NGODashboardPageState extends State<NGODashboardPage> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.12),
+              color: AppColors.primary.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Icon(icon, color: AppColors.primary),
@@ -165,7 +165,7 @@ class _NGODashboardPageState extends State<NGODashboardPage> {
     );
   }
 
-  /// ⭐ CASE SECTION
+  /// â­ CASE SECTION
   Widget buildCasesSection({
     required String title,
     required List<String> cases,
@@ -180,7 +180,7 @@ class _NGODashboardPageState extends State<NGODashboardPage> {
           borderRadius: BorderRadius.circular(26),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 18,
               offset: const Offset(0, 8),
             )
@@ -244,3 +244,4 @@ class _NGODashboardPageState extends State<NGODashboardPage> {
     );
   }
 }
+

@@ -1,4 +1,4 @@
-import 'dart:ui';
+﻿import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../../widgets/signup/signup_fields.dart';
 import '../../widgets/signup/password_strength.dart';
@@ -73,7 +73,7 @@ class _SignupPageState extends State<SignupPage> {
                   child: Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.15),
+                      color: Colors.white.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(30),
                       border: Border.all(color: Colors.white24),
                     ),
@@ -169,3 +169,4 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 }
+
