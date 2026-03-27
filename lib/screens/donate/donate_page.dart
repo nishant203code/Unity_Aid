@@ -44,7 +44,6 @@ class _DonatePageState extends State<DonatePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text(
           "Donate",
@@ -108,8 +107,8 @@ class _DonatePageState extends State<DonatePage>
                   },
                   selectedColor: AppColors.primary.withOpacity(0.2),
                   checkmarkColor: AppColors.primary,
-                  labelStyle: TextStyle(
-                    color: isSelected ? AppColors.primary : Colors.grey.shade700,
+                   labelStyle: TextStyle(
+                    color: isSelected ? AppColors.primary : Theme.of(context).textTheme.bodySmall?.color,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
                 ),

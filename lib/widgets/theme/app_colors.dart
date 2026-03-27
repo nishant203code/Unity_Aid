@@ -11,7 +11,9 @@ class AppColors {
   // Dark theme colors
   static const Color darkBackground = Color(0xFF121212);
   static const Color darkNavBar = Color(0xFF1E1E1E);
-  static const Color darkSurface = Color(0xFF1E1E1E);
+  static const Color darkSurface = Color(0xFF252525);
+  static const Color darkCard = Color(0xFF2D2D2D);
+  static const Color darkCardShadow = Color(0xFF000000);
   static const Color darkTextPrimary = Colors.white;
   static const Color darkTextSecondary = Color(0xFFB3B3B3);
 }

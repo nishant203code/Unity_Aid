@@ -26,7 +26,6 @@ class _NGODashboardPageState extends State<NGODashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
       body: CustomScrollView(
         slivers: [
           /// TOP SPACING
@@ -57,10 +56,10 @@ class _NGODashboardPageState extends State<NGODashboardPage> {
             padding: const EdgeInsets.symmetric(horizontal: 18),
             sliver: SliverGrid(
               delegate: SliverChildListDelegate([
-                statCard("Active Cases", "3", Icons.medical_services),
-                statCard("Funds Managed", "₹8.2L", Icons.account_balance),
-                statCard("Verification Queue", "12", Icons.verified),
-                statCard("Nearby Emergencies", "5", Icons.warning_amber),
+                statCard("Active Cases", "3", Icons.medical_services, context),
+                statCard("Funds Managed", "₹8.2L", Icons.account_balance, context),
+                statCard("Verification Queue", "12", Icons.verified, context),
+                statCard("Nearby Emergencies", "5", Icons.warning_amber, context),
               ]),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -108,11 +107,11 @@ class _NGODashboardPageState extends State<NGODashboardPage> {
   }
 
   /// ⭐ PREMIUM STAT CARD
-  static Widget statCard(String title, String value, IconData icon) {
+  Widget statCard(String title, String value, IconData icon, BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
@@ -154,7 +153,7 @@ class _NGODashboardPageState extends State<NGODashboardPage> {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).textTheme.bodySmall?.color,
                     fontSize: 13,
                   ),
                 ),
@@ -177,7 +176,7 @@ class _NGODashboardPageState extends State<NGODashboardPage> {
       child: Container(
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(26),
           boxShadow: [
             BoxShadow(
@@ -201,14 +200,14 @@ class _NGODashboardPageState extends State<NGODashboardPage> {
             if (cases.isEmpty)
               Text(
                 "No cases yet.",
-                style: TextStyle(color: Colors.grey.shade600),
+                style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
               ),
             ...cases.map(
               (caseId) => Container(
                 margin: const EdgeInsets.only(bottom: 14),
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: AppColors.background,
+                  color: Theme.of(context).scaffoldBackgroundColor,
                   borderRadius: BorderRadius.circular(18),
                 ),
                 child: Row(

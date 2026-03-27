@@ -50,8 +50,6 @@ class NewsFeedPage extends StatelessWidget {
     ];
 
     return Scaffold(
-        backgroundColor: AppColors.background,
-
         /// UNITY AID TITLE
         appBar: AppBar(
           title: const Text(

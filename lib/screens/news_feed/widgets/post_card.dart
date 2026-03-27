@@ -138,7 +138,7 @@ class _PostCardState extends State<PostCard> {
                           Text(
                             post.location,
                             style: TextStyle(
-                                color: Colors.grey.shade600, fontSize: 12),
+                                color: Theme.of(context).textTheme.bodySmall?.color, fontSize: 12),
                           ),
                         ],
                       ),
@@ -218,7 +218,7 @@ class _PostCardState extends State<PostCard> {
                     ),
                     Text(
                       "Case ID: ${post.caseId}",
-                      style: TextStyle(color: Colors.grey.shade600),
+                      style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
                     ),
                     const SizedBox(height: 6),
                     GestureDetector(

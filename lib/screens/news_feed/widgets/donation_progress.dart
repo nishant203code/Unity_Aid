@@ -32,7 +32,7 @@ class DonationProgress extends StatelessWidget {
             value: progress,
             minHeight: 6,
             color: AppColors.primary,
-            backgroundColor: Colors.grey.shade300,
+            backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
           ),
         ),
       ],

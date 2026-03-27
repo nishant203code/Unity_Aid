@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/theme/app_colors.dart';
 import '../../widgets/theme/theme_provider.dart';
 
@@ -22,11 +23,21 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
   @override
   void initState() {
     super.initState();
-    // Get initial theme mode from provider
+    _loadPrefs();
+  }
+
+  Future<void> _loadPrefs() async {
+    final p = await SharedPreferences.getInstance();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
       setState(() {
         _themeMode = themeProvider.themeModeString;
+        _fontSize = p.getString('display_fontSize') ?? 'Medium';
+        _language = p.getString('display_language') ?? 'English';
+        _fontSizeValue = p.getDouble('display_fontSizeValue') ?? 16.0;
+        _highContrast = p.getBool('display_highContrast') ?? false;
+        _reducedMotion = p.getBool('display_reducedMotion') ?? false;
+        _screenReader = p.getBool('display_screenReader') ?? false;
       });
     });
   }
@@ -60,8 +71,10 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
                 title: "High Contrast",
                 subtitle: "Increase color contrast",
                 value: _highContrast,
-                onChanged: (value) {
+                onChanged: (value) async {
                   setState(() => _highContrast = value);
+                  final p = await SharedPreferences.getInstance();
+                  await p.setBool('display_highContrast', value);
                 },
               ),
             ],
@@ -104,7 +117,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
                       max: 24.0,
                       divisions: 12,
                       label: _fontSizeValue.round().toString(),
-                      onChanged: (value) {
+                      onChanged: (value) async {
                         setState(() {
                           _fontSizeValue = value;
                           if (value < 14) {
@@ -117,6 +130,9 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
                             _fontSize = 'Extra Large';
                           }
                         });
+                        final p = await SharedPreferences.getInstance();
+                        await p.setDouble('display_fontSizeValue', value);
+                        await p.setString('display_fontSize', _fontSize);
                       },
                     ),
                   ],
@@ -391,27 +407,34 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
   }
 
   void _showLanguageDialog(BuildContext context) {
+    const languages = [
+      'English',
+      'हिन्दी (Hindi)',
+      'বাংলা (Bengali)',
+      'తెలుగు (Telugu)',
+      'मराठी (Marathi)',
+      'தமிழ் (Tamil)',
+    ];
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Select Language'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            'English',
-            'हिन्दी (Hindi)',
-            'বাংলা (Bengali)',
-            'తెలుగు (Telugu)',
-            'मराठी (Marathi)',
-            'தமிழ் (Tamil)',
-          ].map((lang) {
+          children: languages.map((lang) {
             return RadioListTile<String>(
               title: Text(lang),
-              value: lang.split(' ')[0],
-              groupValue: _language,
-              onChanged: (value) {
-                setState(() => _language = lang);
+              value: lang,             // ✅ use full string
+              groupValue: _language,   // ✅ compare full string
+              activeColor: AppColors.primary,
+              onChanged: (value) async {
+                setState(() => _language = value!);
+                final p = await SharedPreferences.getInstance();
+                await p.setString('display_language', value!);
                 Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Language changed to $value')),
+                );
               },
             );
           }).toList(),

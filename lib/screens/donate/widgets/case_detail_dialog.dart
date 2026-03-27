@@ -3,10 +3,17 @@ import '../../../models/donation_case_model.dart';
 import '../../../widgets/theme/app_colors.dart';
 import '../donate_page.dart';
 
-class CaseDetailDialog extends StatelessWidget {
+class CaseDetailDialog extends StatefulWidget {
   final DonationCase donationCase;
 
   const CaseDetailDialog({super.key, required this.donationCase});
+
+  @override
+  State<CaseDetailDialog> createState() => _CaseDetailDialogState();
+}
+
+class _CaseDetailDialogState extends State<CaseDetailDialog> {
+  DonationCase get donationCase => widget.donationCase;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +24,6 @@ class CaseDetailDialog extends StatelessWidget {
       builder: (context, scrollController) {
         return Container(
           decoration: const BoxDecoration(
-            color: Colors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(
@@ -436,7 +442,7 @@ class CaseDetailDialog extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).cardColor,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.shade300,
@@ -460,7 +466,7 @@ class CaseDetailDialog extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '₹${_formatAmount(donationCase.remainingAmount)}',
+                            'â‚¹${_formatAmount(donationCase.remainingAmount)}',
                             style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -534,14 +540,14 @@ class CaseDetailDialog extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '₹${_formatAmount(donationCase.raisedAmount)}',
+                    'â‚¹${_formatAmount(donationCase.raisedAmount)}',
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    'raised of ₹${_formatAmount(donationCase.targetAmount)}',
+                    'raised of â‚¹${_formatAmount(donationCase.targetAmount)}',
                     style: TextStyle(
                       color: Colors.grey.shade600,
                       fontSize: 12,
@@ -602,7 +608,7 @@ class CaseDetailDialog extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: backgroundColor ?? Colors.grey.shade50,
+        color: backgroundColor ?? Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
       ),
       child: child,
@@ -688,3 +694,5 @@ class CaseDetailDialog extends StatelessWidget {
     }
   }
 }
+
+

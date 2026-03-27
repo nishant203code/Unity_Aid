@@ -33,7 +33,7 @@ class _MediaCarouselState extends State<MediaCarousel> {
                 fit: BoxFit.cover,
                 width: double.infinity,
                 placeholder: (context, url) => Container(
-                  color: Colors.grey.shade200,
+                  color: Theme.of(context).scaffoldBackgroundColor,
                 ),
                 errorWidget: (context, url, error) =>
                     const Icon(Icons.broken_image),

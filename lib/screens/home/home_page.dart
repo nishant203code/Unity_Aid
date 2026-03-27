@@ -14,7 +14,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(18, 12, 18, 120),
         child: Column(
@@ -30,7 +29,7 @@ class HomePage extends StatelessWidget {
                 gradient: LinearGradient(
                   colors: [
                     AppColors.primary.withOpacity(0.15),
-                    Colors.white.withOpacity(0.6),
+                    Theme.of(context).cardColor.withOpacity(0.6),
                   ],
                 ),
                 boxShadow: [
@@ -69,7 +68,7 @@ class HomePage extends StatelessWidget {
                     "Together we rise, together we rebuild.",
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey.shade700,
+                      color: Theme.of(context).textTheme.bodySmall?.color,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -86,7 +85,7 @@ class HomePage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey.shade900,
+                  color: Theme.of(context).textTheme.titleLarge?.color,
                 ),
               ),
             ),

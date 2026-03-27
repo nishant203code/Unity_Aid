@@ -21,6 +21,8 @@ class UserHomePage extends StatefulWidget {
 class _UserHomePageState extends State<UserHomePage> {
   int selectedIndex = 0;
   String? selectedCaseId;
+  bool _navBarVisible = true;
+  double _lastScrollOffset = 0;
 
   List<Widget> get pages => [
         const HomePage(isNGO: false),
@@ -40,6 +42,9 @@ class _UserHomePageState extends State<UserHomePage> {
       if (index != 4) {
         selectedCaseId = null;
       }
+      // Always show nav bar when switching tabs
+      _navBarVisible = true;
+      _lastScrollOffset = 0;
     });
   }
 
@@ -56,41 +61,73 @@ class _UserHomePageState extends State<UserHomePage> {
     setState(() {
       selectedCaseId = caseId;
       selectedIndex = 4; // Donate tab index
+      _navBarVisible = true;
     });
+  }
+
+  bool _onScrollNotification(ScrollNotification notification) {
+    if (notification is ScrollUpdateNotification) {
+      final delta = notification.scrollDelta ?? 0;
+      // Scrolling down → hide; scrolling up → show
+      if (delta > 2 && _navBarVisible) {
+        setState(() => _navBarVisible = false);
+      } else if (delta < -2 && !_navBarVisible) {
+        setState(() => _navBarVisible = true);
+      }
+      _lastScrollOffset = notification.metrics.pixels;
+    }
+    // Always show when at top
+    if (notification is ScrollUpdateNotification &&
+        notification.metrics.pixels <= 0) {
+      setState(() => _navBarVisible = true);
+    }
+    return false;
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: Colors.transparent,
-      extendBody: true, // ⭐⭐⭐ CRITICAL
-      drawer: const SideDrawer(
-        role: AppRole.user,
-      ),
-      appBar: HomeAppBar(
-        onMenuTap: () => _scaffoldKey.currentState!.openDrawer(),
-        onProfileTap: openUserProfile,
-      ),
-      body: Container(
-        color: AppColors.background, // use your theme color
-        child: IndexedStack(
-          index: selectedIndex,
-          children: pages,
+    return NotificationListener<ScrollNotification>(
+      onNotification: _onScrollNotification,
+      child: Scaffold(
+        key: _scaffoldKey,
+        backgroundColor: Colors.transparent,
+        extendBody: true, // ⭐⭐⭐ CRITICAL
+        drawer: const SideDrawer(
+          role: AppRole.user,
         ),
-      ),
-      floatingActionButton: const AskAI(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          color: Colors.transparent, // ⭐ kills white background
-          padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-          child: BottomNavBar(
-            selectedIndex: selectedIndex,
-            onItemTapped: onItemTapped,
-            isNGO: false,
+        appBar: HomeAppBar(
+          onMenuTap: () => _scaffoldKey.currentState!.openDrawer(),
+          onProfileTap: openUserProfile,
+        ),
+        body: Container(
+          color: Theme.of(context).scaffoldBackgroundColor, // theme adaptive
+          child: IndexedStack(
+            index: selectedIndex,
+            children: pages,
+          ),
+        ),
+        floatingActionButton: const AskAI(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        bottomNavigationBar: AnimatedSlide(
+          offset: _navBarVisible ? Offset.zero : const Offset(0, 1),
+          duration: const Duration(milliseconds: 280),
+          curve: Curves.easeInOut,
+          child: AnimatedOpacity(
+            opacity: _navBarVisible ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 220),
+            child: SafeArea(
+              child: Container(
+                color: Colors.transparent, // ⭐ kills white background
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                child: BottomNavBar(
+                  selectedIndex: selectedIndex,
+                  onItemTapped: onItemTapped,
+                  isNGO: false,
+                ),
+              ),
+            ),
           ),
         ),
       ),

@@ -90,7 +90,7 @@ class _ImagePickerSectionState extends State<ImagePickerSection> {
         OutlinedButton.icon(
           onPressed: pickImages,
           icon: const Icon(Icons.add_photo_alternate_outlined),
-          label: const Text("Add Images"),
+          label: const Text("Add Files"),
           style: OutlinedButton.styleFrom(
             foregroundColor: AppColors.primary,
             side: const BorderSide(color: AppColors.primary),

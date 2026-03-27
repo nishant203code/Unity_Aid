@@ -260,7 +260,7 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
                   decoration: BoxDecoration(
                     color: message.isUser
                         ? AppColors.primary
-                        : Colors.white,
+                        : Theme.of(context).cardColor,
                     borderRadius: BorderRadius.only(
                       topLeft: const Radius.circular(16),
                       topRight: const Radius.circular(16),
@@ -278,7 +278,7 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
                   child: Text(
                     message.message,
                     style: TextStyle(
-                      color: message.isUser ? Colors.white : Colors.black87,
+                      color: message.isUser ? Colors.white : Theme.of(context).textTheme.bodyMedium?.color,
                       fontSize: 14,
                       height: 1.4,
                     ),
@@ -289,7 +289,7 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
                   _formatTime(message.timestamp),
                   style: TextStyle(
                     fontSize: 10,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).textTheme.bodySmall?.color,
                   ),
                 ),
               ],
@@ -331,7 +331,7 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
@@ -399,7 +399,7 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
               return ActionChip(
                 label: Text(reply),
                 onPressed: () => _sendMessage(reply),
-                backgroundColor: Colors.white,
+                backgroundColor: Theme.of(context).cardColor,
                 side: BorderSide(color: AppColors.primary.withOpacity(0.3)),
                 labelStyle: const TextStyle(
                   color: AppColors.primary,
@@ -417,7 +417,7 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -432,14 +432,14 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.background,
+                  color: Theme.of(context).scaffoldBackgroundColor,
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: TextField(
                   controller: _messageController,
                   decoration: InputDecoration(
                     hintText: "Ask me anything...",
-                    hintStyle: TextStyle(color: Colors.grey.shade500),
+                    hintStyle: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 20,

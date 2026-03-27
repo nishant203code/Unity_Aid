@@ -2,10 +2,17 @@ import 'package:flutter/material.dart';
 import '../../models/ngo_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class NGODetailPage extends StatelessWidget {
+class NGODetailPage extends StatefulWidget {
   final NGO ngo;
 
   const NGODetailPage({super.key, required this.ngo});
+
+  @override
+  State<NGODetailPage> createState() => _NGODetailPageState();
+}
+
+class _NGODetailPageState extends State<NGODetailPage> {
+  NGO get ngo => widget.ngo;
 
   @override
   Widget build(BuildContext context) {
@@ -396,10 +403,10 @@ class NGODetailPage extends StatelessWidget {
                               child: Column(
                                 children: [
                                   _buildInfoRow('Total Revenue',
-                                      '₹${report.totalRevenue.toStringAsFixed(2)}'),
+                                      'â‚¹${report.totalRevenue.toStringAsFixed(2)}'),
                                   const Divider(),
                                   _buildInfoRow('Total Expenses',
-                                      '₹${report.totalExpenses.toStringAsFixed(2)}'),
+                                      'â‚¹${report.totalExpenses.toStringAsFixed(2)}'),
                                   const SizedBox(height: 8),
                                   ElevatedButton.icon(
                                     icon: const Icon(Icons.download),
@@ -921,11 +928,13 @@ class NGODetailPage extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(bottom: bottomMargin),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.shade200,
+            color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.black26
+              : Colors.grey.shade200,
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -1019,7 +1028,7 @@ class NGODetailPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         boxShadow: [
           BoxShadow(
             color: Colors.grey.shade300,
@@ -1065,3 +1074,5 @@ class NGODetailPage extends StatelessWidget {
     }
   }
 }
+
+
