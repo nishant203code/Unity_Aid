@@ -23,11 +23,13 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.only(right: 12),
           child: GestureDetector(
             onTap: onProfileTap,
-            child: const CircleAvatar(
+            child: CircleAvatar(
               radius: 20,
-              backgroundImage: NetworkImage(
+              foregroundImage: const NetworkImage(
                 "https://www.iconpacks.net/icons/2/free-user-icon-3297-thumb.png",
               ),
+              onForegroundImageError: (_, __) {},
+              child: const Icon(Icons.person, size: 20),
             ),
           ),
         )

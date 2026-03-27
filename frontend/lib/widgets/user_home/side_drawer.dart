@@ -59,11 +59,13 @@ class SideDrawer extends StatelessWidget {
             const SizedBox(height: 20),
 
             /// Profile
-            const CircleAvatar(
+            CircleAvatar(
               radius: 40,
-              backgroundImage: NetworkImage(
+              foregroundImage: const NetworkImage(
                 "https://www.iconpacks.net/icons/2/free-user-icon-3297-thumb.png",
               ),
+              onForegroundImageError: (_, __) {},
+              child: const Icon(Icons.person, size: 36),
             ),
 
             const SizedBox(height: 10),
