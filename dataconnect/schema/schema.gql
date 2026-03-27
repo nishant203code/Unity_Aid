@@ -1,0 +1,53 @@
+type User @table {
+  authId: String!
+  displayName: String!
+  userType: String!
+  createdAt: Timestamp!
+  email: String
+  profilePictureUrl: String
+  bio: String
+}
+
+type NGO @table {
+  name: String!
+  missionStatement: String!
+  registrationNumber: String!
+  causeCategory: String!
+  location: String!
+  createdAt: Timestamp!
+  description: String
+  website: String
+  contactEmail: String
+  logoUrl: String
+  averageRating: Float
+  admin: User
+}
+
+type Donation @table {
+  amount: Float!
+  currency: String!
+  donationDate: Timestamp!
+  status: String!
+  isRecurring: Boolean
+  donor: User
+  ngo: NGO
+}
+
+type Campaign @table {
+  title: String!
+  goalAmount: Float!
+  startDate: Date!
+  endDate: Date!
+  createdAt: Timestamp!
+  description: String
+  currentRaisedAmount: Float
+  ngo: NGO
+}
+
+type Review @table {
+  rating: Int!
+  createdAt: Timestamp!
+  comment: String
+  reviewer: User
+  ngo: NGO
+}

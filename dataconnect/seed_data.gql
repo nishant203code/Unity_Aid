@@ -1,0 +1,117 @@
+mutation CreateDemoData @transaction @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users.") {
+  user_insertMany(data: [
+    {
+      id: "b21e0d37-8e6f-4c5a-8b0d-7b2d5a3c6d7e",
+      authId: "firebase_auth_id_1",
+      displayName: "Alice Smith",
+      userType: "Donor",
+      email: "alice.smith@example.com",
+      profilePictureUrl: "https://example.com/alice.jpg",
+      bio: "Passionate about giving back.",
+      createdAt_expr: "request.time"
+    },
+    {
+      id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+      authId: "firebase_auth_id_2",
+      displayName: "Bob Johnson",
+      userType: "NGO Admin",
+      email: "bob.johnson@example.com",
+      profilePictureUrl: "https://example.com/bob.jpg",
+      bio: "Dedicated to environmental conservation.",
+      createdAt_expr: "request.time"
+    }
+  ])
+  nGO_insertMany(data: [
+    {
+      id: "c1d2e3f4-g5h6-7890-1234-567890abcdef",
+      name: "Green Earth Foundation",
+      missionStatement: "Protecting our planet for future generations.",
+      registrationNumber: "GEF12345",
+      causeCategory: "Environmental",
+      location: "New York, USA",
+      website: "https://greenearth.org",
+      contactEmail: "info@greenearth.org",
+      logoUrl: "https://example.com/greenearth_logo.png",
+      averageRating: 4.8,
+      admin: {id: "a1b2c3d4-e5f6-7890-1234-567890abcdef"},
+      createdAt_expr: "request.time"
+    },
+    {
+      id: "f9e8d7c6-b5a4-3210-fedc-ba9876543210",
+      name: "Hope for Humanity",
+      missionStatement: "Providing aid and support to communities in crisis.",
+      registrationNumber: "HH98765",
+      causeCategory: "Humanitarian Aid",
+      location: "London, UK",
+      website: "https://hopeforhumanity.org",
+      contactEmail: "contact@hopeforhumanity.org",
+      logoUrl: "https://example.com/hope_logo.png",
+      averageRating: 4.5,
+      createdAt_expr: "request.time"
+    }
+  ])
+  campaign_insertMany(data: [
+    {
+      id: "d1e2f3g4-h5i6-7890-1234-567890abcdef",
+      title: "Clean Water Initiative",
+      description: "Bringing clean and safe drinking water to rural villages.",
+      goalAmount: 50000.00,
+      currentRaisedAmount: 15000.00,
+      startDate: "2024-03-01",
+      endDate: "2024-06-30",
+      ngo: {id: "c1d2e3f4-g5h6-7890-1234-567890abcdef"},
+      createdAt_expr: "request.time"
+    },
+    {
+      id: "c8b7a6d5-e4f3-2109-8765-43210fedcba9",
+      title: "Emergency Food Relief",
+      description: "Providing essential food supplies to disaster-affected areas.",
+      goalAmount: 100000.00,
+      currentRaisedAmount: 30000.00,
+      startDate: "2024-02-15",
+      endDate: "2024-05-31",
+      ngo: {id: "f9e8d7c6-b5a4-3210-fedc-ba9876543210"},
+      createdAt_expr: "request.time"
+    }
+  ])
+  donation_insertMany(data: [
+    {
+      id: "e1f2g3h4-i5j6-7890-1234-567890abcdef",
+      amount: 100.00,
+      currency: "USD",
+      donationDate_expr: "request.time",
+      status: "Completed",
+      isRecurring: false,
+      donor: {id: "b21e0d37-8e6f-4c5a-8b0d-7b2d5a3c6d7e"},
+      ngo: {id: "c1d2e3f4-g5h6-7890-1234-567890abcdef"}
+    },
+    {
+      id: "a0b9c8d7-e6f5-4321-0987-654321fedcba",
+      amount: 50.00,
+      currency: "GBP",
+      donationDate_expr: "request.time",
+      status: "Completed",
+      isRecurring: true,
+      donor: {id: "b21e0d37-8e6f-4c5a-8b0d-7b2d5a3c6d7e"},
+      ngo: {id: "f9e8d7c6-b5a4-3210-fedc-ba9876543210"}
+    }
+  ])
+  review_insertMany(data: [
+    {
+      id: "f1g2h3i4-j5k6-7890-1234-567890abcdef",
+      rating: 5,
+      comment: "Excellent work by the Green Earth Foundation!",
+      createdAt_expr: "request.time",
+      reviewer: {id: "b21e0d37-8e6f-4c5a-8b0d-7b2d5a3c6d7e"},
+      ngo: {id: "c1d2e3f4-g5h6-7890-1234-567890abcdef"}
+    },
+    {
+      id: "b3c2d1e0-f9a8-7654-3210-fedcba987654",
+      rating: 4,
+      comment: "Hope for Humanity is making a real difference.",
+      createdAt_expr: "request.time",
+      reviewer: {id: "b21e0d37-8e6f-4c5a-8b0d-7b2d5a3c6d7e"},
+      ngo: {id: "f9e8d7c6-b5a4-3210-fedc-ba9876543210"}
+    }
+  ])
+}
