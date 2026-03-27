@@ -14,6 +14,7 @@ class PostSubmitButton extends StatelessWidget {
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),

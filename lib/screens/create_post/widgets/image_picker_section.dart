@@ -27,7 +27,7 @@ class _ImagePickerSectionState extends State<ImagePickerSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          "Case Images",
+          "Attachments",
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
         ),
         const SizedBox(height: 12),
@@ -89,8 +89,8 @@ class _ImagePickerSectionState extends State<ImagePickerSection> {
         /// Add Image Button
         OutlinedButton.icon(
           onPressed: pickImages,
-          icon: const Icon(Icons.add_photo_alternate_outlined),
-          label: const Text("Add Files"),
+          icon: const Icon(Icons.upload_file_outlined),
+          label: const Text("Upload File"),
           style: OutlinedButton.styleFrom(
             foregroundColor: AppColors.primary,
             side: const BorderSide(color: AppColors.primary),

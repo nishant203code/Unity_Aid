@@ -298,47 +298,52 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
     );
   }
 
-  void _showLockTypeDialog(BuildContext context) {
+  void _showLockTypeDialog(BuildContext outerContext) {
     showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Select Lock Type'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RadioListTile<String>(
-              title: const Text('4-Digit PIN'),
-              value: '4-Digit PIN',
-              groupValue: _appLockType,
-              onChanged: (value) {
-                setState(() => _appLockType = value!);
-                Navigator.pop(context);
-                _showSetPINDialog(context);
-              },
-            ),
-            RadioListTile<String>(
-              title: const Text('6-Digit PIN'),
-              value: '6-Digit PIN',
-              groupValue: _appLockType,
-              onChanged: (value) {
-                setState(() => _appLockType = value!);
-                Navigator.pop(context);
-                _showSetPINDialog(context);
-              },
-            ),
-            RadioListTile<String>(
-              title: const Text('Pattern'),
-              value: 'Pattern',
-              groupValue: _appLockType,
-              onChanged: (value) {
-                setState(() => _appLockType = value!);
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Pattern lock coming soon!')),
-                );
-              },
-            ),
-          ],
+      context: outerContext,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) => AlertDialog(
+          title: const Text('Select Lock Type'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RadioListTile<String>(
+                title: const Text('4-Digit PIN'),
+                value: '4-Digit PIN',
+                groupValue: _appLockType,
+                onChanged: (value) {
+                  setDialogState(() {});
+                  setState(() => _appLockType = value!);
+                  Navigator.pop(dialogContext);
+                  _showSetPINDialog(outerContext);
+                },
+              ),
+              RadioListTile<String>(
+                title: const Text('6-Digit PIN'),
+                value: '6-Digit PIN',
+                groupValue: _appLockType,
+                onChanged: (value) {
+                  setDialogState(() {});
+                  setState(() => _appLockType = value!);
+                  Navigator.pop(dialogContext);
+                  _showSetPINDialog(outerContext);
+                },
+              ),
+              RadioListTile<String>(
+                title: const Text('Pattern'),
+                value: 'Pattern',
+                groupValue: _appLockType,
+                onChanged: (value) {
+                  setDialogState(() {});
+                  setState(() => _appLockType = value!);
+                  Navigator.pop(dialogContext);
+                  ScaffoldMessenger.of(outerContext).showSnackBar(
+                    const SnackBar(content: Text('Pattern lock coming soon!')),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -24,15 +24,18 @@ class _UserHomePageState extends State<UserHomePage> {
   bool _navBarVisible = true;
   double _lastScrollOffset = 0;
 
+  /// Controls whether the bottom nav bar is visible
+  bool _isNavBarVisible = true;
+
   List<Widget> get pages => [
         const HomePage(isNGO: false),
         NewsFeedPage(
-          onDonateTap: openDonateWithCase, // 🔥 NEW
+          onDonateTap: openDonateWithCase,
         ),
         const CreatePostPage(),
         const NGOSearchPage(),
         DonatePage(
-          prefilledCaseId: selectedCaseId, // 🔥 NEW
+          prefilledCaseId: selectedCaseId,
         ),
       ];
 
@@ -42,9 +45,8 @@ class _UserHomePageState extends State<UserHomePage> {
       if (index != 4) {
         selectedCaseId = null;
       }
-      // Always show nav bar when switching tabs
-      _navBarVisible = true;
-      _lastScrollOffset = 0;
+      // Always show the bar when switching tabs
+      _isNavBarVisible = true;
     });
   }
 
@@ -60,28 +62,24 @@ class _UserHomePageState extends State<UserHomePage> {
   void openDonateWithCase(String caseId) {
     setState(() {
       selectedCaseId = caseId;
-      selectedIndex = 4; // Donate tab index
-      _navBarVisible = true;
+      selectedIndex = 4;
+      _isNavBarVisible = true;
     });
   }
 
+  /// Called on each scroll notification — hides bar on scroll down, shows on scroll up
   bool _onScrollNotification(ScrollNotification notification) {
     if (notification is ScrollUpdateNotification) {
       final delta = notification.scrollDelta ?? 0;
-      // Scrolling down → hide; scrolling up → show
-      if (delta > 2 && _navBarVisible) {
-        setState(() => _navBarVisible = false);
-      } else if (delta < -2 && !_navBarVisible) {
-        setState(() => _navBarVisible = true);
+      if (delta > 0 && _isNavBarVisible) {
+        // Scrolling DOWN → hide
+        setState(() => _isNavBarVisible = false);
+      } else if (delta < 0 && !_isNavBarVisible) {
+        // Scrolling UP → show
+        setState(() => _isNavBarVisible = true);
       }
-      _lastScrollOffset = notification.metrics.pixels;
     }
-    // Always show when at top
-    if (notification is ScrollUpdateNotification &&
-        notification.metrics.pixels <= 0) {
-      setState(() => _navBarVisible = true);
-    }
-    return false;
+    return false; // don't absorb the notification
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
@@ -93,7 +91,7 @@ class _UserHomePageState extends State<UserHomePage> {
       child: Scaffold(
         key: _scaffoldKey,
         backgroundColor: Colors.transparent,
-        extendBody: true, // ⭐⭐⭐ CRITICAL
+        extendBody: true,
         drawer: const SideDrawer(
           role: AppRole.user,
         ),
@@ -102,7 +100,7 @@ class _UserHomePageState extends State<UserHomePage> {
           onProfileTap: openUserProfile,
         ),
         body: Container(
-          color: Theme.of(context).scaffoldBackgroundColor, // theme adaptive
+          color: AppColors.background,
           child: IndexedStack(
             index: selectedIndex,
             children: pages,
@@ -111,21 +109,17 @@ class _UserHomePageState extends State<UserHomePage> {
         floatingActionButton: const AskAI(),
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         bottomNavigationBar: AnimatedSlide(
-          offset: _navBarVisible ? Offset.zero : const Offset(0, 1),
+          offset: _isNavBarVisible ? Offset.zero : const Offset(0, 1),
           duration: const Duration(milliseconds: 280),
           curve: Curves.easeInOut,
-          child: AnimatedOpacity(
-            opacity: _navBarVisible ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 220),
-            child: SafeArea(
-              child: Container(
-                color: Colors.transparent, // ⭐ kills white background
-                padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-                child: BottomNavBar(
-                  selectedIndex: selectedIndex,
-                  onItemTapped: onItemTapped,
-                  isNGO: false,
-                ),
+          child: SafeArea(
+            child: Container(
+              color: Colors.transparent,
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+              child: BottomNavBar(
+                selectedIndex: selectedIndex,
+                onItemTapped: onItemTapped,
+                isNGO: false,
               ),
             ),
           ),
