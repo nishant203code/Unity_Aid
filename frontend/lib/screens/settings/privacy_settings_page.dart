@@ -182,10 +182,10 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
           padding: const EdgeInsets.only(left: 4, bottom: 8),
           child: Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: Theme.of(context).textTheme.bodySmall?.color,
+              color: Colors.grey,
             ),
           ),
         ),
@@ -211,7 +211,7 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
   }) {
     return SwitchListTile(
       secondary: CircleAvatar(
-        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+        backgroundColor: AppColors.primary.withOpacity(0.1),
         child: Icon(icon, color: AppColors.primary, size: 22),
       ),
       title: Text(
@@ -221,7 +221,7 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
       subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
       value: value,
       onChanged: onChanged,
-      activeThumbColor: AppColors.primary,
+      activeColor: AppColors.primary,
     );
   }
 
@@ -233,7 +233,7 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
   }) {
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+        backgroundColor: AppColors.primary.withOpacity(0.1),
         child: Icon(icon, color: AppColors.primary, size: 22),
       ),
       title: Text(
@@ -242,7 +242,7 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
       ),
       subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
       trailing: Icon(Icons.chevron_right, 
-        color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.5)),
+        color: Theme.of(context).iconTheme.color?.withOpacity(0.5)),
       onTap: onTap,
     );
   }

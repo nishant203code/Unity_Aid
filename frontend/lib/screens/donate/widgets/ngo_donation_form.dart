@@ -97,7 +97,8 @@ class _NGODonationFormState extends State<NGODonationForm> {
 
     final amount = int.tryParse(_amountController.text.trim());
     if (amount == null || amount <= 0) {
-      _showMessage('Please enter a valid donation amount.', color: Colors.orange);
+      _showMessage('Please enter a valid donation amount.',
+          color: Colors.orange);
       return;
     }
 
@@ -105,7 +106,8 @@ class _NGODonationFormState extends State<NGODonationForm> {
     final email = _emailController.text.trim();
 
     if (!RegExp(r'^\d{10}$').hasMatch(contact)) {
-      _showMessage('Please enter a valid 10-digit phone number.', color: Colors.orange);
+      _showMessage('Please enter a valid 10-digit phone number.',
+          color: Colors.orange);
       return;
     }
 
@@ -152,11 +154,12 @@ class _NGODonationFormState extends State<NGODonationForm> {
       children: [
         Theme(
             data: Theme.of(context).copyWith(
-              canvasColor: Colors.white,
+              canvasColor: Theme.of(context).colorScheme.surface,
             ),
             child: DropdownButtonFormField<String>(
               borderRadius: BorderRadius.circular(18),
-              decoration: AppInputDecoration.style("NGO Name"),
+              decoration:
+                  AppInputDecoration.style("NGO Name", context: context),
               initialValue: _selectedNgo,
               items: const [
                 DropdownMenuItem(
@@ -174,28 +177,29 @@ class _NGODonationFormState extends State<NGODonationForm> {
         TextFormField(
           controller: _amountController,
           keyboardType: TextInputType.number,
-          decoration: AppInputDecoration.style("Amount"),
+          decoration: AppInputDecoration.style("Amount", context: context),
         ),
         const SizedBox(height: 16),
         TextFormField(
           controller: _contactController,
           keyboardType: TextInputType.phone,
-          decoration: AppInputDecoration.style("Phone Number"),
+          decoration:
+              AppInputDecoration.style("Phone Number", context: context),
         ),
         const SizedBox(height: 16),
         TextFormField(
           controller: _emailController,
           keyboardType: TextInputType.emailAddress,
-          decoration: AppInputDecoration.style("Email"),
+          decoration: AppInputDecoration.style("Email", context: context),
         ),
         const SizedBox(height: 16),
         Theme(
           data: Theme.of(context).copyWith(
-            canvasColor: Colors.white,
+            canvasColor: Theme.of(context).colorScheme.surface,
           ),
           child: DropdownButtonFormField<String>(
             borderRadius: BorderRadius.circular(18),
-            decoration: AppInputDecoration.style("Gateway"),
+            decoration: AppInputDecoration.style("Gateway", context: context),
             initialValue: 'Razorpay (Test Mode)',
             items: const [
               DropdownMenuItem(

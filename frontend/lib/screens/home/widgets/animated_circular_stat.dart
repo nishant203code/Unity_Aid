@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 class AnimatedCircularStat extends StatelessWidget {
   final String title;
@@ -12,7 +12,7 @@ class AnimatedCircularStat extends StatelessWidget {
     required this.color,
   });
 
-  /// Formats large numbers -> 1200 â†’ 1.2K
+  /// Formats large numbers -> 1200 → 1.2K
   String formatNumber(int number) {
     if (number >= 1000000) {
       return "${(number / 1000000).toStringAsFixed(1)}M";
@@ -24,24 +24,25 @@ class AnimatedCircularStat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       height: 130,
       width: 130,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
             blurRadius: 18,
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withOpacity(0.05),
           )
         ],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          /// ðŸ”¥ Animated Number
+          /// 🔥 Animated Number
           TweenAnimationBuilder<int>(
             tween: IntTween(begin: 0, end: value.toInt()),
             duration: const Duration(milliseconds: 900),
@@ -51,7 +52,7 @@ class AnimatedCircularStat extends StatelessWidget {
                 formatNumber(val),
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 26, // â­ Bigger = premium feel
+                  fontSize: 26, // ⭐ Bigger = premium feel
                   color: color,
                 ),
               );
@@ -64,10 +65,10 @@ class AnimatedCircularStat extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: Colors.black87,
+              color: theme.textTheme.bodyMedium?.color,
             ),
           ),
         ],
@@ -75,4 +76,3 @@ class AnimatedCircularStat extends StatelessWidget {
     );
   }
 }
-

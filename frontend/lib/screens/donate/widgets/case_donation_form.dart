@@ -102,7 +102,8 @@ class _CaseDonationFormState extends State<CaseDonationForm> {
 
     final amount = int.tryParse(_amountController.text.trim());
     if (amount == null || amount <= 0) {
-      _showMessage('Please enter a valid donation amount.', color: Colors.orange);
+      _showMessage('Please enter a valid donation amount.',
+          color: Colors.orange);
       return;
     }
 
@@ -110,7 +111,8 @@ class _CaseDonationFormState extends State<CaseDonationForm> {
     final email = _emailController.text.trim();
 
     if (!RegExp(r'^\d{10}$').hasMatch(contact)) {
-      _showMessage('Please enter a valid 10-digit phone number.', color: Colors.orange);
+      _showMessage('Please enter a valid 10-digit phone number.',
+          color: Colors.orange);
       return;
     }
 
@@ -158,7 +160,7 @@ class _CaseDonationFormState extends State<CaseDonationForm> {
       children: [
         TextFormField(
           controller: widget.caseIdController,
-          decoration: AppInputDecoration.style("Case ID"),
+          decoration: AppInputDecoration.style("Case ID", context: context),
         ),
         const SizedBox(height: 12),
 
@@ -186,28 +188,29 @@ class _CaseDonationFormState extends State<CaseDonationForm> {
         TextFormField(
           controller: _amountController,
           keyboardType: TextInputType.number,
-          decoration: AppInputDecoration.style("Amount"),
+          decoration: AppInputDecoration.style("Amount", context: context),
         ),
         const SizedBox(height: 16),
         TextFormField(
           controller: _contactController,
           keyboardType: TextInputType.phone,
-          decoration: AppInputDecoration.style("Phone Number"),
+          decoration:
+              AppInputDecoration.style("Phone Number", context: context),
         ),
         const SizedBox(height: 16),
         TextFormField(
           controller: _emailController,
           keyboardType: TextInputType.emailAddress,
-          decoration: AppInputDecoration.style("Email"),
+          decoration: AppInputDecoration.style("Email", context: context),
         ),
         const SizedBox(height: 16),
         Theme(
           data: Theme.of(context).copyWith(
-            canvasColor: Colors.white,
+            canvasColor: Theme.of(context).colorScheme.surface,
           ),
           child: DropdownButtonFormField<String>(
             borderRadius: BorderRadius.circular(18),
-            decoration: AppInputDecoration.style("Gateway"),
+            decoration: AppInputDecoration.style("Gateway", context: context),
             initialValue: 'Razorpay (Test Mode)',
             items: const [
               DropdownMenuItem(

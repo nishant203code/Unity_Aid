@@ -57,6 +57,7 @@ class _DonationTargetSelectorState extends State<DonationTargetSelector> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -66,12 +67,13 @@ class _DonationTargetSelectorState extends State<DonationTargetSelector> {
         ),
         const SizedBox(height: 10),
         Theme(
-            data: Theme.of(context).copyWith(
-              canvasColor: Colors.white,
+            data: theme.copyWith(
+              canvasColor: theme.colorScheme.surface,
             ),
             child: DropdownButtonFormField<DonationTarget>(
               borderRadius: BorderRadius.circular(18),
-              decoration: AppInputDecoration.style("Payment Type"),
+              decoration:
+                  AppInputDecoration.style("Payment Type", context: context),
               initialValue: selectedTarget,
               items: const [
                 DropdownMenuItem(value: DonationTarget.ngo, child: Text("NGO")),

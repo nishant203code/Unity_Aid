@@ -66,19 +66,19 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                 subtitle: "Add extra security to your account",
                 value: _twoFactorEnabled,
                 onChanged: (value) {
-                  if (value) {
-                    _show2FASetupDialog(context, onConfirm: () {
-                      setState(() => _twoFactorEnabled = true);
-                    });
-                  } else {
-                    setState(() => _twoFactorEnabled = false);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('2FA disabled'),
-                        backgroundColor: Colors.orange,
+                  setState(() {
+                    _twoFactorEnabled = value;
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        value
+                            ? '2FA enabled successfully!'
+                            : '2FA disabled',
                       ),
-                    );
-                  }
+                      backgroundColor: value ? Colors.green : Colors.orange,
+                    ),
+                  );
                 },
               ),
             ],
@@ -172,10 +172,10 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
           padding: const EdgeInsets.only(left: 4, bottom: 8),
           child: Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: Theme.of(context).textTheme.bodySmall?.color,
+              color: Colors.grey,
             ),
           ),
         ),
@@ -202,7 +202,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   }) {
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: (iconColor ?? AppColors.primary).withValues(alpha: 0.1),
+        backgroundColor: (iconColor ?? AppColors.primary).withOpacity(0.1),
         child: Icon(icon, color: iconColor ?? AppColors.primary, size: 22),
       ),
       title: Text(
@@ -211,7 +211,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       ),
       subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
       trailing: trailing ?? Icon(Icons.chevron_right, 
-        color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.5)),
+        color: Theme.of(context).iconTheme.color?.withOpacity(0.5)),
       onTap: onTap,
     );
   }
@@ -225,7 +225,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   }) {
     return SwitchListTile(
       secondary: CircleAvatar(
-        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+        backgroundColor: AppColors.primary.withOpacity(0.1),
         child: Icon(icon, color: AppColors.primary, size: 22),
       ),
       title: Text(
@@ -235,23 +235,47 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
       value: value,
       onChanged: onChanged,
-      activeThumbColor: AppColors.primary,
+      activeColor: AppColors.primary,
     );
   }
 
-  void _show2FASetupDialog(BuildContext context, {required VoidCallback onConfirm}) {
+  void _showChangePasswordDialog(BuildContext context) {
+    final currentPasswordController = TextEditingController();
+    final newPasswordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Enable Two-Factor Authentication'),
-        content: const Column(
+        title: const Text('Change Password'),
+        content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.security, size: 48, color: AppColors.primary),
-            SizedBox(height: 12),
-            Text(
-              'Two-Factor Authentication adds an extra layer of security to your account.\n\nAfter enabling, you will receive a verification code via SMS or email each time you log in.',
-              textAlign: TextAlign.center,
+            TextField(
+              controller: currentPasswordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: 'Current Password',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: newPasswordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: 'New Password',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: confirmPasswordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: 'Confirm New Password',
+                border: OutlineInputBorder(),
+              ),
             ),
           ],
         ),
@@ -261,117 +285,19 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
             onPressed: () {
+              // TODO: Implement password change
               Navigator.pop(context);
-              onConfirm();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('2FA enabled successfully!'),
+                  content: Text('Password changed successfully!'),
                   backgroundColor: Colors.green,
                 ),
               );
             },
-            child: const Text('Enable', style: TextStyle(color: Colors.white)),
+            child: const Text('Change'),
           ),
         ],
-      ),
-    );
-  }
-
-  void _showChangePasswordDialog(BuildContext context) {
-    final currentPasswordController = TextEditingController();
-    final newPasswordController = TextEditingController();
-    final confirmPasswordController = TextEditingController();
-    final formKey = GlobalKey<FormState>();
-    bool obscureCurrent = true;
-    bool obscureNew = true;
-    bool obscureConfirm = true;
-
-    showDialog(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setModalState) => AlertDialog(
-          title: const Text('Change Password'),
-          content: Form(
-            key: formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  controller: currentPasswordController,
-                  obscureText: obscureCurrent,
-                  decoration: InputDecoration(
-                    labelText: 'Current Password',
-                    border: const OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      icon: Icon(obscureCurrent ? Icons.visibility_off : Icons.visibility),
-                      onPressed: () => setModalState(() => obscureCurrent = !obscureCurrent),
-                    ),
-                  ),
-                  validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: newPasswordController,
-                  obscureText: obscureNew,
-                  decoration: InputDecoration(
-                    labelText: 'New Password',
-                    border: const OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      icon: Icon(obscureNew ? Icons.visibility_off : Icons.visibility),
-                      onPressed: () => setModalState(() => obscureNew = !obscureNew),
-                    ),
-                  ),
-                  validator: (v) {
-                    if (v == null || v.isEmpty) return 'Required';
-                    if (v.length < 8) return 'Minimum 8 characters';
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: confirmPasswordController,
-                  obscureText: obscureConfirm,
-                  decoration: InputDecoration(
-                    labelText: 'Confirm New Password',
-                    border: const OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      icon: Icon(obscureConfirm ? Icons.visibility_off : Icons.visibility),
-                      onPressed: () => setModalState(() => obscureConfirm = !obscureConfirm),
-                    ),
-                  ),
-                  validator: (v) {
-                    if (v == null || v.isEmpty) return 'Required';
-                    if (v != newPasswordController.text) return 'Passwords do not match';
-                    return null;
-                  },
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-              onPressed: () {
-                if (formKey.currentState!.validate()) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Password changed successfully!'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                }
-              },
-              child: const Text('Change', style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        ),
       ),
     );
   }

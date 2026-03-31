@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../../widgets/theme/app_colors.dart';
 import '../../data/sample_donation_cases.dart';
 import 'widgets/donation_stats.dart';
@@ -26,7 +26,7 @@ class _DonatePageState extends State<DonatePage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    
+
     // If prefilled case ID is provided, go directly to donation form
     if (widget.prefilledCaseId != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -44,6 +44,7 @@ class _DonatePageState extends State<DonatePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text(
           "Donate",
@@ -69,8 +70,14 @@ class _DonatePageState extends State<DonatePage>
 
   Widget _buildCaseListTab() {
     final allCases = getSampleDonationCases();
-    final categories = ['All', 'Medical Emergency', 'Education', 'Disaster Relief', 
-                        'Medical Aid', 'Community Development'];
+    final categories = [
+      'All',
+      'Medical Emergency',
+      'Education',
+      'Disaster Relief',
+      'Medical Aid',
+      'Community Development'
+    ];
 
     final filteredCases = selectedCategory == 'All'
         ? allCases
@@ -105,11 +112,13 @@ class _DonatePageState extends State<DonatePage>
                       selectedCategory = category;
                     });
                   },
-                  selectedColor: AppColors.primary.withValues(alpha: 0.2),
+                  selectedColor: AppColors.primary.withOpacity(0.2),
                   checkmarkColor: AppColors.primary,
-                   labelStyle: TextStyle(
-                    color: isSelected ? AppColors.primary : Theme.of(context).textTheme.bodySmall?.color,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  labelStyle: TextStyle(
+                    color:
+                        isSelected ? AppColors.primary : Colors.grey.shade700,
+                    fontWeight:
+                        isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
                 ),
               );
@@ -124,7 +133,8 @@ class _DonatePageState extends State<DonatePage>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.search_off, size: 64, color: Colors.grey.shade400),
+                      Icon(Icons.search_off,
+                          size: 64, color: Colors.grey.shade400),
                       const SizedBox(height: 16),
                       Text(
                         'No cases found in this category',
@@ -161,4 +171,3 @@ class _DonatePageState extends State<DonatePage>
     );
   }
 }
-

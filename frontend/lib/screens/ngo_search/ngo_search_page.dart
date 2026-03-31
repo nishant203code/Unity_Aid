@@ -71,6 +71,7 @@ class _NGOSearchPageState extends State<NGOSearchPage> {
     });
 
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(title: const Text("Search NGOs")),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -120,7 +121,7 @@ class _NGOSearchPageState extends State<NGOSearchPage> {
                     height: 5,
                     margin: const EdgeInsets.only(bottom: 20),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).dividerColor,
+                      color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),

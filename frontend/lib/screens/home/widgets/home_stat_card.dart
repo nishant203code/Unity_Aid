@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import '../../../widgets/theme/app_colors.dart';
 
 class HomeStatCard extends StatelessWidget {
   final String title;
@@ -16,15 +17,16 @@ class HomeStatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
             blurRadius: 20,
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withOpacity(0.05),
           )
         ],
       ),
@@ -34,10 +36,10 @@ class HomeStatCard extends StatelessWidget {
             height: 52,
             width: 52,
             decoration: BoxDecoration(
-              color: Colors.green.withValues(alpha: 0.12),
+              color: AppColors.primary.withOpacity(0.12),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, color: Colors.green),
+            child: Icon(icon, color: AppColors.primary),
           ),
           const SizedBox(width: 14),
           Column(
@@ -55,7 +57,7 @@ class HomeStatCard extends StatelessWidget {
                 subtitle,
                 style: TextStyle(
                   fontSize: 12,
-                  color: Theme.of(context).textTheme.bodySmall?.color,
+                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
                 ),
               ),
             ],
@@ -65,4 +67,3 @@ class HomeStatCard extends StatelessWidget {
     );
   }
 }
-

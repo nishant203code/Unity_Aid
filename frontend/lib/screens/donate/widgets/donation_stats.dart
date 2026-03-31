@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../../../widgets/theme/app_colors.dart';
 
 class DonationStats extends StatelessWidget {
@@ -6,17 +6,18 @@ class DonationStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.08),
+        color: AppColors.primary.withOpacity(0.08),
         borderRadius: BorderRadius.circular(16),
       ),
-      child: const Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _StatTile(title: "Total Donations", value: "12"),
-          _StatTile(title: "Total Amount", value: "â‚¹18,500"),
+          _StatTile(title: "Total Amount", value: "₹18,500"),
         ],
       ),
     );
@@ -31,10 +32,13 @@ class _StatTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: const TextStyle(color: Colors.grey)),
+        Text(title,
+            style: TextStyle(
+                color: theme.textTheme.bodySmall?.color?.withOpacity(0.7))),
         const SizedBox(height: 6),
         Text(
           value,
@@ -47,4 +51,3 @@ class _StatTile extends StatelessWidget {
     );
   }
 }
-

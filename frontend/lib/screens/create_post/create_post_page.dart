@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/theme/app_colors.dart';
 import '../../widgets/theme/input_decoration.dart';
 import 'widgets/image_picker_section.dart';
 import 'widgets/post_submit_button.dart';
@@ -19,6 +20,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text(
           "Post",
@@ -33,7 +35,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
             /// Case Title
             TextFormField(
               controller: titleController,
-              decoration: AppInputDecoration.style("Case Title"),
+              decoration:
+                  AppInputDecoration.style("Case Title", context: context),
             ),
             const SizedBox(height: 16),
 
@@ -41,14 +44,16 @@ class _CreatePostPageState extends State<CreatePostPage> {
             TextFormField(
               controller: descriptionController,
               maxLines: 6,
-              decoration: AppInputDecoration.style("Case Description"),
+              decoration: AppInputDecoration.style("Case Description",
+                  context: context),
             ),
             const SizedBox(height: 16),
 
             /// Location
             TextFormField(
               controller: locationController,
-              decoration: AppInputDecoration.style("Case Location"),
+              decoration:
+                  AppInputDecoration.style("Case Location", context: context),
             ),
             const SizedBox(height: 16),
 
@@ -56,7 +61,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
             TextFormField(
               controller: fundGoalController,
               keyboardType: TextInputType.number,
-              decoration: AppInputDecoration.style("Fund Goal (₹)"),
+              decoration:
+                  AppInputDecoration.style("Fund Goal (₹)", context: context),
             ),
             const SizedBox(height: 24),
 

@@ -1,45 +1,39 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../../../models/donation_case_model.dart';
 import '../../../widgets/theme/app_colors.dart';
 import '../donate_page.dart';
 
-class CaseDetailDialog extends StatefulWidget {
+class CaseDetailDialog extends StatelessWidget {
   final DonationCase donationCase;
-
   const CaseDetailDialog({super.key, required this.donationCase});
 
   @override
-  State<CaseDetailDialog> createState() => _CaseDetailDialogState();
-}
-
-class _CaseDetailDialogState extends State<CaseDetailDialog> {
-  DonationCase get donationCase => widget.donationCase;
-
-  @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return DraggableScrollableSheet(
       initialChildSize: 0.9,
       minChildSize: 0.5,
       maxChildSize: 0.95,
       builder: (context, scrollController) {
         return Container(
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          decoration: BoxDecoration(
+            color: theme.scaffoldBackgroundColor,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(
             children: [
-              // Drag Handle
+              // Handle
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 12),
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(2),
-                ),
+                    color: theme.dividerColor,
+                    borderRadius: BorderRadius.circular(2)),
               ),
 
-              // Scrollable Content
               Expanded(
                 child: SingleChildScrollView(
                   controller: scrollController,
@@ -54,22 +48,24 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
                             height: 250,
                             width: double.infinity,
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Container(
+                            errorBuilder: (_, __, ___) => Container(
                               height: 250,
-                              color: Colors.grey.shade300,
-                              child: const Icon(Icons.image, size: 64),
+                              color: isDark
+                                  ? const Color(0xFF2A2A2A)
+                                  : Colors.grey.shade200,
+                              child: Icon(Icons.image,
+                                  size: 64, color: theme.iconTheme.color),
                             ),
                           ),
                           Positioned(
                             top: 16,
                             right: 16,
                             child: IconButton(
-                              icon: const Icon(Icons.close, color: Colors.white),
+                              icon:
+                                  const Icon(Icons.close, color: Colors.white),
                               onPressed: () => Navigator.pop(context),
                               style: IconButton.styleFrom(
-                                backgroundColor: Colors.black54,
-                              ),
+                                  backgroundColor: Colors.black54),
                             ),
                           ),
                           if (donationCase.isVerified)
@@ -80,22 +76,18 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 6),
                                 decoration: BoxDecoration(
-                                  color: Colors.green,
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
+                                    color: Colors.green,
+                                    borderRadius: BorderRadius.circular(16)),
                                 child: const Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(Icons.verified,
                                         color: Colors.white, size: 16),
                                     SizedBox(width: 4),
-                                    Text(
-                                      'Verified Case',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                                    Text('Verified Case',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold)),
                                   ],
                                 ),
                               ),
@@ -108,328 +100,276 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Category and Urgency
+                            // Category and Urgency chips
                             Row(
                               children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 6),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primary.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Text(
-                                    donationCase.category,
-                                    style: const TextStyle(
-                                      color: AppColors.primary,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
+                                _chip(donationCase.category, AppColors.primary),
                                 const SizedBox(width: 8),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 6),
-                                  decoration: BoxDecoration(
-                                    color: _getUrgencyColor(
-                                            donationCase.urgencyLevel)
-                                        .withValues(alpha: 0.2),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Text(
+                                _chip(
                                     '${donationCase.urgencyLevel} Priority',
-                                    style: TextStyle(
-                                      color: _getUrgencyColor(
-                                          donationCase.urgencyLevel),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
+                                    _getUrgencyColor(
+                                        donationCase.urgencyLevel)),
                               ],
                             ),
                             const SizedBox(height: 16),
 
-                            // Title
-                            Text(
-                              donationCase.title,
-                              style: const TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            Text(donationCase.title,
+                                style: theme.textTheme.headlineSmall
+                                    ?.copyWith(fontWeight: FontWeight.bold)),
                             const SizedBox(height: 8),
 
-                            // Location
                             Row(
                               children: [
                                 Icon(Icons.location_on,
-                                    size: 18, color: Colors.grey.shade600),
+                                    size: 18,
+                                    color: theme.textTheme.bodySmall?.color),
                                 const SizedBox(width: 4),
-                                Text(
-                                  donationCase.location,
-                                  style: TextStyle(
-                                    color: Colors.grey.shade600,
-                                    fontSize: 14,
-                                  ),
-                                ),
+                                Text(donationCase.location,
+                                    style: theme.textTheme.bodySmall
+                                        ?.copyWith(fontSize: 14)),
                               ],
                             ),
                             const SizedBox(height: 20),
 
-                            // Progress Section
-                            _buildProgressSection(),
+                            _buildProgressSection(theme, isDark),
                             const SizedBox(height: 24),
 
-                            // Beneficiary Info
-                            _buildSectionTitle('Beneficiary'),
+                            _buildSectionTitle('Beneficiary', theme),
                             _buildInfoCard(
+                              isDark: isDark,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  _buildInfoRow(
-                                      'Name', donationCase.beneficiaryName),
+                                  _buildInfoRow('Name',
+                                      donationCase.beneficiaryName, theme),
                                   if (donationCase.beneficiaryAge != null) ...[
                                     const SizedBox(height: 8),
-                                    _buildInfoRow('Age',
-                                        '${donationCase.beneficiaryAge} years'),
-                                  ],
-                                  if (donationCase.beneficiaryGender != null) ...[
-                                    const SizedBox(height: 8),
                                     _buildInfoRow(
-                                        'Gender', donationCase.beneficiaryGender!),
+                                        'Age',
+                                        '${donationCase.beneficiaryAge} years',
+                                        theme),
+                                  ],
+                                  if (donationCase.beneficiaryGender !=
+                                      null) ...[
+                                    const SizedBox(height: 8),
+                                    _buildInfoRow('Gender',
+                                        donationCase.beneficiaryGender!, theme),
                                   ],
                                 ],
                               ),
                             ),
                             const SizedBox(height: 20),
 
-                            // Case Story
-                            _buildSectionTitle('The Story'),
+                            _buildSectionTitle('The Story', theme),
                             _buildInfoCard(
-                              child: Text(
-                                donationCase.caseStory,
-                                style: TextStyle(
-                                  color: Colors.grey.shade800,
-                                  fontSize: 15,
-                                  height: 1.6,
-                                ),
-                              ),
+                              isDark: isDark,
+                              child: Text(donationCase.caseStory,
+                                  style: theme.textTheme.bodyMedium
+                                      ?.copyWith(height: 1.6, fontSize: 15)),
                             ),
                             const SizedBox(height: 20),
 
-                            // Requirements
-                            _buildSectionTitle('Fund Breakdown'),
+                            _buildSectionTitle('Fund Breakdown', theme),
                             _buildInfoCard(
+                              isDark: isDark,
                               child: Column(
                                 children: donationCase.requirements
                                     .asMap()
                                     .entries
                                     .map((entry) {
-                                  final isLast = entry.key ==
-                                      donationCase.requirements.length - 1;
-                                  return Column(
-                                    children: [
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            margin: const EdgeInsets.only(top: 4),
-                                            child: const Icon(
-                                              Icons.check_circle,
+                                  return Padding(
+                                    padding: EdgeInsets.only(
+                                        bottom: entry.key ==
+                                                donationCase
+                                                        .requirements.length -
+                                                    1
+                                            ? 0
+                                            : 12),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Padding(
+                                          padding: EdgeInsets.only(top: 2),
+                                          child: Icon(Icons.check_circle,
                                               size: 18,
-                                              color: AppColors.primary,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Expanded(
-                                            child: Text(
-                                              entry.value,
-                                              style: TextStyle(
-                                                color: Colors.grey.shade800,
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      if (!isLast)
-                                        const SizedBox(height: 12),
-                                    ],
+                                              color: AppColors.primary),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                            child: Text(entry.value,
+                                                style: theme
+                                                    .textTheme.bodyMedium
+                                                    ?.copyWith(fontSize: 14))),
+                                      ],
+                                    ),
                                   );
                                 }).toList(),
                               ),
                             ),
                             const SizedBox(height: 20),
 
-                            // Current Status
-                            _buildSectionTitle('Current Status'),
-                            _buildInfoCard(
-                              backgroundColor: Colors.blue.shade50,
+                            _buildSectionTitle('Current Status', theme),
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: isDark
+                                    ? Colors.blue.withOpacity(0.15)
+                                    : Colors.blue.shade50,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Icon(Icons.info_outline,
-                                      color: Colors.blue.shade700),
+                                      color: Colors.blue.shade400),
                                   const SizedBox(width: 12),
                                   Expanded(
-                                    child: Text(
-                                      donationCase.currentStatus,
-                                      style: TextStyle(
-                                        color: Colors.blue.shade900,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ),
+                                      child: Text(donationCase.currentStatus,
+                                          style: TextStyle(
+                                              color: isDark
+                                                  ? Colors.blue.shade200
+                                                  : Colors.blue.shade900,
+                                              fontSize: 14))),
                                 ],
                               ),
                             ),
                             const SizedBox(height: 20),
 
-                            // Additional Images
                             if (donationCase.additionalImages != null &&
                                 donationCase.additionalImages!.isNotEmpty) ...[
-                              _buildSectionTitle('Gallery'),
+                              _buildSectionTitle('Gallery', theme),
                               SizedBox(
                                 height: 120,
                                 child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
                                   itemCount:
                                       donationCase.additionalImages!.length,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(right: 12),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(12),
-                                        child: Image.network(
+                                  itemBuilder: (context, index) => Padding(
+                                    padding: const EdgeInsets.only(right: 12),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Image.network(
                                           donationCase.additionalImages![index],
                                           width: 180,
                                           height: 120,
                                           fit: BoxFit.cover,
-                                          errorBuilder:
-                                              (context, error, stackTrace) =>
-                                                  Container(
-                                            width: 180,
-                                            height: 120,
-                                            color: Colors.grey.shade300,
-                                            child: const Icon(Icons.image),
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
+                                          errorBuilder: (_, __, ___) =>
+                                              Container(
+                                                width: 180,
+                                                height: 120,
+                                                color: isDark
+                                                    ? const Color(0xFF2A2A2A)
+                                                    : Colors.grey.shade200,
+                                                child: const Icon(Icons.image),
+                                              )),
+                                    ),
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 20),
                             ],
 
-                            // Documents
                             if (donationCase.documents != null &&
                                 donationCase.documents!.isNotEmpty) ...[
-                              _buildSectionTitle('Supporting Documents'),
+                              _buildSectionTitle('Supporting Documents', theme),
                               _buildInfoCard(
+                                isDark: isDark,
                                 child: Column(
                                   children: donationCase.documents!.entries
-                                      .map((entry) {
-                                    return ListTile(
-                                      contentPadding: EdgeInsets.zero,
-                                      leading: const Icon(Icons.description,
-                                          color: AppColors.primary),
-                                      title: Text(entry.key),
-                                      trailing: const Icon(Icons.download),
-                                      onTap: () {
-                                        // Download document
-                                      },
-                                    );
-                                  }).toList(),
+                                      .map((entry) => ListTile(
+                                            contentPadding: EdgeInsets.zero,
+                                            leading: const Icon(
+                                                Icons.description,
+                                                color: AppColors.primary),
+                                            title: Text(entry.key,
+                                                style:
+                                                    theme.textTheme.bodyMedium),
+                                            trailing: Icon(Icons.download,
+                                                color: theme.iconTheme.color),
+                                          ))
+                                      .toList(),
                                 ),
                               ),
                               const SizedBox(height: 20),
                             ],
 
-                            // NGO Information
                             if (donationCase.handlingNGO != null) ...[
-                              _buildSectionTitle('Handled By'),
+                              _buildSectionTitle('Handled By', theme),
                               _buildInfoCard(
+                                isDark: isDark,
                                 child: Row(
                                   children: [
                                     if (donationCase.ngoLogoUrl != null)
                                       CircleAvatar(
-                                        radius: 24,
-                                        backgroundImage: NetworkImage(
-                                            donationCase.ngoLogoUrl!),
-                                      ),
+                                          radius: 24,
+                                          backgroundImage: NetworkImage(
+                                              donationCase.ngoLogoUrl!)),
                                     const SizedBox(width: 12),
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            donationCase.handlingNGO!,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
-                                          ),
+                                          Text(donationCase.handlingNGO!,
+                                              style: theme.textTheme.titleMedium
+                                                  ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold)),
                                           const SizedBox(height: 4),
-                                          Text(
-                                            'Verified NGO Partner',
-                                            style: TextStyle(
-                                              color: Colors.green.shade700,
-                                              fontSize: 12,
-                                            ),
-                                          ),
+                                          const Text('Verified NGO Partner',
+                                              style: TextStyle(
+                                                  color: Colors.green,
+                                                  fontSize: 12)),
                                         ],
                                       ),
                                     ),
                                     Icon(Icons.arrow_forward_ios,
-                                        size: 16, color: Colors.grey.shade600),
+                                        size: 16, color: theme.iconTheme.color),
                                   ],
                                 ),
                               ),
                               const SizedBox(height: 20),
                             ],
 
-                            // Supporters Info
-                            _buildInfoCard(
-                              backgroundColor: Colors.green.shade50,
+                            // Supporters stats
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: isDark
+                                    ? Colors.green.withOpacity(0.12)
+                                    : Colors.green.shade50,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
                                 children: [
                                   _buildStatColumn(
-                                    icon: Icons.people,
-                                    value:
-                                        '${donationCase.supportersCount}',
-                                    label: 'Supporters',
-                                  ),
+                                      Icons.people,
+                                      '${donationCase.supportersCount}',
+                                      'Supporters',
+                                      isDark),
                                   Container(
-                                    height: 40,
-                                    width: 1,
-                                    color: Colors.green.shade200,
-                                  ),
+                                      height: 40,
+                                      width: 1,
+                                      color: Colors.green.withOpacity(0.3)),
                                   _buildStatColumn(
-                                    icon: Icons.schedule,
-                                    value: '${donationCase.daysRemaining}',
-                                    label: 'Days Left',
-                                  ),
+                                      Icons.schedule,
+                                      '${donationCase.daysRemaining}',
+                                      'Days Left',
+                                      isDark),
                                   Container(
-                                    height: 40,
-                                    width: 1,
-                                    color: Colors.green.shade200,
-                                  ),
-                                  _buildStatColumn(
-                                    icon: Icons.share,
-                                    value: 'Share',
-                                    label: 'This Case',
-                                  ),
+                                      height: 40,
+                                      width: 1,
+                                      color: Colors.green.withOpacity(0.3)),
+                                  _buildStatColumn(Icons.share, 'Share',
+                                      'This Case', isDark),
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 100), // Space for button
+                            const SizedBox(height: 100),
                           ],
                         ),
                       ),
@@ -442,13 +382,12 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
+                  color: theme.cardColor,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.shade300,
-                      blurRadius: 8,
-                      offset: const Offset(0, -2),
-                    ),
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, -2))
                   ],
                 ),
                 child: Row(
@@ -458,21 +397,14 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          Text('Still Needed',
+                              style: theme.textTheme.bodySmall),
                           Text(
-                            'Still Needed',
-                            style: TextStyle(
-                              color: Colors.grey.shade600,
-                              fontSize: 12,
-                            ),
-                          ),
-                          Text(
-                            'Ã¢â€šÂ¹${_formatAmount(donationCase.remainingAmount)}',
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.primary,
-                            ),
-                          ),
+                              '₹${_formatAmount(donationCase.remainingAmount)}',
+                              style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.primary)),
                         ],
                       ),
                     ),
@@ -482,33 +414,25 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
                           backgroundColor: AppColors.primary,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          elevation: 2,
+                              borderRadius: BorderRadius.circular(16)),
                         ),
                         onPressed: () {
-                          Navigator.pop(context); // Close dialog
+                          Navigator.pop(context);
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DonatePage(
-                                prefilledCaseId: donationCase.id,
-                              ),
-                            ),
-                          );
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DonatePage(
+                                    prefilledCaseId: donationCase.id),
+                              ));
                         },
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(Icons.volunteer_activism),
                             SizedBox(width: 8),
-                            Text(
-                              'Donate Now',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            Text('Donate Now',
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold)),
                           ],
                         ),
                       ),
@@ -523,13 +447,26 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
     );
   }
 
-  Widget _buildProgressSection() {
+  Widget _chip(String text, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+          color: color.withOpacity(0.15),
+          borderRadius: BorderRadius.circular(12)),
+      child: Text(text,
+          style: TextStyle(
+              color: color, fontWeight: FontWeight.bold, fontSize: 12)),
+    );
+  }
+
+  Widget _buildProgressSection(ThemeData theme, bool isDark) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: isDark ? const Color(0xFF2A2A2A) : Colors.grey.shade50,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        border:
+            Border.all(color: isDark ? Colors.white12 : Colors.grey.shade200),
       ),
       child: Column(
         children: [
@@ -539,36 +476,24 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Ã¢â€šÂ¹${_formatAmount(donationCase.raisedAmount)}',
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'raised of Ã¢â€šÂ¹${_formatAmount(donationCase.targetAmount)}',
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 12,
-                    ),
-                  ),
+                  Text('₹${_formatAmount(donationCase.raisedAmount)}',
+                      style: theme.textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold)),
+                  Text('raised of ₹${_formatAmount(donationCase.targetAmount)}',
+                      style: theme.textTheme.bodySmall?.copyWith(fontSize: 12)),
                 ],
               ),
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
+                    color: AppColors.primary.withOpacity(0.12),
+                    shape: BoxShape.circle),
                 child: Text(
-                  '${donationCase.progressPercentage.toStringAsFixed(0)}%',
-                  style: const TextStyle(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
+                    '${donationCase.progressPercentage.toStringAsFixed(0)}%',
+                    style: const TextStyle(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16)),
               ),
             ],
           ),
@@ -578,8 +503,9 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
             child: LinearProgressIndicator(
               value: donationCase.progressPercentage / 100,
               minHeight: 12,
-              backgroundColor: Colors.grey.shade300,
-              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+              backgroundColor: isDark ? Colors.white12 : Colors.grey.shade200,
+              valueColor:
+                  const AlwaysStoppedAnimation<Color>(AppColors.primary),
             ),
           ),
         ],
@@ -587,84 +513,57 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(String title, ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+      child: Text(title,
+          style: theme.textTheme.titleLarge
+              ?.copyWith(fontWeight: FontWeight.bold)),
     );
   }
 
-  Widget _buildInfoCard({
-    required Widget child,
-    Color? backgroundColor,
-  }) {
+  Widget _buildInfoCard({required Widget child, bool isDark = false}) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: backgroundColor ?? Theme.of(context).cardColor,
+        color: isDark ? const Color(0xFF2A2A2A) : Colors.grey.shade50,
         borderRadius: BorderRadius.circular(12),
       ),
       child: child,
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _buildInfoRow(String label, String value, ThemeData theme) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          width: 80,
-          child: Text(
-            label,
-            style: TextStyle(
-              color: Colors.grey.shade600,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
+            width: 80,
+            child: Text(label,
+                style: theme.textTheme.bodySmall
+                    ?.copyWith(fontWeight: FontWeight.w600))),
         Expanded(
-          child: Text(
-            value,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
+            child: Text(value,
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(fontWeight: FontWeight.bold))),
       ],
     );
   }
 
-  Widget _buildStatColumn({
-    required IconData icon,
-    required String value,
-    required String label,
-  }) {
+  Widget _buildStatColumn(
+      IconData icon, String value, String label, bool isDark) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: Colors.green.shade700),
+        Icon(icon, color: Colors.green),
         const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-        ),
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.grey.shade600,
-            fontSize: 11,
-          ),
-        ),
+        Text(value,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+        Text(label,
+            style: TextStyle(
+                color: isDark ? Colors.white54 : Colors.grey.shade600,
+                fontSize: 11)),
       ],
     );
   }
@@ -685,15 +584,8 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
   }
 
   String _formatAmount(double amount) {
-    if (amount >= 100000) {
-      return '${(amount / 100000).toStringAsFixed(2)}L';
-    } else if (amount >= 1000) {
-      return '${(amount / 1000).toStringAsFixed(1)}K';
-    } else {
-      return amount.toStringAsFixed(0);
-    }
+    if (amount >= 100000) return '${(amount / 100000).toStringAsFixed(2)}L';
+    if (amount >= 1000) return '${(amount / 1000).toStringAsFixed(1)}K';
+    return amount.toStringAsFixed(0);
   }
 }
-
-
-

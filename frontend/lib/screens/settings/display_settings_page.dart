@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/theme/app_colors.dart';
 import '../../widgets/theme/theme_provider.dart';
 
@@ -23,21 +22,11 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
   @override
   void initState() {
     super.initState();
-    _loadPrefs();
-  }
-
-  Future<void> _loadPrefs() async {
-    final p = await SharedPreferences.getInstance();
+    // Get initial theme mode from provider
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
       setState(() {
         _themeMode = themeProvider.themeModeString;
-        _fontSize = p.getString('display_fontSize') ?? 'Medium';
-        _language = p.getString('display_language') ?? 'English';
-        _fontSizeValue = p.getDouble('display_fontSizeValue') ?? 16.0;
-        _highContrast = p.getBool('display_highContrast') ?? false;
-        _reducedMotion = p.getBool('display_reducedMotion') ?? false;
-        _screenReader = p.getBool('display_screenReader') ?? false;
       });
     });
   }
@@ -71,10 +60,8 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
                 title: "High Contrast",
                 subtitle: "Increase color contrast",
                 value: _highContrast,
-                onChanged: (value) async {
+                onChanged: (value) {
                   setState(() => _highContrast = value);
-                  final p = await SharedPreferences.getInstance();
-                  await p.setBool('display_highContrast', value);
                 },
               ),
             ],
@@ -98,11 +85,15 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Preview Text',
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.grey,
+                        color: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.color
+                            ?.withOpacity(0.7),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -117,7 +108,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
                       max: 24.0,
                       divisions: 12,
                       label: _fontSizeValue.round().toString(),
-                      onChanged: (value) async {
+                      onChanged: (value) {
                         setState(() {
                           _fontSizeValue = value;
                           if (value < 14) {
@@ -130,9 +121,6 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
                             _fontSize = 'Extra Large';
                           }
                         });
-                        final p = await SharedPreferences.getInstance();
-                        await p.setDouble('display_fontSizeValue', value);
-                        await p.setString('display_fontSize', _fontSize);
                       },
                     ),
                   ],
@@ -262,7 +250,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
   }) {
     return SwitchListTile(
       secondary: CircleAvatar(
-        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+        backgroundColor: AppColors.primary.withOpacity(0.1),
         child: Icon(icon, color: AppColors.primary, size: 22),
       ),
       title: Text(
@@ -272,7 +260,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
       subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
       value: value,
       onChanged: onChanged,
-      activeThumbColor: AppColors.primary,
+      activeColor: AppColors.primary,
     );
   }
 
@@ -284,7 +272,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
   }) {
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+        backgroundColor: AppColors.primary.withOpacity(0.1),
         child: Icon(icon, color: AppColors.primary, size: 22),
       ),
       title: Text(
@@ -293,7 +281,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
       ),
       subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
       trailing: Icon(Icons.chevron_right,
-          color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.5)),
+          color: Theme.of(context).iconTheme.color?.withOpacity(0.5)),
       onTap: onTap,
     );
   }
@@ -400,7 +388,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
               ].map((lang) {
                 return RadioListTile<String>(
                   title: Text(lang),
-                  value: lang,        // use full string — matches _language
+                  value: lang, // use full string — matches _language
                   groupValue: _language,
                   onChanged: (value) {
                     setDialogState(() {});

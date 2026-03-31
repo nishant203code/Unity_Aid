@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:unityaid/models/ngo_model.dart';
-import '../theme/app_colors.dart';
+import 'package:unityaid/widgets/theme/app_colors.dart';
 import 'package:unityaid/screens/ngo_search/ngo_detail_page.dart';
 
 class NGOCard extends StatelessWidget {

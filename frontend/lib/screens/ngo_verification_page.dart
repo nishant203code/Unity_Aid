@@ -1,4 +1,4 @@
-﻿import 'dart:ui';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -32,10 +32,10 @@ class _NgoVerificationPageState extends State<NgoVerificationPage> {
       hintStyle: const TextStyle(color: Colors.white70),
       prefixIcon: Icon(icon, color: Colors.white70),
       filled: true,
-      fillColor: Colors.white.withValues(alpha: 0.08),
+      fillColor: Colors.white.withOpacity(0.08),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
+        borderSide: BorderSide(color: Colors.white.withOpacity(0.2)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
@@ -114,23 +114,21 @@ class _NgoVerificationPageState extends State<NgoVerificationPage> {
     return Scaffold(
       body: Stack(
         children: [
-          /// Background Gradient
+          /// Background Image with Blur
           Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.red.shade700,
-                  Colors.red.shade900,
-                  Colors.purple.shade900,
-                ],
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/locker.jpeg'),
+                fit: BoxFit.cover,
               ),
             ),
-          ),
-          BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-            child: Container(color: Colors.transparent),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+              child: Container(
+                color: Colors.black
+                    .withOpacity(0.3), // Overlay for better text visibility
+              ),
+            ),
           ),
 
           //-----------------------------------------
@@ -149,10 +147,10 @@ class _NgoVerificationPageState extends State<NgoVerificationPage> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 22, vertical: 26),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.06),
+                        color: Colors.white.withOpacity(0.06),
                         borderRadius: BorderRadius.circular(24),
                         border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.15),
+                          color: Colors.white.withOpacity(0.15),
                         ),
                       ),
 
@@ -265,4 +263,3 @@ class _NgoVerificationPageState extends State<NgoVerificationPage> {
     );
   }
 }
-

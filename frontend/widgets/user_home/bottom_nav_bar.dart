@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import 'dart:ui';
 
@@ -33,17 +33,17 @@ class BottomNavBar extends StatelessWidget {
         child: Container(
           height: 70,
           decoration: BoxDecoration(
-            color: AppColors.iconInactive.withValues(alpha: 0.55),
+            color: AppColors.iconInactive.withOpacity(0.55),
             borderRadius: const BorderRadius.vertical(
               top: Radius.circular(25),
               bottom: Radius.circular(25),
             ),
             border: Border.all(
-              color: Colors.white.withValues(alpha: 0.4),
+              color: Colors.white.withOpacity(0.4),
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
+                color: Colors.black.withOpacity(0.05),
                 blurRadius: 20,
                 spreadRadius: 2,
               )
@@ -82,4 +82,3 @@ class BottomNavBar extends StatelessWidget {
     );
   }
 }
-

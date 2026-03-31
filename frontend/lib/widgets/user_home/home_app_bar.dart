@@ -12,10 +12,12 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return AppBar(
       elevation: 0,
+      backgroundColor: theme.appBarTheme.backgroundColor,
       leading: IconButton(
-        icon: const Icon(Icons.menu),
+        icon: Icon(Icons.menu, color: theme.iconTheme.color),
         onPressed: onMenuTap,
       ),
       actions: [
@@ -23,13 +25,11 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.only(right: 12),
           child: GestureDetector(
             onTap: onProfileTap,
-            child: CircleAvatar(
+            child: const CircleAvatar(
               radius: 20,
-              foregroundImage: const NetworkImage(
+              backgroundImage: NetworkImage(
                 "https://www.iconpacks.net/icons/2/free-user-icon-3297-thumb.png",
               ),
-              onForegroundImageError: (_, __) {},
-              child: const Icon(Icons.person, size: 20),
             ),
           ),
         )

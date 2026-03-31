@@ -5,10 +5,12 @@ enum AppRole { user, ngo }
 
 class SideDrawer extends StatelessWidget {
   final AppRole role;
+  final Function(int)? onTabSwitch;
 
   const SideDrawer({
     super.key,
     required this.role,
+    this.onTabSwitch,
   });
 
   /// 🔥 Centralized Navigation Function
@@ -20,37 +22,33 @@ class SideDrawer extends StatelessWidget {
     Navigator.pushNamed(context, route);
   }
 
+  /// Switch to tab instead of navigating
+  void switchTab(BuildContext context, int tabIndex) {
+    Navigator.pop(context); // Close drawer
+    if (onTabSwitch != null) {
+      onTabSwitch!(tabIndex);
+    }
+  }
+
   Widget drawerItem(
     BuildContext context,
     IconData icon,
     String title,
-    String route,
-    bool isSelected,
-  ) {
+    String route, {
+    int? tabIndex,
+  }) {
     return ListTile(
-      leading: Icon(
-        icon,
-        color: isSelected ? AppColors.primary : Colors.grey.shade700,
-      ),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-          color: isSelected ? AppColors.primary : null,
-        ),
-      ),
-      selected: isSelected,
-      selectedTileColor: AppColors.primary.withValues(alpha: 0.1),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      onTap: () => navigate(context, route),
+      leading: Icon(icon, color: AppColors.primary),
+      title: Text(title),
+      onTap: tabIndex != null
+          ? () => switchTab(context, tabIndex)
+          : () => navigate(context, route),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final isUser = role == AppRole.user;
-    final currentRoute =
-        ModalRoute.of(context)?.settings.name ?? (isUser ? '/userHome' : '/ngoHome');
 
     return Drawer(
       child: SafeArea(
@@ -59,13 +57,11 @@ class SideDrawer extends StatelessWidget {
             const SizedBox(height: 20),
 
             /// Profile
-            CircleAvatar(
+            const CircleAvatar(
               radius: 40,
-              foregroundImage: const NetworkImage(
+              backgroundImage: NetworkImage(
                 "https://www.iconpacks.net/icons/2/free-user-icon-3297-thumb.png",
               ),
-              onForegroundImageError: (_, __) {},
-              child: const Icon(Icons.person, size: 36),
             ),
 
             const SizedBox(height: 10),
@@ -85,41 +81,24 @@ class SideDrawer extends StatelessWidget {
               context,
               Icons.home,
               "Home",
-              isUser ? '/userHome' : '/ngoHome',
-              currentRoute == (isUser ? '/userHome' : '/ngoHome'),
+              '',
+              tabIndex: 0,
             ),
 
             drawerItem(
               context,
               Icons.newspaper,
               "News",
-              '/news',
-              currentRoute == '/news',
+              '',
+              tabIndex: 1,
             ),
 
             /// USER ONLY
             if (isUser) ...[
-              drawerItem(
-                context,
-                Icons.add_box,
-                "Post",
-                '/post',
-                currentRoute == '/post',
-              ),
-              drawerItem(
-                context,
-                Icons.volunteer_activism,
-                "NGOs",
-                '/ngos',
-                currentRoute == '/ngos',
-              ),
-              drawerItem(
-                context,
-                Icons.favorite,
-                "Donate",
-                '/donate',
-                currentRoute == '/donate',
-              ),
+              drawerItem(context, Icons.add_box, "Post", '', tabIndex: 2),
+              drawerItem(context, Icons.volunteer_activism, "NGOs", '',
+                  tabIndex: 3),
+              drawerItem(context, Icons.favorite, "Donate", '', tabIndex: 4),
             ],
 
             /// NGO ONLY
@@ -128,8 +107,8 @@ class SideDrawer extends StatelessWidget {
                 context,
                 Icons.dashboard,
                 "Dashboard",
-                '/dashboard',
-                currentRoute == '/dashboard',
+                '',
+                tabIndex: 2,
               ),
 
             /// Shared
@@ -138,7 +117,6 @@ class SideDrawer extends StatelessWidget {
               Icons.info,
               "About Us",
               '/about',
-              currentRoute == '/about',
             ),
 
             drawerItem(
@@ -146,7 +124,6 @@ class SideDrawer extends StatelessWidget {
               Icons.settings,
               "Settings",
               '/settings',
-              currentRoute == '/settings',
             ),
           ],
         ),

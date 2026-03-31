@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../../widgets/theme/app_colors.dart';
 import '../../models/chat_message_model.dart';
 import 'dart:async';
@@ -16,18 +16,26 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
   final List<ChatMessage> _messages = [];
   bool _isTyping = false;
 
-  // Predefined AI responses for different queries
   final Map<String, String> _aiResponses = {
     'hello': 'Hello! I\'m UnityAid AI Assistant. How can I help you today?',
-    'hi': 'Hi there! I\'m here to help you with donations, NGOs, and any questions about UnityAid.',
-    'help': 'I can assist you with:\nâ€¢ Finding NGOs\nâ€¢ Making donations\nâ€¢ Understanding donation cases\nâ€¢ Navigating the app\nâ€¢ General queries about UnityAid\n\nWhat would you like to know?',
-    'donate': 'To make a donation:\n1. Go to the Donate tab\n2. Browse available cases\n3. Select a case you want to support\n4. Choose your donation amount\n5. Complete the payment\n\nWould you like me to guide you through the process?',
-    'ngo': 'You can find NGOs by:\nâ€¢ Using the NGO Search tab\nâ€¢ Filtering by category or location\nâ€¢ Viewing verified NGOs\nâ€¢ Checking NGO profiles and their work\n\nWould you like to search for a specific type of NGO?',
-    'payment': 'UnityAid supports multiple payment methods:\nâ€¢ Credit/Debit Cards\nâ€¢ UPI\nâ€¢ Net Banking\nâ€¢ Digital Wallets\n\nAll transactions are secure and encrypted.',
-    'profile': 'To manage your profile:\n1. Tap the menu icon (hamburger)\n2. Go to Profile\n3. Edit your details\n\nYou can update your name, photo, contact info, and preferences.',
-    'cases': 'Donation cases are verified needs posted by NGOs. Each case includes:\nâ€¢ Description of the need\nâ€¢ Required amount\nâ€¢ Beneficiary details\nâ€¢ NGO verification\nâ€¢ Progress tracking\n\nYou can browse cases in the News Feed or Donate section.',
-    'verify': 'Verified accounts have a green checkmark. This means:\nâ€¢ The account has been authenticated\nâ€¢ Documents have been verified\nâ€¢ The entity is legitimate\n\nAll verified NGOs undergo a thorough verification process.',
-    'security': 'Your security is our priority:\nâœ“ End-to-end encryption\nâœ“ Secure payment gateway\nâœ“ Two-factor authentication\nâœ“ Regular security audits\nâœ“ Data privacy compliance\n\nYou can manage security settings in Settings > Security.',
+    'hi':
+        'Hi there! I\'m here to help you with donations, NGOs, and any questions about UnityAid.',
+    'help':
+        'I can assist you with:\n• Finding NGOs\n• Making donations\n• Understanding donation cases\n• Navigating the app\n• General queries about UnityAid\n\nWhat would you like to know?',
+    'donate':
+        'To make a donation:\n1. Go to the Donate tab\n2. Browse available cases\n3. Select a case you want to support\n4. Choose your donation amount\n5. Complete the payment\n\nWould you like me to guide you through the process?',
+    'ngo':
+        'You can find NGOs by:\n• Using the NGO Search tab\n• Filtering by category or location\n• Viewing verified NGOs\n• Checking NGO profiles and their work\n\nWould you like to search for a specific type of NGO?',
+    'payment':
+        'UnityAid supports multiple payment methods:\n• Credit/Debit Cards\n• UPI\n• Net Banking\n• Digital Wallets\n\nAll transactions are secure and encrypted.',
+    'profile':
+        'To manage your profile:\n1. Tap the menu icon (hamburger)\n2. Go to Profile\n3. Edit your details\n\nYou can update your name, photo, contact info, and preferences.',
+    'cases':
+        'Donation cases are verified needs posted by NGOs. Each case includes:\n• Description of the need\n• Required amount\n• Beneficiary details\n• NGO verification\n• Progress tracking\n\nYou can browse cases in the News Feed or Donate section.',
+    'verify':
+        'Verified accounts have a green checkmark. This means:\n• The account has been authenticated\n• Documents have been verified\n• The entity is legitimate\n\nAll verified NGOs undergo a thorough verification process.',
+    'security':
+        'Your security is our priority:\n✓ End-to-end encryption\n✓ Secure payment gateway\n✓ Two-factor authentication\n✓ Regular security audits\n✓ Data privacy compliance\n\nYou can manage security settings in Settings > Security.',
   };
 
   final List<String> _quickReplies = [
@@ -52,69 +60,53 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
 
   void _addWelcomeMessage() {
     setState(() {
-      _messages.add(
-        ChatMessage(
-          id: '0',
-          message: 'Hello! ðŸ‘‹ I\'m your UnityAid AI Assistant. I\'m here to help you with donations, finding NGOs, and answering any questions about the app. How can I assist you today?',
-          isUser: false,
-          timestamp: DateTime.now(),
-        ),
-      );
+      _messages.add(ChatMessage(
+        id: '0',
+        message:
+            'Hello! 👋 I\'m your UnityAid AI Assistant. I\'m here to help you with donations, finding NGOs, and answering any questions about the app. How can I assist you today?',
+        isUser: false,
+        timestamp: DateTime.now(),
+      ));
     });
   }
 
   void _sendMessage(String message) {
     if (message.trim().isEmpty) return;
-
     final userMessage = ChatMessage(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       message: message,
       isUser: true,
       timestamp: DateTime.now(),
     );
-
     setState(() {
       _messages.add(userMessage);
       _isTyping = true;
     });
-
     _messageController.clear();
     _scrollToBottom();
-
-    // Simulate AI response delay
-    Timer(const Duration(milliseconds: 1500), () {
-      _generateAIResponse(message);
-    });
+    Timer(
+        const Duration(milliseconds: 1500), () => _generateAIResponse(message));
   }
 
   void _generateAIResponse(String userMessage) {
-    String aiResponse = _getAIResponse(userMessage.toLowerCase());
-
     final aiMessage = ChatMessage(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
-      message: aiResponse,
+      message: _getAIResponse(userMessage.toLowerCase()),
       isUser: false,
       timestamp: DateTime.now(),
     );
-
     setState(() {
       _isTyping = false;
       _messages.add(aiMessage);
     });
-
     _scrollToBottom();
   }
 
   String _getAIResponse(String message) {
-    // Check for keywords in the message
     for (var entry in _aiResponses.entries) {
-      if (message.contains(entry.key)) {
-        return entry.value;
-      }
+      if (message.contains(entry.key)) return entry.value;
     }
-
-    // Default response
-    return 'I\'m here to help! Could you please provide more details or choose from these topics:\n\nâ€¢ Donations\nâ€¢ NGO search\nâ€¢ Payment methods\nâ€¢ Profile settings\nâ€¢ Security\n\nOr type "help" to see all available options.';
+    return 'I\'m here to help! Could you please provide more details or choose from these topics:\n\n• Donations\n• NGO search\n• Payment methods\n• Profile settings\n• Security\n\nOr type "help" to see all available options.';
   }
 
   void _scrollToBottom() {
@@ -131,6 +123,9 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -138,34 +133,24 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
+                color: AppColors.primary.withOpacity(0.15),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.psychology_alt,
-                color: AppColors.primary,
-                size: 20,
-              ),
+              child: const Icon(Icons.psychology_alt,
+                  color: AppColors.primary, size: 20),
             ),
             const SizedBox(width: 12),
-            const Column(
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "AI Assistant",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  "Always here to help",
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
+                const Text('AI Assistant',
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text('Always here to help',
+                    style: TextStyle(
+                        fontSize: 11,
+                        color: theme.textTheme.bodySmall?.color,
+                        fontWeight: FontWeight.normal)),
               ],
             ),
           ],
@@ -180,20 +165,17 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
                   _addWelcomeMessage();
                 });
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Chat cleared')),
-                );
+                    const SnackBar(content: Text('Chat cleared')));
               }
             },
             itemBuilder: (context) => [
               const PopupMenuItem(
                 value: 'clear',
-                child: Row(
-                  children: [
-                    Icon(Icons.delete_outline, size: 20),
-                    SizedBox(width: 8),
-                    Text('Clear Chat'),
-                  ],
-                ),
+                child: Row(children: [
+                  Icon(Icons.delete_outline, size: 20),
+                  SizedBox(width: 8),
+                  Text('Clear Chat')
+                ]),
               ),
             ],
           ),
@@ -201,32 +183,31 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
       ),
       body: Column(
         children: [
-          // Messages List
           Expanded(
             child: ListView.builder(
               controller: _scrollController,
               padding: const EdgeInsets.all(16),
               itemCount: _messages.length + (_isTyping ? 1 : 0),
               itemBuilder: (context, index) {
-                if (index == _messages.length && _isTyping) {
-                  return _buildTypingIndicator();
-                }
-                return _buildMessageBubble(_messages[index]);
+                if (index == _messages.length && _isTyping)
+                  return _buildTypingIndicator(isDark);
+                return _buildMessageBubble(_messages[index], isDark, theme);
               },
             ),
           ),
-
-          // Quick Replies
-          if (_messages.length == 1) _buildQuickReplies(),
-
-          // Input Area
-          _buildInputArea(),
+          if (_messages.length == 1) _buildQuickReplies(theme),
+          _buildInputArea(theme, isDark),
         ],
       ),
     );
   }
 
-  Widget _buildMessageBubble(ChatMessage message) {
+  Widget _buildMessageBubble(
+      ChatMessage message, bool isDark, ThemeData theme) {
+    final bubbleBg = message.isUser
+        ? AppColors.primary
+        : (isDark ? const Color(0xFF2A2A2A) : Colors.white);
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(
@@ -237,12 +218,9 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
           if (!message.isUser) ...[
             CircleAvatar(
               radius: 16,
-              backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-              child: const Icon(
-                Icons.psychology_alt,
-                size: 16,
-                color: AppColors.primary,
-              ),
+              backgroundColor: AppColors.primary.withOpacity(0.15),
+              child: const Icon(Icons.psychology_alt,
+                  size: 16, color: AppColors.primary),
             ),
             const SizedBox(width: 8),
           ],
@@ -253,14 +231,10 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
                   : CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
-                    color: message.isUser
-                        ? AppColors.primary
-                        : Theme.of(context).cardColor,
+                    color: bubbleBg,
                     borderRadius: BorderRadius.only(
                       topLeft: const Radius.circular(16),
                       topRight: const Radius.circular(16),
@@ -269,29 +243,26 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 5,
-                        offset: const Offset(0, 2),
-                      ),
+                          color: Colors.black.withOpacity(0.06),
+                          blurRadius: 5,
+                          offset: const Offset(0, 2))
                     ],
                   ),
                   child: Text(
                     message.message,
                     style: TextStyle(
-                      color: message.isUser ? Colors.white : Theme.of(context).textTheme.bodyMedium?.color,
+                      color: message.isUser
+                          ? Colors.white
+                          : theme.textTheme.bodyMedium?.color,
                       fontSize: 14,
                       height: 1.4,
                     ),
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  _formatTime(message.timestamp),
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: Theme.of(context).textTheme.bodySmall?.color,
-                  ),
-                ),
+                Text(_formatTime(message.timestamp),
+                    style: TextStyle(
+                        fontSize: 10, color: theme.textTheme.bodySmall?.color)),
               ],
             ),
           ),
@@ -299,12 +270,9 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
             const SizedBox(width: 8),
             CircleAvatar(
               radius: 16,
-              backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-              child: const Icon(
-                Icons.person,
-                size: 16,
-                color: AppColors.primary,
-              ),
+              backgroundColor: AppColors.primary.withOpacity(0.15),
+              child:
+                  const Icon(Icons.person, size: 16, color: AppColors.primary),
             ),
           ],
         ],
@@ -312,7 +280,7 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildTypingIndicator() {
+  Widget _buildTypingIndicator(bool isDark) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(
@@ -320,36 +288,20 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
         children: [
           CircleAvatar(
             radius: 16,
-            backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-            child: const Icon(
-              Icons.psychology_alt,
-              size: 16,
-              color: AppColors.primary,
-            ),
+            backgroundColor: AppColors.primary.withOpacity(0.15),
+            child: const Icon(Icons.psychology_alt,
+                size: 16, color: AppColors.primary),
           ),
           const SizedBox(width: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
+              color: isDark ? const Color(0xFF2A2A2A) : Colors.white,
               borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 5,
-                  offset: const Offset(0, 2),
-                ),
-              ],
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildTypingDot(0),
-                const SizedBox(width: 4),
-                _buildTypingDot(1),
-                const SizedBox(width: 4),
-                _buildTypingDot(2),
-              ],
+              children: [0, 1, 2].map((i) => _buildTypingDot(i)).toList(),
             ),
           ),
         ],
@@ -358,72 +310,66 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
   }
 
   Widget _buildTypingDot(int index) {
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0.0, end: 1.0),
-      duration: const Duration(milliseconds: 600),
-      builder: (context, value, child) {
-        return Opacity(
-          opacity: (value + index * 0.3) % 1.0,
-          child: Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade400,
-              shape: BoxShape.circle,
-            ),
-          ),
-        );
-      },
+    return Padding(
+      padding: EdgeInsets.only(left: index == 0 ? 0 : 4),
+      child: TweenAnimationBuilder<double>(
+        tween: Tween(begin: 0.0, end: 1.0),
+        duration: const Duration(milliseconds: 600),
+        builder: (context, value, child) {
+          return Opacity(
+            opacity: (value + index * 0.3) % 1.0,
+            child: Container(
+                width: 8,
+                height: 8,
+                decoration: const BoxDecoration(
+                    color: Colors.grey, shape: BoxShape.circle)),
+          );
+        },
+      ),
     );
   }
 
-  Widget _buildQuickReplies() {
+  Widget _buildQuickReplies(ThemeData theme) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Quick Replies:",
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey.shade600,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          Text('Quick Replies:',
+              style: TextStyle(
+                  fontSize: 12,
+                  color: theme.textTheme.bodySmall?.color,
+                  fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: _quickReplies.map((reply) {
-              return ActionChip(
-                label: Text(reply),
-                onPressed: () => _sendMessage(reply),
-                backgroundColor: Theme.of(context).cardColor,
-                side: BorderSide(color: AppColors.primary.withValues(alpha: 0.3)),
-                labelStyle: const TextStyle(
-                  color: AppColors.primary,
-                  fontSize: 12,
-                ),
-              );
-            }).toList(),
+            children: _quickReplies
+                .map((reply) => ActionChip(
+                      label: Text(reply),
+                      onPressed: () => _sendMessage(reply),
+                      side:
+                          BorderSide(color: AppColors.primary.withOpacity(0.4)),
+                      labelStyle: const TextStyle(
+                          color: AppColors.primary, fontSize: 12),
+                    ))
+                .toList(),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildInputArea() {
+  Widget _buildInputArea(ThemeData theme, bool isDark) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: theme.cardColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
-          ),
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 10,
+              offset: const Offset(0, -2))
         ],
       ),
       child: SafeArea(
@@ -432,32 +378,31 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
+                  color: isDark
+                      ? const Color(0xFF2A2A2A)
+                      : const Color(0xFFF0F0F0),
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: TextField(
                   controller: _messageController,
                   decoration: InputDecoration(
-                    hintText: "Ask me anything...",
-                    hintStyle: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
+                    hintText: 'Ask me anything...',
+                    hintStyle:
+                        TextStyle(color: theme.textTheme.bodySmall?.color),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
-                    ),
+                        horizontal: 20, vertical: 12),
                   ),
                   maxLines: null,
                   textCapitalization: TextCapitalization.sentences,
-                  onSubmitted: (value) => _sendMessage(value),
+                  onSubmitted: _sendMessage,
                 ),
               ),
             ),
             const SizedBox(width: 8),
             Container(
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                shape: BoxShape.circle,
-              ),
+              decoration: const BoxDecoration(
+                  color: AppColors.primary, shape: BoxShape.circle),
               child: IconButton(
                 icon: const Icon(Icons.send, color: Colors.white, size: 20),
                 onPressed: () => _sendMessage(_messageController.text),
@@ -470,18 +415,10 @@ class _AIChatPageState extends State<AIChatPage> with TickerProviderStateMixin {
   }
 
   String _formatTime(DateTime time) {
-    final now = DateTime.now();
-    final difference = now.difference(time);
-
-    if (difference.inSeconds < 60) {
-      return 'Just now';
-    } else if (difference.inMinutes < 60) {
-      return '${difference.inMinutes}m ago';
-    } else if (difference.inHours < 24) {
-      return '${difference.inHours}h ago';
-    } else {
-      return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
-    }
+    final diff = DateTime.now().difference(time);
+    if (diff.inSeconds < 60) return 'Just now';
+    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
+    if (diff.inHours < 24) return '${diff.inHours}h ago';
+    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
   }
 }
-

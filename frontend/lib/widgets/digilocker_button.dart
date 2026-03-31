@@ -12,7 +12,7 @@ class DigiLockerButton extends StatelessWidget {
       child: Container(
         height: 55,
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.15),
+          color: Colors.white.withOpacity(0.15),
           borderRadius: BorderRadius.circular(18),
           border: Border.all(color: Colors.white24),
         ),

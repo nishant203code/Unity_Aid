@@ -90,8 +90,9 @@ class _UserHomePageState extends State<UserHomePage> {
         key: _scaffoldKey,
         backgroundColor: Colors.transparent,
         extendBody: true,
-        drawer: const SideDrawer(
+        drawer: SideDrawer(
           role: AppRole.user,
+          onTabSwitch: onItemTapped,
         ),
         appBar: HomeAppBar(
           onMenuTap: () => _scaffoldKey.currentState!.openDrawer(),

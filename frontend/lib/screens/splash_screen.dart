@@ -39,7 +39,6 @@ class _SplashScreenState extends State<SplashScreen>
 
     await _revealController.forward();
 
-    if (!mounted) return;
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
@@ -60,17 +59,19 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
       body: Stack(
         children: [
-          /// Background Gradient
+          /// Background Image with Blur
           Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.red.shade700,
-                  Colors.red.shade900,
-                  Colors.purple.shade900,
-                ],
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/bgu.jpg'),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+              child: Container(
+                color: Colors.black
+                    .withOpacity(0.3), // Overlay for better text visibility
               ),
             ),
           ),
@@ -117,10 +118,10 @@ class _SplashScreenState extends State<SplashScreen>
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.15),
+                          color: Colors.white.withOpacity(0.15),
                           borderRadius: BorderRadius.circular(40),
                           border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.2),
+                            color: Colors.white.withOpacity(0.2),
                           ),
                         ),
                         child: const Center(

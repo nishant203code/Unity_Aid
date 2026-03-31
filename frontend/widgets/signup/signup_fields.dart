@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 InputDecoration inputStyle(String label, IconData icon) {
@@ -7,7 +7,7 @@ InputDecoration inputStyle(String label, IconData icon) {
     labelStyle: const TextStyle(color: Colors.white70),
     prefixIcon: Icon(icon, color: Colors.white),
     filled: true,
-    fillColor: Colors.white.withValues(alpha: 0.15),
+    fillColor: Colors.white.withOpacity(0.15),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(15),
       borderSide: BorderSide.none,
@@ -122,4 +122,3 @@ Widget submitButton(BuildContext context) {
     child: const Text("Sign Up"),
   );
 }
-

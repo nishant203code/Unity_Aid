@@ -1,10 +1,10 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../../widgets/theme/app_colors.dart';
 import 'widgets/home_stat_card.dart';
 import 'widgets/animated_circular_stat.dart';
 
 class HomePage extends StatelessWidget {
-  final bool isNGO; // â­ NEW
+  final bool isNGO; // ⭐ NEW
 
   const HomePage({
     super.key,
@@ -13,7 +13,9 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(18, 12, 18, 120),
         child: Column(
@@ -21,21 +23,21 @@ class HomePage extends StatelessWidget {
           children: [
             const SizedBox(height: 10),
 
-            /// ðŸ”¥ HERO SECTION
+            /// 🔥 HERO SECTION
             Container(
               padding: const EdgeInsets.all(22),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(28),
                 gradient: LinearGradient(
                   colors: [
-                    AppColors.primary.withValues(alpha: 0.15),
-                    Theme.of(context).cardColor.withValues(alpha: 0.6),
+                    AppColors.primary.withOpacity(0.15),
+                    theme.colorScheme.surface.withOpacity(0.6),
                   ],
                 ),
                 boxShadow: [
                   BoxShadow(
                     blurRadius: 25,
-                    color: Colors.black.withValues(alpha: 0.05),
+                    color: Colors.black.withOpacity(0.05),
                   )
                 ],
               ),
@@ -46,7 +48,7 @@ class HomePage extends StatelessWidget {
                     width: 90,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColors.primary.withValues(alpha: 0.12),
+                      color: AppColors.primary.withOpacity(0.12),
                     ),
                     child: const Icon(
                       Icons.volunteer_activism,
@@ -68,7 +70,8 @@ class HomePage extends StatelessWidget {
                     "Together we rise, together we rebuild.",
                     style: TextStyle(
                       fontSize: 14,
-                      color: Theme.of(context).textTheme.bodySmall?.color,
+                      color:
+                          theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -85,7 +88,7 @@ class HomePage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).textTheme.titleLarge?.color,
+                  color: theme.textTheme.titleLarge?.color,
                 ),
               ),
             ),
@@ -124,7 +127,7 @@ class HomePage extends StatelessWidget {
 
             const HomeStatCard(
               title: "Total Donations",
-              value: "â‚¹12.4L",
+              value: "₹12.4L",
               subtitle: "Across all campaigns",
               icon: Icons.favorite,
             ),
@@ -140,7 +143,7 @@ class HomePage extends StatelessWidget {
 
             const SizedBox(height: 40),
 
-            /// â­ ROLE-AWARE BUTTON
+            /// ⭐ ROLE-AWARE BUTTON
             SizedBox(
               width: double.infinity,
               height: 58,
@@ -154,12 +157,12 @@ class HomePage extends StatelessWidget {
                 ),
                 onPressed: () {},
 
-                /// ðŸ”¥ DYNAMIC ICON
+                /// 🔥 DYNAMIC ICON
                 icon: Icon(
                   isNGO ? Icons.warning_amber_rounded : Icons.map,
                 ),
 
-                /// ðŸ”¥ DYNAMIC TEXT
+                /// 🔥 DYNAMIC TEXT
                 label: Text(
                   isNGO ? "Locate Nearby Emergencies" : "Locate Nearby NGO",
                   style: const TextStyle(
@@ -177,4 +180,3 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-

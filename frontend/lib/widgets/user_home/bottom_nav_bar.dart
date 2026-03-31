@@ -14,11 +14,13 @@ class BottomNavBar extends StatelessWidget {
     this.isNGO = false,
   });
 
-  Widget navItem(IconData icon, int index) {
+  Widget navItem(BuildContext context, IconData icon, int index) {
+    final theme = Theme.of(context);
     return IconButton(
       icon: Icon(
         icon,
-        color: selectedIndex == index ? AppColors.primary : Colors.black,
+        color:
+            selectedIndex == index ? AppColors.primary : theme.iconTheme.color,
       ),
       onPressed: () => onItemTapped(index),
     );
@@ -33,17 +35,17 @@ class BottomNavBar extends StatelessWidget {
         child: Container(
           height: 70,
           decoration: BoxDecoration(
-            color: AppColors.iconInactive.withValues(alpha: 0.55),
+            color: AppColors.iconInactive.withOpacity(0.55),
             borderRadius: const BorderRadius.vertical(
               top: Radius.circular(25),
               bottom: Radius.circular(25),
             ),
             border: Border.all(
-              color: Colors.white.withValues(alpha: 0.4),
+              color: Colors.white.withOpacity(0.4),
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
+                color: Colors.black.withOpacity(0.05),
                 blurRadius: 20,
                 spreadRadius: 2,
               )
@@ -53,13 +55,13 @@ class BottomNavBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: isNGO
                 ? [
-                    navItem(Icons.home, 0),
-                    navItem(Icons.newspaper, 1),
-                    navItem(Icons.dashboard, 2),
+                    navItem(context, Icons.home, 0),
+                    navItem(context, Icons.newspaper, 1),
+                    navItem(context, Icons.dashboard, 2),
                   ]
                 : [
-                    navItem(Icons.home, 0),
-                    navItem(Icons.newspaper, 1),
+                    navItem(context, Icons.home, 0),
+                    navItem(context, Icons.newspaper, 1),
                     GestureDetector(
                       onTap: () => onItemTapped(2),
                       child: Container(
@@ -73,8 +75,8 @@ class BottomNavBar extends StatelessWidget {
                             const Icon(Icons.camera_alt, color: Colors.white),
                       ),
                     ),
-                    navItem(Icons.search, 3),
-                    navItem(Icons.favorite, 4),
+                    navItem(context, Icons.search, 3),
+                    navItem(context, Icons.favorite, 4),
                   ],
           ),
         ),

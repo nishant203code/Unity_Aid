@@ -13,6 +13,7 @@ class NGOSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       children: [
         Expanded(
@@ -22,7 +23,7 @@ class NGOSearchBar extends StatelessWidget {
               hintText: "Search NGOs...",
               prefixIcon: const Icon(Icons.search),
               filled: true,
-              fillColor: Theme.of(context).colorScheme.surface,
+              fillColor: theme.colorScheme.surface,
               contentPadding: const EdgeInsets.symmetric(vertical: 0),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
