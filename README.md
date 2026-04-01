@@ -41,7 +41,7 @@ UnityAid is a mobile application designed to bridge the gap between donors and N
 - 📈 **Profile Management**: Showcase your organization's mission and achievements
 
 ### General Features
-- 🔐 **Secure Authentication**: User and NGO login/signup functionality
+- 🔐 **Unified Authentication**: Seamless Email/Password and Google Sign-In for both Users and NGOs
 - 🔍 **Advanced Search**: Find NGOs by category, location, and cause
 - 📱 **Responsive Design**: Beautiful and intuitive user interface
 - 🌙 **Theme Support**: Customizable app appearance
@@ -92,9 +92,10 @@ UnityAid is a mobile application designed to bridge the gap between donors and N
 - `cupertino_icons` - iOS-style icons
 
 ### Integrations
-- DigiLocker API for NGO verification
-- Payment Gateway (for donations)
-- AI Chat Service
+- **Firebase**: Native Firestore integration and robust Firebase Authentication
+- **DigiLocker API**: Verification system for NGOs
+- **Payment Gateway**: Seamless processing for donations
+- **AI Chat Service**: Smart donor assistance
 
 ---
 
@@ -114,12 +115,17 @@ UnityAid is a mobile application designed to bridge the gap between donors and N
    cd unityaid
    ```
 
-2. **Install dependencies**
+2. **Navigate to the frontend**
+   ```bash
+   cd frontend
+   ```
+
+3. **Install dependencies**
    ```bash
    flutter pub get
    ```
 
-3. **Run the app**
+4. **Run the app**
    ```bash
    # For Android
    flutter run
@@ -131,12 +137,12 @@ UnityAid is a mobile application designed to bridge the gap between donors and N
    flutter run -d chrome
    ```
 
-4. **Build APK (Android)**
+5. **Build APK (Android)**
    ```bash
    flutter build apk --release
    ```
 
-5. **Build iOS App (macOS only)**
+6. **Build iOS App (macOS only)**
    ```bash
    flutter build ios --release
    ```
@@ -164,40 +170,27 @@ UnityAid is a mobile application designed to bridge the gap between donors and N
 
 ## 📁 Project Structure
 
-```
-unityaid/
-├── android/                 # Android-specific files
-├── assets/
-│   └── images/             # Image assets
-├── lib/
-│   ├── main.dart           # App entry point
-│   ├── data/               # Sample data
-│   │   ├── sample_donation_cases.dart
-│   │   ├── sample_ngo_data.dart
-│   │   └── sample_user_data.dart
-│   ├── models/             # Data models
-│   │   ├── chat_message_model.dart
-│   │   ├── donation_case_model.dart
-│   │   ├── ngo_model.dart
-│   │   ├── post_model.dart
-│   │   └── user_model.dart
-│   ├── screens/            # UI screens
-│   │   ├── ai_chat/        # AI chatbot interface
-│   │   ├── create_post/    # Post creation
-│   │   ├── donate/         # Donation flow
-│   │   ├── home/           # Home screen
-│   │   ├── news_feed/      # News feed
-│   │   ├── ngo_home/       # NGO dashboard
-│   │   ├── ngo_search/     # NGO search
-│   │   ├── settings/       # Settings
-│   │   ├── signup/         # Registration
-│   │   └── user_home/      # User dashboard
-│   └── widgets/            # Reusable widgets
-│       ├── auth_widgets.dart
-│       ├── digilocker_button.dart
-│       └── theme/          # Theme configurations
-├── pubspec.yaml            # Dependencies
-└── README.md               # This file
+```text
+Unity_Aid/
+├── backend/               # Firebase Backend & Cloud Functions
+│   ├── dataconnect/       # Backend connection models/schema
+│   ├── functions/         # Firebase Cloud Functions (Typescript)
+│   ├── firebase.json      # Firebase configuration definitions
+│   └── firestore.rules    # Security rules for database
+│
+├── frontend/              # Flutter Client Application
+│   ├── android/           # Android native workspace
+│   ├── ios/               # iOS native workspace
+│   ├── lib/               # Single Source of Truth for Flutter codebase
+│   │   ├── models/        # Application data models
+│   │   ├── screens/       # User interfaces & routes
+│   │   ├── services/      # Backend communication (AuthService, UserService)
+│   │   ├── theme/         # Shared styling configuration
+│   │   ├── widgets/       # Reusable UI components
+│   │   └── main.dart      # Application entry point
+│   └── pubspec.yaml       # Core Flutter dependency declarations
+│
+└── README.md              # Project documentation
 ```
 
 ---
