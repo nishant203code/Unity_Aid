@@ -87,6 +87,8 @@ google-services.json
 GoogleService-Info.plist
 .runtimeconfig.json
 .firebaserc
+firebase_options.dart
+lib/firebase_options.dart
 
 # Firebase tools & emulator
 firebase-emulator-*.log
