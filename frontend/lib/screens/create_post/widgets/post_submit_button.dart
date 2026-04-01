@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import '../../../widgets/theme/app_colors.dart';
 
 class PostSubmitButton extends StatelessWidget {
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final bool isLoading;
 
-  const PostSubmitButton({super.key, required this.onTap});
+  const PostSubmitButton({super.key, required this.onTap, this.isLoading = false});
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +21,19 @@ class PostSubmitButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(18),
           ),
         ),
-        child: const Text(
-          "Post",
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
+        child: isLoading
+            ? const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2.5,
+                ),
+              )
+            : const Text(
+                "Post",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
       ),
     );
   }

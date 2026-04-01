@@ -1,6 +1,8 @@
-﻿import 'dart:ui';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../services/auth_service.dart';
 
 class NgoVerificationPage extends StatefulWidget {
   const NgoVerificationPage({super.key});
@@ -21,6 +23,7 @@ class _NgoVerificationPageState extends State<NgoVerificationPage> {
   final bankController = TextEditingController();
 
   String? fcraStatus;
+  bool _isSubmitting = false;
 
   //-----------------------------------------
   /// GLASS INPUT STYLE (same as signup)
@@ -81,28 +84,89 @@ class _NgoVerificationPageState extends State<NgoVerificationPage> {
             borderRadius: BorderRadius.circular(14),
           ),
         ),
-        onPressed: () {
-          if (_formKey.currentState!.validate() && fcraStatus != null) {
-            // TODO:
-            // send NGO data to database
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text("NGO Verification Submitted"),
+        onPressed: _isSubmitting ? null : _handleSubmit,
+        child: _isSubmitting
+            ? const SizedBox(
+                height: 22,
+                width: 22,
+                child: CircularProgressIndicator(
+                  color: Colors.black,
+                  strokeWidth: 2.5,
+                ),
+              )
+            : const Text(
+                "Submit for Verification",
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
-            );
-          }
-        },
-        child: const Text(
-          "Submit for Verification",
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
-        ),
       ),
     );
+  }
+
+  Future<void> _handleSubmit() async {
+    if (!_formKey.currentState!.validate() || fcraStatus == null) {
+      if (fcraStatus == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please select FCRA status'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      return;
+    }
+
+    setState(() => _isSubmitting = true);
+
+    try {
+      final user = AuthService.currentUser;
+      final uid = user?.uid ?? DateTime.now().millisecondsSinceEpoch.toString();
+
+      final verificationData = {
+        'uid': uid,
+        'ngoName': nameController.text.trim(),
+        'fcraStatus': fcraStatus,
+        'registrationId': registrationIdController.text.trim(),
+        'ownerName': ownerController.text.trim(),
+        'panNumber': panController.text.trim(),
+        'bankAccountNumber': accountController.text.trim(),
+        'ifscCode': ifscController.text.trim(),
+        'bankName': bankController.text.trim(),
+        'status': 'pending',
+        'createdAt': FieldValue.serverTimestamp(),
+        'email': user?.email ?? '',
+      };
+
+      await FirebaseFirestore.instance
+          .collection('ngo_verifications')
+          .doc(uid)
+          .set(verificationData);
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('NGO Verification Submitted Successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      // Navigate back after successful submission
+      Navigator.pop(context);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error submitting verification: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
+    }
   }
 
   //-----------------------------------------

@@ -1,18 +1,61 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../../widgets/theme/app_colors.dart';
 import '../../models/ngo_model.dart';
 import '../../data/sample_ngo_data.dart';
+import '../../services/auth_service.dart';
+import '../../services/user_service.dart';
 import '../login_page.dart';
 
-class NGOProfilePage extends StatelessWidget {
+class NGOProfilePage extends StatefulWidget {
   final NGO? ngo;
 
   const NGOProfilePage({super.key, this.ngo});
 
   @override
+  State<NGOProfilePage> createState() => _NGOProfilePageState();
+}
+
+class _NGOProfilePageState extends State<NGOProfilePage> {
+  String _displayName = 'NGO';
+  String _email = '';
+  String? _photoUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserInfo();
+  }
+
+  Future<void> _loadUserInfo() async {
+    final firebaseUser = AuthService.currentUser;
+    if (firebaseUser != null) {
+      // Start with Firebase Auth data
+      _displayName = firebaseUser.displayName ?? 'NGO';
+      _email = firebaseUser.email ?? '';
+      _photoUrl = firebaseUser.photoURL;
+
+      // Try to get richer data from Firestore
+      try {
+        final profile = await UserService.getUserProfile(firebaseUser.uid);
+        if (profile != null && mounted) {
+          setState(() {
+            _displayName = profile.name;
+            _email = profile.email;
+            _photoUrl = profile.profilePictureUrl ?? firebaseUser.photoURL;
+          });
+        }
+      } catch (_) {
+        // Firestore error — keep Firebase Auth data
+      }
+
+      if (mounted) setState(() {});
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Use provided NGO or default to sample NGO
-    final currentNGO = ngo ?? getSampleNGO();
+    final currentNGO = widget.ngo ?? getSampleNGO();
 
     return Scaffold(
       appBar: AppBar(
@@ -671,8 +714,8 @@ class NGOProfilePage extends StatelessWidget {
     );
   }
 
-  static void _showLogoutDialog(BuildContext context) {
-    showDialog(
+  Future<void> _showLogoutDialog(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
@@ -680,19 +723,11 @@ class NGOProfilePage extends StatelessWidget {
           content: const Text('Are you sure you want to logout?'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
+              onPressed: () => Navigator.pop(dialogContext, false),
               child: const Text('Cancel'),
             ),
             ElevatedButton(
-              onPressed: () {
-                Navigator.pop(dialogContext);
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (context) => const LoginPage(),
-                  ),
-                  (route) => false,
-                );
-              },
+              onPressed: () => Navigator.pop(dialogContext, true),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               child: const Text(
                 'Logout',
@@ -703,6 +738,18 @@ class NGOProfilePage extends StatelessWidget {
         );
       },
     );
+
+    if (confirmed == true && context.mounted) {
+      await AuthService.signOut();
+      if (context.mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const LoginPage(),
+          ),
+          (route) => false,
+        );
+      }
+    }
   }
 }
 

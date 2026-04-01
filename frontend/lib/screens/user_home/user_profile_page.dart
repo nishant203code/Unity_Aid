@@ -427,7 +427,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
             height: 50,
             child: ElevatedButton.icon(
               onPressed: () =>
-                  _navigateToEditProfile(context, widget.user ?? sampleUser),
+                  _navigateToEditProfile(context, _firestoreUser ?? widget.user ?? sampleUser),
               icon: const Icon(Icons.edit, color: Colors.white),
               label: const Text(
                 'Edit Details',
@@ -485,17 +485,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
 
     if (updatedUser != null) {
-      // TODO: Update user data in state management/database
-      // For now, just show a success message
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content:
-                Text('Profile updated! Please restart the app to see changes.'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
+      // Reload profile from Firestore to reflect changes
+      await _loadProfile();
     }
   }
 
@@ -640,4 +631,3 @@ class _InfoTile extends StatelessWidget {
     );
   }
 }
-

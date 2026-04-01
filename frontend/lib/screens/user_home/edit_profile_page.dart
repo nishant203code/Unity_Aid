@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../widgets/theme/app_colors.dart';
 import '../../models/user_model.dart';
+import '../../services/auth_service.dart';
+import '../../services/user_service.dart';
 
 class EditProfilePage extends StatefulWidget {
   final UserModel user;
@@ -13,6 +15,7 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   final _formKey = GlobalKey<FormState>();
+  bool _isSaving = false;
   late TextEditingController _nameController;
   late TextEditingController _emailController;
   late TextEditingController _phoneController;
@@ -61,23 +64,35 @@ class _EditProfilePageState extends State<EditProfilePage> {
     super.dispose();
   }
 
-  void _saveProfile() {
-    if (_formKey.currentState!.validate()) {
-      // TODO: Save updated user data to backend/database
+  Future<void> _saveProfile() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isSaving = true);
+
+    try {
+      final firebaseUser = AuthService.currentUser;
+      if (firebaseUser == null) {
+        throw Exception('Not authenticated');
+      }
+
       final updatedUser = widget.user.copyWith(
-        name: _nameController.text,
-        email: _emailController.text,
-        phone: _phoneController.text,
-        address: _addressController.text,
-        occupation: _occupationController.text,
-        motherName: _motherNameController.text.isEmpty ? null : _motherNameController.text,
-        fatherName: _fatherNameController.text.isEmpty ? null : _fatherNameController.text,
-        profilePictureUrl: _profilePictureController.text.isEmpty ? null : _profilePictureController.text,
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        phone: _phoneController.text.trim(),
+        address: _addressController.text.trim(),
+        occupation: _occupationController.text.trim(),
+        motherName: _motherNameController.text.trim().isEmpty ? null : _motherNameController.text.trim(),
+        fatherName: _fatherNameController.text.trim().isEmpty ? null : _fatherNameController.text.trim(),
+        profilePictureUrl: _profilePictureController.text.trim().isEmpty ? null : _profilePictureController.text.trim(),
         gender: _selectedGender,
         category: _selectedCategory,
       );
 
-      // Show success message
+      // Save updated profile to Firestore
+      await UserService.saveUserProfile(firebaseUser.uid, updatedUser);
+
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Profile updated successfully!'),
@@ -87,6 +102,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
       // Return updated user to previous screen
       Navigator.pop(context, updatedUser);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error updating profile: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
     }
   }
 
@@ -297,21 +322,30 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: _saveProfile,
+                  onPressed: _isSaving ? null : _saveProfile,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
-                    'Save Changes',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
+                  child: _isSaving
+                      ? const SizedBox(
+                          height: 22,
+                          width: 22,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2.5,
+                          ),
+                        )
+                      : const Text(
+                          'Save Changes',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
                 ),
               ),
 
@@ -375,7 +409,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     required void Function(String?) onChanged,
   }) {
     return DropdownButtonFormField<String>(
-      initialValue: value,
+      value: value,
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon, color: AppColors.primary),
