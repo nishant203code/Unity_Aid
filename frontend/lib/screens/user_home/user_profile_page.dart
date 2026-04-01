@@ -1,21 +1,89 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../../widgets/theme/app_colors.dart';
 import '../../models/user_model.dart';
 import '../../models/ngo_model.dart';
 import '../../data/sample_user_data.dart';
 import '../../data/sample_ngo_data.dart';
+import '../../services/auth_service.dart';
+import '../../services/user_service.dart';
 import 'edit_profile_page.dart';
 import '../login_page.dart';
 
-class UserProfilePage extends StatelessWidget {
+
+class UserProfilePage extends StatefulWidget {
   final UserModel? user;
 
   const UserProfilePage({super.key, this.user});
 
   @override
+  State<UserProfilePage> createState() => _UserProfilePageState();
+}
+
+class _UserProfilePageState extends State<UserProfilePage> {
+  UserModel? _firestoreUser;
+  bool _isLoading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    try {
+      final firebaseUser = AuthService.currentUser;
+      if (firebaseUser != null) {
+        final profile = await UserService.getUserProfile(firebaseUser.uid);
+        if (mounted) {
+          setState(() {
+            _firestoreUser = profile;
+            _isLoading = false;
+          });
+        }
+      } else {
+        if (mounted) setState(() => _isLoading = false);
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = e.toString();
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Use provided user or default to sample user
-    final currentUser = user ?? sampleUser;
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (_error != null) {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.error_outline, size: 48, color: Colors.red),
+              const SizedBox(height: 16),
+              Text('Error loading profile: $_error'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _loadProfile,
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Priority: Firestore profile > widget param > sample data
+    final currentUser = _firestoreUser ?? widget.user ?? sampleUser;
 
     return Scaffold(
       appBar: AppBar(
@@ -359,7 +427,7 @@ class UserProfilePage extends StatelessWidget {
             height: 50,
             child: ElevatedButton.icon(
               onPressed: () =>
-                  _navigateToEditProfile(context, user ?? sampleUser),
+                  _navigateToEditProfile(context, widget.user ?? sampleUser),
               icon: const Icon(Icons.edit, color: Colors.white),
               label: const Text(
                 'Edit Details',
@@ -444,19 +512,22 @@ class UserProfilePage extends StatelessWidget {
               child: const Text('Cancel'),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 // Close dialog
                 Navigator.pop(dialogContext);
 
-                // Navigate to login page and clear all previous routes
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (context) => const LoginPage(),
-                  ),
-                  (route) => false,
-                );
+                // Sign out from Firebase
+                await AuthService.signOut();
 
-                // TODO: Clear user session/token from storage
+                // Navigate to login page and clear all previous routes
+                if (context.mounted) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                      builder: (context) => const LoginPage(),
+                    ),
+                    (route) => false,
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,

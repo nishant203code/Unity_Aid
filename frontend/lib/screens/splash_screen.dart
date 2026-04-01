@@ -1,7 +1,12 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
+import '../services/user_service.dart';
 import 'login_page.dart';
+import 'complete_profile_screen.dart';
+import 'user_home/user_home_page.dart';
+import 'ngo_home/ngo_home_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -40,10 +45,40 @@ class _SplashScreenState extends State<SplashScreen>
     await _revealController.forward();
 
     if (!mounted) return;
+
+    // Check Firebase Auth state
+    final user = AuthService.currentUser;
+    Widget nextPage;
+
+    if (user == null) {
+      // Not logged in → LoginPage
+      nextPage = const LoginPage();
+    } else {
+      // Logged in → check if profile is complete
+      try {
+        final hasProfile = await UserService.profileExists(user.uid);
+        if (hasProfile) {
+          // Check user role to route correctly
+          final role = await UserService.getUserRole(user.uid);
+          if (role == 'ngo') {
+            nextPage = const NGOHomePage();
+          } else {
+            nextPage = const UserHomePage();
+          }
+        } else {
+          nextPage = const CompleteProfileScreen();
+        }
+      } catch (e) {
+        // Firestore error (permissions etc.) → fallback to LoginPage
+        nextPage = const LoginPage();
+      }
+    }
+
+    if (!mounted) return;
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
-        pageBuilder: (_, __, ___) => const LoginPage(),
+        pageBuilder: (_, __, ___) => nextPage,
         transitionDuration: Duration.zero,
       ),
     );

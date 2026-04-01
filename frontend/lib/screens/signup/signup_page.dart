@@ -1,8 +1,11 @@
-﻿import 'dart:ui';
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../widgets/signup/signup_fields.dart';
 import '../../widgets/signup/password_strength.dart';
 import '../../widgets/signup/step_indicator.dart';
+import '../../services/auth_service.dart';
+import '../complete_profile_screen.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -14,6 +17,7 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   final PageController pageController = PageController();
   int currentStep = 0;
+  bool isLoading = false;
 
   // Controllers
   final nameController = TextEditingController();
@@ -41,6 +45,55 @@ class _SignupPageState extends State<SignupPage> {
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeInOut,
     );
+  }
+
+  Future<void> handleSignup() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please fill in email and password'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() => isLoading = true);
+
+    try {
+      await AuthService.signUpWithEmail(email, password);
+
+      if (!mounted) return;
+
+      // Navigate to profile completion screen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const CompleteProfileScreen(),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AuthService.getErrorMessage(e.code)),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Signup failed: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => isLoading = false);
+    }
   }
 
   @override
@@ -148,7 +201,21 @@ class _SignupPageState extends State<SignupPage> {
                                           onPressed: prevStep,
                                           child: const Text("Back"),
                                         ),
-                                        submitButton(context),
+                                        ElevatedButton(
+                                          onPressed:
+                                              isLoading ? null : handleSignup,
+                                          child: isLoading
+                                              ? const SizedBox(
+                                                  height: 20,
+                                                  width: 20,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    color: Colors.white,
+                                                    strokeWidth: 2,
+                                                  ),
+                                                )
+                                              : const Text("Sign Up"),
+                                        ),
                                       ],
                                     ),
                                   ],
@@ -169,4 +236,3 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 }
-
