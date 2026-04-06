@@ -15,6 +15,8 @@ class UserModel {
   final String role; // "user" or "ngo"
   final List<String> joinedNGOIds;
   final DateTime joinedDate;
+  final String? fcmToken;
+  final bool notificationsEnabled;
 
   UserModel({
     required this.id,
@@ -33,6 +35,8 @@ class UserModel {
     this.role = 'user',
     this.joinedNGOIds = const [],
     required this.joinedDate,
+    this.fcmToken,
+    this.notificationsEnabled = true,
   });
 
   // Factory constructor for creating from JSON
@@ -59,6 +63,8 @@ class UserModel {
       joinedDate: json['joinedDate'] != null
           ? DateTime.parse(json['joinedDate'] as String)
           : DateTime.now(),
+      fcmToken: json['fcmToken'] as String?,
+      notificationsEnabled: json['notificationsEnabled'] as bool? ?? true,
     );
   }
 
@@ -81,6 +87,8 @@ class UserModel {
       'role': role,
       'joinedNGOIds': joinedNGOIds,
       'joinedDate': joinedDate.toIso8601String(),
+      'fcmToken': fcmToken,
+      'notificationsEnabled': notificationsEnabled,
     };
   }
 
@@ -102,6 +110,8 @@ class UserModel {
     String? role,
     List<String>? joinedNGOIds,
     DateTime? joinedDate,
+    String? fcmToken,
+    bool? notificationsEnabled,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -120,6 +130,8 @@ class UserModel {
       role: role ?? this.role,
       joinedNGOIds: joinedNGOIds ?? this.joinedNGOIds,
       joinedDate: joinedDate ?? this.joinedDate,
+      fcmToken: fcmToken ?? this.fcmToken,
+      notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
     );
   }
 }

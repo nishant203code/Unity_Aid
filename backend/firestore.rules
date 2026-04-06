@@ -36,5 +36,24 @@ service cloud.firestore {
       allow create: if request.auth != null;
       allow update: if request.auth != null && resource.data.donorUid == request.auth.uid;
     }
+
+    // ─── Uploads Metadata Collection ───
+    // Tracks file metadata for images uploaded to Firebase Storage
+    match /uploads/{uploadId} {
+      // Any authenticated user can read upload metadata
+      allow read: if request.auth != null;
+
+      // Only authenticated users can create, with required fields
+      allow create: if request.auth != null
+                    && request.resource.data.uploadedBy == request.auth.uid
+                    && request.resource.data.keys().hasAll([
+                         'imageUrl', 'fileName', 'fileSize',
+                         'uploadedBy', 'createdAt', 'storagePath'
+                       ]);
+
+      // Only the uploader can update or delete their upload metadata
+      allow update, delete: if request.auth != null
+                            && resource.data.uploadedBy == request.auth.uid;
+    }
   }
 }
