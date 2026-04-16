@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../widgets/theme/app_colors.dart';
 import '../user_home/edit_profile_page.dart';
 import '../login_page.dart';
+import '../../services/auth_service.dart';
+import '../../services/user_service.dart';
+import '../../models/user_model.dart';
 import '../../data/sample_user_data.dart';
 
 class AccountSettingsPage extends StatefulWidget {
@@ -13,6 +17,33 @@ class AccountSettingsPage extends StatefulWidget {
 
 class _AccountSettingsPageState extends State<AccountSettingsPage> {
   bool _twoFactorEnabled = false;
+  UserModel? _currentUser;
+  bool _isLoadingUser = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCurrentUser();
+  }
+
+  Future<void> _loadCurrentUser() async {
+    try {
+      final firebaseUser = AuthService.currentUser;
+      if (firebaseUser != null) {
+        final profile = await UserService.getUserProfile(firebaseUser.uid);
+        if (mounted) {
+          setState(() {
+            _currentUser = profile;
+            _isLoadingUser = false;
+          });
+        }
+      } else {
+        if (mounted) setState(() => _isLoadingUser = false);
+      }
+    } catch (e) {
+      if (mounted) setState(() => _isLoadingUser = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +67,17 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                 icon: Icons.person,
                 title: "Edit Profile",
                 subtitle: "Update name, photo, contact details",
-                onTap: () {
-                  Navigator.push(
+                onTap: () async {
+                  final userToEdit = _currentUser ?? sampleUser;
+                  final updatedUser = await Navigator.push<UserModel>(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => EditProfilePage(user: sampleUser),
+                      builder: (context) => EditProfilePage(user: userToEdit),
                     ),
                   );
+                  if (updatedUser != null) {
+                    await _loadCurrentUser();
+                  }
                 },
               ),
             ],
@@ -202,7 +237,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   }) {
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: (iconColor ?? AppColors.primary).withOpacity(0.1),
+        backgroundColor: (iconColor ?? AppColors.primary).withValues(alpha: 0.1),
         child: Icon(icon, color: iconColor ?? AppColors.primary, size: 22),
       ),
       title: Text(
@@ -211,7 +246,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       ),
       subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
       trailing: trailing ?? Icon(Icons.chevron_right, 
-        color: Theme.of(context).iconTheme.color?.withOpacity(0.5)),
+        color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.5)),
       onTap: onTap,
     );
   }
@@ -225,7 +260,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   }) {
     return SwitchListTile(
       secondary: CircleAvatar(
-        backgroundColor: AppColors.primary.withOpacity(0.1),
+        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
         child: Icon(icon, color: AppColors.primary, size: 22),
       ),
       title: Text(
@@ -235,7 +270,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
       value: value,
       onChanged: onChanged,
-      activeColor: AppColors.primary,
+      activeThumbColor: AppColors.primary,
     );
   }
 
@@ -287,6 +322,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     bool obscureCurrent = true;
     bool obscureNew = true;
     bool obscureConfirm = true;
+    bool isChanging = false;
 
     showDialog(
       context: context,
@@ -357,18 +393,66 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-              onPressed: () {
-                if (formKey.currentState!.validate()) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Password changed successfully!'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                }
-              },
-              child: const Text('Change', style: TextStyle(color: Colors.white)),
+              onPressed: isChanging
+                  ? null
+                  : () async {
+                      if (!formKey.currentState!.validate()) return;
+                      setModalState(() => isChanging = true);
+
+                      try {
+                        final user = FirebaseAuth.instance.currentUser;
+                        if (user == null || user.email == null) {
+                          throw Exception('Not authenticated');
+                        }
+
+                        // Re-authenticate with current password
+                        final credential = EmailAuthProvider.credential(
+                          email: user.email!,
+                          password: currentPasswordController.text,
+                        );
+                        await user.reauthenticateWithCredential(credential);
+
+                        // Update to new password
+                        await user.updatePassword(newPasswordController.text);
+
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Password changed successfully!'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        }
+                      } on FirebaseAuthException catch (e) {
+                        setModalState(() => isChanging = false);
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(AuthService.getErrorMessage(e.code)),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                        setModalState(() => isChanging = false);
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Error: $e'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      }
+                    },
+              child: isChanging
+                  ? const SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                    )
+                  : const Text('Change', style: TextStyle(color: Colors.white)),
             ),
           ],
         ),
@@ -389,14 +473,17 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
               child: const Text('Cancel'),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.pop(dialogContext);
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (context) => const LoginPage(),
-                  ),
-                  (route) => false,
-                );
+                await AuthService.signOut();
+                if (context.mounted) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                      builder: (context) => const LoginPage(),
+                    ),
+                    (route) => false,
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
               child: const Text('Logout', style: TextStyle(color: Colors.white)),
@@ -422,15 +509,57 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
               child: const Text('Cancel'),
             ),
             ElevatedButton(
-              onPressed: () {
-                // TODO: Implement account deletion
+              onPressed: () async {
                 Navigator.pop(dialogContext);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Account deletion requested'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
+
+                try {
+                  final user = FirebaseAuth.instance.currentUser;
+                  if (user != null) {
+                    // Delete Firestore user document first
+                    try {
+                      await UserService.updateUserProfile(user.uid, {
+                        'deletedAt': DateTime.now().toIso8601String(),
+                        'status': 'deleted',
+                      });
+                    } catch (_) {
+                      // Continue even if Firestore delete fails
+                    }
+
+                    // Delete Firebase Auth account
+                    await user.delete();
+                  }
+
+                  if (context.mounted) {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (context) => const LoginPage(),
+                      ),
+                      (route) => false,
+                    );
+                  }
+                } on FirebaseAuthException catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          e.code == 'requires-recent-login'
+                              ? 'Please log out and log back in before deleting your account'
+                              : AuthService.getErrorMessage(e.code),
+                        ),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Error deleting account: $e'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                }
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               child: const Text('Delete', style: TextStyle(color: Colors.white)),

@@ -14,9 +14,9 @@ class AuthGlassCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.15),
+            color: Colors.white.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: Colors.white.withOpacity(0.2)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
           ),
           child: child,
         ),
@@ -51,7 +51,7 @@ class RoleSelector extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 14),
           decoration: BoxDecoration(
             color:
-                isSelected ? Colors.white.withOpacity(0.9) : Colors.transparent,
+                isSelected ? Colors.white.withValues(alpha: 0.9) : Colors.transparent,
             borderRadius: BorderRadius.circular(15),
           ),
           child: Center(
@@ -105,7 +105,7 @@ class AuthTextField extends StatelessWidget {
               )
             : null,
         filled: true,
-        fillColor: Colors.white.withOpacity(0.15),
+        fillColor: Colors.white.withValues(alpha: 0.15),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide.none,

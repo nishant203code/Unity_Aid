@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/theme/app_colors.dart';
 
@@ -284,7 +284,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
   }) {
     return SwitchListTile(
       secondary: CircleAvatar(
-        backgroundColor: AppColors.primary.withOpacity(0.1),
+        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
         child: Icon(icon, color: AppColors.primary, size: 22),
       ),
       title: Text(
@@ -294,7 +294,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
       subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
       value: value,
       onChanged: onChanged,
-      activeColor: AppColors.primary,
+      activeThumbColor: AppColors.primary,
     );
   }
 
@@ -306,7 +306,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
   }) {
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: AppColors.primary.withOpacity(0.1),
+        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
         child: Icon(icon, color: AppColors.primary, size: 22),
       ),
       title: Text(
@@ -315,7 +315,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
       ),
       subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
       trailing: Icon(Icons.chevron_right,
-          color: Theme.of(context).iconTheme.color?.withOpacity(0.5)),
+          color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.5)),
       onTap: onTap,
     );
   }

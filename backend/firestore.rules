@@ -1,0 +1,59 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Users Collection ───
+    // Users can read/write their own profile document
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ─── NGO Verifications Collection ───
+    // Authenticated users can create verification requests
+    // Users can read their own verification
+    match /ngo_verifications/{docId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow update: if request.auth != null && resource.data.uid == request.auth.uid;
+    }
+
+    // ─── Posts Collection ───
+    // Any authenticated user can read posts
+    // Creator can write their own posts
+    match /posts/{postId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null && resource.data.createdBy == request.auth.uid;
+    }
+
+    // ─── Donations Collection ───
+    // Authenticated users can read all donations and create new ones
+    match /donations/{donationId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && resource.data.donorUid == request.auth.uid;
+    }
+
+    // ─── Uploads Metadata Collection ───
+    // Tracks file metadata for images uploaded to Firebase Storage
+    match /uploads/{uploadId} {
+      // Any authenticated user can read upload metadata
+      allow read: if request.auth != null;
+
+      // Only authenticated users can create, with required fields
+      allow create: if request.auth != null
+                    && request.resource.data.uploadedBy == request.auth.uid
+                    && request.resource.data.keys().hasAll([
+                         'imageUrl', 'fileName', 'fileSize',
+                         'uploadedBy', 'createdAt', 'storagePath'
+                       ]);
+
+      // Only the uploader can update or delete their upload metadata
+      allow update, delete: if request.auth != null
+                            && resource.data.uploadedBy == request.auth.uid;
+    }
+  }
+}

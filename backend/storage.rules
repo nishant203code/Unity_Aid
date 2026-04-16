@@ -1,0 +1,105 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ─── Helper Functions ───
+
+    // Check if the user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if the user owns the file (via custom metadata)
+    function isOwner() {
+      return request.auth != null
+          && request.resource.metadata['uploadedBy'] == request.auth.uid;
+    }
+
+    // Check if existing file belongs to this user
+    function ownsExisting() {
+      return request.auth != null
+          && resource.metadata['uploadedBy'] == request.auth.uid;
+    }
+
+    // Validate image content type
+    function isValidImageType() {
+      return request.resource.contentType.matches('image/(jpeg|png|gif|webp)');
+    }
+
+    // Validate file size (max 5 MB)
+    function isWithinSizeLimit() {
+      return request.resource.size <= 5 * 1024 * 1024;
+    }
+
+    // ─── Post Uploads ───
+    // Path: /uploads/posts/{fileName}
+    match /uploads/posts/{fileName} {
+      // Any authenticated user can view post images
+      allow read: if isAuthenticated();
+
+      // Authenticated users can upload valid images with proper metadata
+      allow create: if isAuthenticated()
+                    && isValidImageType()
+                    && isWithinSizeLimit()
+                    && isOwner();
+
+      // Only the uploader can update or delete their files
+      allow update: if isAuthenticated()
+                    && ownsExisting()
+                    && isValidImageType()
+                    && isWithinSizeLimit();
+
+      allow delete: if isAuthenticated()
+                    && ownsExisting();
+    }
+
+    // ─── Case Uploads ───
+    // Path: /uploads/cases/{fileName}
+    match /uploads/cases/{fileName} {
+      // Any authenticated user can view case images
+      allow read: if isAuthenticated();
+
+      // Authenticated users can upload valid images
+      allow create: if isAuthenticated()
+                    && isValidImageType()
+                    && isWithinSizeLimit()
+                    && isOwner();
+
+      // Only the uploader can update or delete
+      allow update: if isAuthenticated()
+                    && ownsExisting()
+                    && isValidImageType()
+                    && isWithinSizeLimit();
+
+      allow delete: if isAuthenticated()
+                    && ownsExisting();
+    }
+
+    // ─── Profile Uploads ───
+    // Path: /uploads/profiles/{fileName}
+    match /uploads/profiles/{fileName} {
+      // Any authenticated user can view profile images
+      allow read: if isAuthenticated();
+
+      // Only the owner can manage their profile images
+      allow create: if isAuthenticated()
+                    && isValidImageType()
+                    && isWithinSizeLimit()
+                    && isOwner();
+
+      allow update: if isAuthenticated()
+                    && ownsExisting()
+                    && isValidImageType()
+                    && isWithinSizeLimit();
+
+      allow delete: if isAuthenticated()
+                    && ownsExisting();
+    }
+
+    // ─── Deny everything else ───
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

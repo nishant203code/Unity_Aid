@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../services/auth_service.dart';
+import '../services/user_service.dart';
 import '../widgets/digilocker_button.dart';
 import '../widgets/auth_widgets.dart';
 import 'signup/signup_page.dart';
 import 'ngo_verification_page.dart';
+import 'complete_profile_screen.dart';
 import 'user_home/user_home_page.dart';
 import 'ngo_home/ngo_home_page.dart';
 
@@ -21,35 +25,178 @@ class _LoginPageState extends State<LoginPage> {
   int selectedRole = 0;
   bool isLoading = false;
 
-  Future<void> handleLogin() async {
-    setState(() => isLoading = true);
-    await Future.delayed(const Duration(seconds: 2));
-    setState(() => isLoading = false);
+  // ✅ FIX: Cooldown to prevent rapid repeat login attempts
+  DateTime? _lastLoginAttempt;
+  static const _loginCooldown = Duration(seconds: 3);
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) =>
-            selectedRole == 0 ? const UserHomePage() : const NGOHomePage(),
-      ),
+  // ✅ FIX: Email format regex
+  static final _emailRegex = RegExp(r'^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}$');
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> handleLogin() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+
+    // ✅ FIX 1: Validate email format before submitting
+    if (email.isEmpty) {
+      _showError('Please enter your email address.');
+      return;
+    }
+    if (!_emailRegex.hasMatch(email)) {
+      _showError('Please enter a valid email address (e.g. name@example.com).');
+      return;
+    }
+
+    // ✅ FIX 2: Password must be non-empty and at least 8 characters
+    if (password.isEmpty) {
+      _showError('Please enter your password.');
+      return;
+    }
+    if (password.length < 8) {
+      _showError('Password must be at least 8 characters.');
+      return;
+    }
+
+    // ✅ FIX 3: Cooldown — block rapid repeat submissions
+    final now = DateTime.now();
+    if (_lastLoginAttempt != null &&
+        now.difference(_lastLoginAttempt!) < _loginCooldown) {
+      final remaining =
+          _loginCooldown.inSeconds -
+          now.difference(_lastLoginAttempt!).inSeconds;
+      _showError('Please wait $remaining seconds before trying again.');
+      return;
+    }
+    _lastLoginAttempt = now;
+
+    setState(() => isLoading = true);
+    try {
+      await AuthService.signInWithEmail(email, password);
+
+      // ✅ FIX 4: Verify the session/auth token was actually set
+      final user = AuthService.currentUser;
+      if (user == null) {
+        _showError('Login succeeded but session was not created. Please try again.');
+        return;
+      }
+
+      if (!mounted) return;
+      await _navigateAfterAuth(isNGO: selectedRole == 1);
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AuthService.getErrorMessage(e.code)),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login failed: $e'), backgroundColor: Colors.red),
+      );
+    } finally {
+      if (mounted) setState(() => isLoading = false);
+    }
+  }
+
+  /// Helper to show a warning-style snackbar for validation errors
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
     );
+  }
+
+  Future<void> handleGoogleSignIn() async {
+    setState(() => isLoading = true);
+    try {
+      final result = await AuthService.signInWithGoogle();
+      if (result == null) {
+        // User cancelled — just reset loading, no error
+        if (mounted) {
+          setState(() => isLoading = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Google Sign-In was cancelled.'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        }
+        return;
+      }
+      if (!mounted) return;
+      await _navigateAfterAuth(isNGO: selectedRole == 1);
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AuthService.getErrorMessage(e.code)),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Google Sign-In failed: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => isLoading = false);
+    }
+  }
+
+  Future<void> _navigateAfterAuth({required bool isNGO}) async {
+    final user = AuthService.currentUser;
+    if (user == null) return;
+    try {
+      final hasProfile = await UserService.profileExists(user.uid);
+      if (!mounted) return;
+      if (hasProfile) {
+        // Read role from Firestore — this is the source of truth
+        final role = await UserService.getUserRole(user.uid);
+        if (!mounted) return;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => role == 'ngo' ? const NGOHomePage() : const UserHomePage(),
+          ),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CompleteProfileScreen(isNGO: isNGO),
+          ),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      // Firestore error - go to profile completion as fallback
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => CompleteProfileScreen(isNGO: isNGO),
+        ),
+      );
+    }
   }
 
   Future<void> handleDigiLockerLogin() async {
     setState(() => isLoading = true);
-
-    /// FUTURE:
-    /// Redirect to DigiLocker OAuth
-
-    await Future.delayed(const Duration(seconds: 2));
-
+    // DigiLocker OAuth - coming soon
+    await Future.delayed(const Duration(seconds: 1));
     setState(() => isLoading = false);
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const UserHomePage(),
-      ),
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('DigiLocker integration coming soon!')),
     );
   }
 
@@ -119,20 +266,47 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 20),
 
-                        /// Show ONLY for User
-                        if (selectedRole == 0) ...[
-                          const Row(
-                            children: [
-                              Expanded(child: Divider(color: Colors.white30)),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                child: Text("OR",
-                                    style: TextStyle(color: Colors.white70)),
+                        /// Google Sign-In — shown for both User and NGO
+                        const Row(
+                          children: [
+                            Expanded(child: Divider(color: Colors.white30)),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              child: Text("OR",
+                                  style: TextStyle(color: Colors.white70)),
+                            ),
+                            Expanded(child: Divider(color: Colors.white30)),
+                          ],
+                        ),
+                        const SizedBox(height: 15),
+                        // Google Sign-In Button
+                        SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: OutlinedButton.icon(
+                            onPressed: isLoading ? null : handleGoogleSignIn,
+                            icon: Image.network(
+                              'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg',
+                              height: 24,
+                              width: 24,
+                              errorBuilder: (_, __, ___) => const Icon(Icons.g_mobiledata, size: 24),
+                            ),
+                            label: const Text(
+                              'Continue with Google',
+                              style: TextStyle(color: Colors.white, fontSize: 15),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: Colors.white30),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
                               ),
-                              Expanded(child: Divider(color: Colors.white30)),
-                            ],
+                            ),
                           ),
-                          const SizedBox(height: 20),
+                        ),
+                        const SizedBox(height: 10),
+
+                        /// DigiLocker — only for User
+                        if (selectedRole == 0) ...[
                           DigiLockerButton(
                             onTap: () {
                               handleDigiLockerLogin();

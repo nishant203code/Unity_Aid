@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../widgets/theme/app_colors.dart';
 import '../../data/sample_donation_cases.dart';
 import 'widgets/donation_stats.dart';
@@ -105,7 +105,7 @@ class _DonatePageState extends State<DonatePage>
                       selectedCategory = category;
                     });
                   },
-                  selectedColor: AppColors.primary.withOpacity(0.2),
+                  selectedColor: AppColors.primary.withValues(alpha: 0.2),
                   checkmarkColor: AppColors.primary,
                    labelStyle: TextStyle(
                     color: isSelected ? AppColors.primary : Theme.of(context).textTheme.bodySmall?.color,
@@ -161,3 +161,4 @@ class _DonatePageState extends State<DonatePage>
     );
   }
 }
+

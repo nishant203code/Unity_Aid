@@ -36,7 +36,9 @@ class NGOCard extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 28,
-                    backgroundImage: NetworkImage(ngo.logoUrl),
+                    foregroundImage: NetworkImage(ngo.logoUrl),
+                    onForegroundImageError: (_, __) {},
+                    child: Text(ngo.name.isNotEmpty ? ngo.name[0] : '?'),
                   ),
                   const SizedBox(width: 12),
                   Expanded(

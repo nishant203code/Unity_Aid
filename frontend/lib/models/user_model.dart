@@ -12,8 +12,11 @@ class UserModel {
   final String? fatherName;
   final String occupation;
   final String category; // e.g., "Individual Donor", "Regular Supporter", etc.
+  final String role; // "user" or "ngo"
   final List<String> joinedNGOIds;
   final DateTime joinedDate;
+  final String? fcmToken;
+  final bool notificationsEnabled;
 
   UserModel({
     required this.id,
@@ -29,8 +32,11 @@ class UserModel {
     this.fatherName,
     required this.occupation,
     required this.category,
+    this.role = 'user',
     this.joinedNGOIds = const [],
     required this.joinedDate,
+    this.fcmToken,
+    this.notificationsEnabled = true,
   });
 
   // Factory constructor for creating from JSON
@@ -49,6 +55,7 @@ class UserModel {
       fatherName: json['fatherName'] as String?,
       occupation: json['occupation'] as String,
       category: json['category'] as String,
+      role: json['role'] as String? ?? 'user',
       joinedNGOIds: (json['joinedNGOIds'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
@@ -56,6 +63,8 @@ class UserModel {
       joinedDate: json['joinedDate'] != null
           ? DateTime.parse(json['joinedDate'] as String)
           : DateTime.now(),
+      fcmToken: json['fcmToken'] as String?,
+      notificationsEnabled: json['notificationsEnabled'] as bool? ?? true,
     );
   }
 
@@ -75,8 +84,11 @@ class UserModel {
       'fatherName': fatherName,
       'occupation': occupation,
       'category': category,
+      'role': role,
       'joinedNGOIds': joinedNGOIds,
       'joinedDate': joinedDate.toIso8601String(),
+      'fcmToken': fcmToken,
+      'notificationsEnabled': notificationsEnabled,
     };
   }
 
@@ -95,8 +107,11 @@ class UserModel {
     String? fatherName,
     String? occupation,
     String? category,
+    String? role,
     List<String>? joinedNGOIds,
     DateTime? joinedDate,
+    String? fcmToken,
+    bool? notificationsEnabled,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -112,8 +127,11 @@ class UserModel {
       fatherName: fatherName ?? this.fatherName,
       occupation: occupation ?? this.occupation,
       category: category ?? this.category,
+      role: role ?? this.role,
       joinedNGOIds: joinedNGOIds ?? this.joinedNGOIds,
       joinedDate: joinedDate ?? this.joinedDate,
+      fcmToken: fcmToken ?? this.fcmToken,
+      notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
     );
   }
 }

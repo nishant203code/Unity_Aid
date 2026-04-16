@@ -1,0 +1,35 @@
+# ─── Backend .gitignore ───
+
+# Credentials & Secrets
+.env
+.env.*
+!.env.example
+serviceAccountKey.json
+service-account*.json
+*-credentials.json
+.runtimeconfig.json
+.firebaserc
+
+# Dependencies
+node_modules/
+
+# TypeScript Build Output
+functions/lib/
+*.js.map
+typings/
+
+# Logs
+*.log
+firebase-debug.log
+firestore-debug.log
+pubsub-debug.log
+ui-debug.log
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'account_settings_page.dart';
 import 'privacy_settings_page.dart';
 import 'notification_settings_page.dart';
@@ -170,7 +170,7 @@ class SettingsPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(icon, color: color, size: 28),
@@ -199,7 +199,7 @@ class SettingsPage extends StatelessWidget {
                 ),
               ),
               Icon(Icons.chevron_right,
-                  color: Theme.of(context).iconTheme.color?.withOpacity(0.5)),
+                  color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.5)),
             ],
           ),
         ),
@@ -207,3 +207,4 @@ class SettingsPage extends StatelessWidget {
     );
   }
 }
+

@@ -3,7 +3,6 @@ import '../../widgets/user_home/bottom_nav_bar.dart';
 import '../../widgets/user_home/home_app_bar.dart';
 import '../../widgets/user_home/ask_ai.dart';
 import '../../widgets/user_home/side_drawer.dart';
-import '../../widgets/theme/app_colors.dart';
 import '../home/home_page.dart';
 import '../news_feed/news_feed_page.dart';
 import 'ngo_dashboard_page.dart'; // create later

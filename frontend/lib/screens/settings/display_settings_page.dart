@@ -262,7 +262,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
   }) {
     return SwitchListTile(
       secondary: CircleAvatar(
-        backgroundColor: AppColors.primary.withOpacity(0.1),
+        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
         child: Icon(icon, color: AppColors.primary, size: 22),
       ),
       title: Text(
@@ -272,7 +272,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
       subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
       value: value,
       onChanged: onChanged,
-      activeColor: AppColors.primary,
+      activeThumbColor: AppColors.primary,
     );
   }
 
@@ -284,7 +284,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
   }) {
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: AppColors.primary.withOpacity(0.1),
+        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
         child: Icon(icon, color: AppColors.primary, size: 22),
       ),
       title: Text(
@@ -293,7 +293,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
       ),
       subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
       trailing: Icon(Icons.chevron_right,
-          color: Theme.of(context).iconTheme.color?.withOpacity(0.5)),
+          color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.5)),
       onTap: onTap,
     );
   }
@@ -382,14 +382,6 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
   }
 
   void _showLanguageDialog(BuildContext context) {
-    const languages = [
-      'English',
-      'हिन्दी (Hindi)',
-      'বাংলা (Bengali)',
-      'తెలుగు (Telugu)',
-      'मराठी (Marathi)',
-      'தமிழ் (Tamil)',
-    ];
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
