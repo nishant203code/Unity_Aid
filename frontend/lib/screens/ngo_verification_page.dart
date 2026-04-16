@@ -2,6 +2,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+enum _CaseHandling { social, individual, both }
+
 class NgoVerificationPage extends StatefulWidget {
   const NgoVerificationPage({super.key});
 
@@ -13,14 +15,41 @@ class _NgoVerificationPageState extends State<NgoVerificationPage> {
   final _formKey = GlobalKey<FormState>();
 
   final nameController = TextEditingController();
-  final registrationIdController = TextEditingController();
   final ownerController = TextEditingController();
+  final darpanController = TextEditingController();
+  final fcraIdController = TextEditingController();
   final panController = TextEditingController();
+  final gstinController = TextEditingController();
+  final addressController = TextEditingController();
+  final branchAddressController = TextEditingController();
+  final peopleAssociatedController = TextEditingController();
+  final casesHandledController = TextEditingController();
   final accountController = TextEditingController();
-  final ifscController = TextEditingController();
   final bankController = TextEditingController();
+  final bankBranchController = TextEditingController();
+  final ifscController = TextEditingController();
 
-  String? fcraStatus;
+  bool isFcraRegistered = false;
+  _CaseHandling caseHandling = _CaseHandling.social;
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    ownerController.dispose();
+    darpanController.dispose();
+    fcraIdController.dispose();
+    panController.dispose();
+    gstinController.dispose();
+    addressController.dispose();
+    branchAddressController.dispose();
+    peopleAssociatedController.dispose();
+    casesHandledController.dispose();
+    accountController.dispose();
+    bankController.dispose();
+    bankBranchController.dispose();
+    ifscController.dispose();
+    super.dispose();
+  }
 
   //-----------------------------------------
   /// GLASS INPUT STYLE (same as signup)
@@ -44,6 +73,20 @@ class _NgoVerificationPageState extends State<NgoVerificationPage> {
     );
   }
 
+  Widget buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
   //-----------------------------------------
   /// TEXT FIELD
   //-----------------------------------------
@@ -51,7 +94,8 @@ class _NgoVerificationPageState extends State<NgoVerificationPage> {
   Widget buildField(
       TextEditingController controller, String hint, IconData icon,
       {TextInputType keyboard = TextInputType.text,
-      List<TextInputFormatter>? formatters}) {
+      List<TextInputFormatter>? formatters,
+      bool requiredField = true}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 18),
       child: TextFormField(
@@ -59,9 +103,160 @@ class _NgoVerificationPageState extends State<NgoVerificationPage> {
         keyboardType: keyboard,
         inputFormatters: formatters,
         style: const TextStyle(color: Colors.white),
-        validator: (value) =>
-            value == null || value.isEmpty ? "Required field" : null,
+        validator: (value) {
+          if (!requiredField) {
+            return null;
+          }
+          return value == null || value.isEmpty ? "Required field" : null;
+        },
         decoration: inputStyle(hint, icon),
+      ),
+    );
+  }
+
+  Widget buildNumberField(
+    TextEditingController controller,
+    String hint,
+    IconData icon, {
+    bool optional = false,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 18),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        style: const TextStyle(color: Colors.white),
+        validator: (value) {
+          if (optional) {
+            if (value == null || value.isEmpty) {
+              return null;
+            }
+          }
+          if (value == null || value.isEmpty) {
+            return "Required field";
+          }
+          if (int.tryParse(value) == null) {
+            return "Enter a valid number";
+          }
+          return null;
+        },
+        decoration: inputStyle(hint, icon),
+      ),
+    );
+  }
+
+  Widget buildPanField() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 18),
+      child: TextFormField(
+        controller: panController,
+        textCapitalization: TextCapitalization.characters,
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
+          LengthLimitingTextInputFormatter(10),
+        ],
+        style: const TextStyle(color: Colors.white),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Required field';
+          }
+          if (!RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$').hasMatch(value)) {
+            return 'Enter a valid PAN number';
+          }
+          return null;
+        },
+        decoration: inputStyle('PAN Number', Icons.credit_card),
+      ),
+    );
+  }
+
+  Widget buildGstinField() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 18),
+      child: TextFormField(
+        controller: gstinController,
+        textCapitalization: TextCapitalization.characters,
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
+          LengthLimitingTextInputFormatter(15),
+        ],
+        style: const TextStyle(color: Colors.white),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Required field';
+          }
+          return null;
+        },
+        decoration: inputStyle('GSTIN', Icons.receipt_long),
+      ),
+    );
+  }
+
+  Widget buildFcraField() {
+    if (!isFcraRegistered) {
+      return const SizedBox.shrink();
+    }
+
+    return buildField(
+      fcraIdController,
+      'FCRA ID',
+      Icons.verified,
+      requiredField: false,
+    );
+  }
+
+  Widget buildCaseHandlingSelector() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 18),
+      child: DropdownButtonFormField<_CaseHandling>(
+        dropdownColor: Colors.grey[900],
+        style: const TextStyle(color: Colors.white),
+        decoration: inputStyle('Field / Cases handled', Icons.category),
+        value: caseHandling,
+        items: const [
+          DropdownMenuItem(
+            value: _CaseHandling.social,
+            child: Text('Handle social cases', style: TextStyle(color: Colors.white)),
+          ),
+          DropdownMenuItem(
+            value: _CaseHandling.individual,
+            child: Text('Handle individual cases', style: TextStyle(color: Colors.white)),
+          ),
+          DropdownMenuItem(
+            value: _CaseHandling.both,
+            child: Text('Handle both', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+        onChanged: (value) {
+          if (value == null) return;
+          setState(() {
+            caseHandling = value;
+          });
+        },
+      ),
+    );
+  }
+
+  Widget buildFcraToggle() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 18),
+      child: SwitchListTile(
+        contentPadding: EdgeInsets.zero,
+        title: const Text(
+          'Registered under FCRA?',
+          style: TextStyle(color: Colors.white),
+        ),
+        subtitle: const Text(
+          'If yes, FCRA ID becomes optional for the form flow',
+          style: TextStyle(color: Colors.white70),
+        ),
+        value: isFcraRegistered,
+        activeColor: Colors.greenAccent,
+        onChanged: (value) {
+          setState(() {
+            isFcraRegistered = value;
+          });
+        },
       ),
     );
   }
@@ -82,7 +277,7 @@ class _NgoVerificationPageState extends State<NgoVerificationPage> {
           ),
         ),
         onPressed: () {
-          if (_formKey.currentState!.validate() && fcraStatus != null) {
+          if (_formKey.currentState!.validate()) {
             // TODO:
             // send NGO data to database
 
@@ -184,71 +379,57 @@ class _NgoVerificationPageState extends State<NgoVerificationPage> {
 
                             const SizedBox(height: 28),
 
+                            buildSectionTitle('Organization Details'),
                             buildField(nameController, "NGO Name", Icons.badge),
-
-                            //-----------------------------------------
-                            /// FCRA Dropdown
-                            //-----------------------------------------
-
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 18),
-                              child: DropdownButtonFormField<String>(
-                                dropdownColor: Colors.grey[900],
-                                style: const TextStyle(color: Colors.white),
-                                decoration: inputStyle(
-                                    "Registered on FCRA?", Icons.verified),
-                                items: ["Yes", "No"]
-                                    .map(
-                                      (e) => DropdownMenuItem(
-                                        value: e,
-                                        child: Text(e,
-                                            style: const TextStyle(
-                                                color: Colors.white)),
-                                      ),
-                                    )
-                                    .toList(),
-                                onChanged: (val) {
-                                  setState(() {
-                                    fcraStatus = val;
-                                  });
-                                },
-                                validator: (_) => fcraStatus == null
-                                    ? "Required field"
-                                    : null,
-                              ),
-                            ),
-
+                            buildCaseHandlingSelector(),
+                            buildFcraToggle(),
+                            buildFcraField(),
                             buildField(
-                                registrationIdController,
-                                "Registration ID (DARPAN)",
-                                Icons.confirmation_number),
-
+                              darpanController,
+                              "DARPAN ID",
+                              Icons.confirmation_number,
+                            ),
                             buildField(ownerController,
-                                "Owner / Institute Name", Icons.person),
-
-                            //-----------------------------------------
-                            /// PAN
-                            //-----------------------------------------
+                                "Owner", Icons.person),
+                            buildPanField(),
+                            buildGstinField(),
                             buildField(
-                              panController,
-                              "PAN Number",
-                              Icons.credit_card,
-                              formatters: [
-                                FilteringTextInputFormatter.allow(
-                                  RegExp("[A-Z0-9]"),
-                                ),
-                                LengthLimitingTextInputFormatter(10),
-                              ],
+                              addressController,
+                              "Address",
+                              Icons.home,
+                              keyboard: TextInputType.streetAddress,
                             ),
+                            buildField(
+                              branchAddressController,
+                              "Branch Address",
+                              Icons.location_on,
+                              keyboard: TextInputType.streetAddress,
+                            ),
+                            buildNumberField(
+                              peopleAssociatedController,
+                              "Number of People Associated",
+                              Icons.groups,
+                            ),
+                            buildNumberField(
+                              casesHandledController,
+                              "Cases Handled",
+                              Icons.assignment,
+                            ),
+
+                            buildSectionTitle('Bank Details'),
                             buildField(
                               accountController,
                               "Bank Account Number",
                               Icons.account_balance,
                               keyboard: TextInputType.number,
                             ),
-                            buildField(ifscController, "IFSC Code", Icons.code),
+                            buildField(bankController, "Bank Name", Icons.apartment),
                             buildField(
-                                bankController, "Bank Name", Icons.apartment),
+                              bankBranchController,
+                              "Bank Branch",
+                              Icons.domain,
+                            ),
+                            buildField(ifscController, "IFSC Code", Icons.code),
                             const SizedBox(height: 10),
                             submitButton(),
                           ],

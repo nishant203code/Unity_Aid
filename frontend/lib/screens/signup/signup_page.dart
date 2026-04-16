@@ -28,6 +28,7 @@ class _SignupPageState extends State<SignupPage> {
 
   String? gender;
   String? category;
+  DateTime? dateOfBirth;
 
   void nextStep() {
     pageController.nextPage(
@@ -41,6 +42,21 @@ class _SignupPageState extends State<SignupPage> {
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeInOut,
     );
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    addressController.dispose();
+    contactController.dispose();
+    emailController.dispose();
+    aadharController.dispose();
+    motherTongueController.dispose();
+    fatherController.dispose();
+    occupationController.dispose();
+    passwordController.dispose();
+    pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -115,13 +131,20 @@ class _SignupPageState extends State<SignupPage> {
                               ),
 
                               /// STEP 2
-                              Column(
-                                children: [
-                                  aadharField(aadharController),
-                                  genderDropdown((val) => gender = val),
-                                  categoryDropdown((val) => category = val),
-                                  stepNavButtons(prevStep, nextStep),
-                                ],
+                              SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    aadharField(aadharController),
+                                    genderDropdown((val) => setState(() => gender = val)),
+                                    categoryDropdown((val) => setState(() => category = val)),
+                                    dateOfBirthField(
+                                      context,
+                                      dateOfBirth,
+                                      (date) => setState(() => dateOfBirth = date),
+                                    ),
+                                    stepNavButtons(prevStep, nextStep),
+                                  ],
+                                ),
                               ),
 
                               /// STEP 3
@@ -148,7 +171,39 @@ class _SignupPageState extends State<SignupPage> {
                                           onPressed: prevStep,
                                           child: const Text("Back"),
                                         ),
-                                        submitButton(context),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            // Validate age before allowing signup
+                                            if (dateOfBirth == null) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'Please select your date of birth'),
+                                                  backgroundColor: Colors.red,
+                                                ),
+                                              );
+                                              return;
+                                            }
+
+                                            // Check if user is at least 18
+                                            if (!isUserAtLeast18(dateOfBirth)) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'You must be at least 18 years old to register'),
+                                                  backgroundColor: Colors.red,
+                                                ),
+                                              );
+                                              return;
+                                            }
+
+                                            // Proceed with signup
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text("Sign Up"),
+                                        ),
                                       ],
                                     ),
                                   ],

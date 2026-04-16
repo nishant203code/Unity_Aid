@@ -10,6 +10,8 @@ NGO getSampleNGO() {
     description:
         'A non-profit organization dedicated to improving the lives of underprivileged children through education, healthcare, and community development programs.',
     location: 'Mumbai, Maharashtra',
+    latitude: 19.0760,
+    longitude: 72.8777,
     logoUrl: 'https://via.placeholder.com/150',
     members: 250,
     followers: 5420,
@@ -255,6 +257,8 @@ List<NGO> getSampleNGOList() {
       description:
           'Environmental conservation organization working on reforestation and climate action.',
       location: 'Bangalore, Karnataka',
+      latitude: 12.9716,
+      longitude: 77.5946,
       logoUrl: 'https://via.placeholder.com/150',
       members: 180,
       followers: 3200,
@@ -272,6 +276,8 @@ List<NGO> getSampleNGOList() {
       description:
           'Dedicated to rescuing and rehabilitating stray and injured animals.',
       location: 'Delhi, NCR',
+      latitude: 28.6139,
+      longitude: 77.2090,
       logoUrl: 'https://via.placeholder.com/150',
       members: 95,
       followers: 2800,

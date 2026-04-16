@@ -5,6 +5,9 @@ import '../../../services/razorpay_payment_service.dart';
 import '../../../widgets/theme/input_decoration.dart';
 import '../../../widgets/theme/app_colors.dart';
 
+// ── Hard-coded test key (replace with live key before production) ──
+const String _kRazorpayTestKey = 'rzp_test_SeHcKLZ80m216X';
+
 class NGODonationForm extends StatefulWidget {
   const NGODonationForm({super.key});
 
@@ -13,17 +16,23 @@ class NGODonationForm extends StatefulWidget {
 }
 
 class _NGODonationFormState extends State<NGODonationForm> {
-  static const String _razorpayKey = String.fromEnvironment(
-    'RAZORPAY_KEY_ID',
-    defaultValue: '',
-  );
-
   final RazorpayPaymentService _paymentService = RazorpayPaymentService();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _contactController = TextEditingController();
   String? _selectedNgo;
   bool _isOpeningCheckout = false;
+
+  static const List<int> _quickAmounts = [200, 500, 1000, 2500, 5000];
+  int? _selectedQuickAmount;
+
+  static const _ngos = [
+    'Helping Hands',
+    'Care Foundation',
+    'United Relief',
+    'GreenEarth NGO',
+    'Children First',
+  ];
 
   @override
   void initState() {
@@ -44,36 +53,30 @@ class _NGODonationFormState extends State<NGODonationForm> {
     super.dispose();
   }
 
+  // ── Snackbar helper ──────────────────────────────────────────────────────
   void _showMessage(String message, {Color? color}) {
-    if (!mounted) {
-      return;
-    }
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
         backgroundColor: color,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
   }
 
+  // ── Razorpay callbacks ───────────────────────────────────────────────────
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    if (mounted) {
-      setState(() {
-        _isOpeningCheckout = false;
-      });
-    }
-    _showMessage(
-      'Payment successful. ID: ${response.paymentId ?? 'N/A'}',
-      color: Colors.green,
+    if (mounted) setState(() => _isOpeningCheckout = false);
+    _showSuccessDialog(
+      paymentId: response.paymentId ?? 'N/A',
+      orderId: response.orderId,
     );
   }
 
   void _handlePaymentFailure(PaymentFailureResponse response) {
-    if (mounted) {
-      setState(() {
-        _isOpeningCheckout = false;
-      });
-    }
+    if (mounted) setState(() => _isOpeningCheckout = false);
     _showMessage(
       'Payment failed: ${response.message ?? 'Unknown error'}',
       color: Colors.red,
@@ -81,14 +84,14 @@ class _NGODonationFormState extends State<NGODonationForm> {
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
-    if (mounted) {
-      setState(() {
-        _isOpeningCheckout = false;
-      });
-    }
-    _showMessage('External wallet selected: ${response.walletName ?? 'N/A'}');
+    if (mounted) setState(() => _isOpeningCheckout = false);
+    _showMessage(
+      'External wallet selected: ${response.walletName ?? 'N/A'}',
+      color: Colors.blue,
+    );
   }
 
+  // ── Validation & checkout ────────────────────────────────────────────────
   Future<void> _startPayment() async {
     if (_selectedNgo == null || _selectedNgo!.isEmpty) {
       _showMessage('Please select an NGO first.', color: Colors.orange);
@@ -108,127 +111,322 @@ class _NGODonationFormState extends State<NGODonationForm> {
       _showMessage('Please enter a valid 10-digit phone number.', color: Colors.orange);
       return;
     }
-
     if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email)) {
       _showMessage('Please enter a valid email address.', color: Colors.orange);
       return;
     }
 
     if (kIsWeb) {
-      _showMessage(
-        'Razorpay Flutter plugin is not supported on web in this setup.',
-        color: Colors.orange,
-      );
+      _showMessage('Razorpay is not supported on web.', color: Colors.orange);
       return;
     }
 
-    if (_razorpayKey.isEmpty) {
-      _showMessage(
-        'Razorpay key missing. Run with --dart-define=RAZORPAY_KEY_ID=your_test_key.',
-        color: Colors.orange,
-      );
-      return;
-    }
-
-    if (mounted) {
-      setState(() {
-        _isOpeningCheckout = true;
-      });
-    }
+    setState(() => _isOpeningCheckout = true);
 
     _paymentService.openCheckout(
-      keyId: _razorpayKey,
+      keyId: _kRazorpayTestKey,
       amountInPaise: amount * 100,
-      title: 'UnityAid Donation',
+      title: 'UnityAid – NGO Donation',
       description: 'Donation to $_selectedNgo',
       contact: contact,
       email: email,
     );
   }
 
+  // ── Success dialog ───────────────────────────────────────────────────────
+  void _showSuccessDialog({required String paymentId, String? orderId}) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        contentPadding: const EdgeInsets.all(28),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: Colors.green.shade50,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.check_circle_rounded,
+                  color: Colors.green, size: 52),
+            ),
+            const SizedBox(height: 18),
+            const Text('Payment Successful!',
+                style:
+                    TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Text(
+              '₹${_amountController.text} donated to $_selectedNgo',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+            ),
+            const SizedBox(height: 16),
+            _ReceiptTile(label: 'Payment ID', value: paymentId),
+            if (orderId != null)
+              _ReceiptTile(label: 'Order ID', value: orderId),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Done',
+                    style: TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.bold)),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text('🙏 Thank you for your generosity!',
+                style:
+                    TextStyle(fontSize: 11, color: Colors.grey.shade500)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ── Build ────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // NGO Dropdown
         Theme(
-            data: Theme.of(context).copyWith(
-              canvasColor: Colors.white,
+          data: Theme.of(context).copyWith(canvasColor: Colors.white),
+          child: DropdownButtonFormField<String>(
+            borderRadius: BorderRadius.circular(18),
+            decoration: AppInputDecoration.style("Select NGO"),
+            value: _selectedNgo,
+            items: _ngos
+                .map((n) => DropdownMenuItem(value: n, child: Text(n)))
+                .toList(),
+            onChanged: (v) => setState(() => _selectedNgo = v),
+          ),
+        ),
+
+        if (_selectedNgo != null) ...[
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.green.shade50,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.green.shade200),
             ),
-            child: DropdownButtonFormField<String>(
-              borderRadius: BorderRadius.circular(18),
-              decoration: AppInputDecoration.style("NGO Name"),
-              initialValue: _selectedNgo,
-              items: const [
-                DropdownMenuItem(
-                    value: "Helping Hands", child: Text("Helping Hands")),
-                DropdownMenuItem(
-                    value: "Care Foundation", child: Text("Care Foundation")),
+            child: Row(
+              children: [
+                Icon(Icons.verified, size: 16, color: Colors.green.shade700),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    '$_selectedNgo is a verified NGO partner',
+                    style: TextStyle(
+                        fontSize: 12, color: Colors.green.shade800),
+                  ),
+                ),
               ],
-              onChanged: (value) {
-                setState(() {
-                  _selectedNgo = value;
-                });
-              },
-            )),
+            ),
+          ),
+        ],
+
+        const SizedBox(height: 20),
+
+        // Quick amount chips
+        const Text("Quick Select Amount",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+        const SizedBox(height: 10),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: _quickAmounts.map((amt) {
+            final selected = _selectedQuickAmount == amt;
+            return GestureDetector(
+              onTap: () => setState(() {
+                _selectedQuickAmount = amt;
+                _amountController.text = amt.toString();
+              }),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: selected ? AppColors.primary : Colors.transparent,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: selected
+                        ? AppColors.primary
+                        : Colors.grey.shade300,
+                  ),
+                ),
+                child: Text(
+                  '₹$amt',
+                  style: TextStyle(
+                    color: selected ? Colors.white : Colors.grey.shade700,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+
         const SizedBox(height: 16),
+
         TextFormField(
           controller: _amountController,
           keyboardType: TextInputType.number,
-          decoration: AppInputDecoration.style("Amount"),
+          onChanged: (_) => setState(() => _selectedQuickAmount = null),
+          decoration: AppInputDecoration.style("Or enter custom amount (₹)"),
         ),
         const SizedBox(height: 16),
+
         TextFormField(
           controller: _contactController,
           keyboardType: TextInputType.phone,
           decoration: AppInputDecoration.style("Phone Number"),
         ),
         const SizedBox(height: 16),
+
         TextFormField(
           controller: _emailController,
           keyboardType: TextInputType.emailAddress,
           decoration: AppInputDecoration.style("Email"),
         ),
+
+        const SizedBox(height: 24),
+
+        _RazorpayBadge(),
         const SizedBox(height: 16),
-        Theme(
-          data: Theme.of(context).copyWith(
-            canvasColor: Colors.white,
-          ),
-          child: DropdownButtonFormField<String>(
-            borderRadius: BorderRadius.circular(18),
-            decoration: AppInputDecoration.style("Gateway"),
-            initialValue: 'Razorpay (Test Mode)',
-            items: const [
-              DropdownMenuItem(
-                value: 'Razorpay (Test Mode)',
-                child: Text('Razorpay (Test Mode)'),
-              ),
-            ],
-            onChanged: (_) {},
-          ),
-        ),
-        const SizedBox(height: 20),
+
         SizedBox(
-          width: 162,
+          width: double.infinity,
           height: 54,
-          child: ElevatedButton(
+          child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              elevation: 2,
+                  borderRadius: BorderRadius.circular(16)),
+              elevation: 3,
             ),
             onPressed: _isOpeningCheckout ? null : _startPayment,
-            child: Text(
-              _isOpeningCheckout ? "Opening..." : "Donate",
+            icon: _isOpeningCheckout
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(
+                        strokeWidth: 2, color: Colors.white))
+                : const Icon(Icons.volunteer_activism),
+            label: Text(
+              _isOpeningCheckout ? "Opening Razorpay…" : "Donate via Razorpay",
               style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+                  fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
         ),
+
+        const SizedBox(height: 12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.lock, size: 13, color: Colors.grey.shade500),
+            const SizedBox(width: 4),
+            Text(
+              'Secured with 256-bit SSL via Razorpay',
+              style:
+                  TextStyle(fontSize: 11, color: Colors.grey.shade500),
+            ),
+          ],
+        ),
       ],
+    );
+  }
+}
+
+// ── Shared widgets ─────────────────────────────────────────────────────────
+
+class _RazorpayBadge extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.blue.shade50,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.blue.shade100),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.payment, size: 18, color: Colors.blue.shade700),
+          const SizedBox(width: 8),
+          Text(
+            'Powered by Razorpay',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.blue.shade700,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: Colors.orange.shade100,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              'TEST MODE',
+              style: TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.orange.shade800),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ReceiptTile extends StatelessWidget {
+  final String label;
+  final String value;
+  const _ReceiptTile({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 88,
+            child: Text(label,
+                style: TextStyle(
+                    fontSize: 12, color: Colors.grey.shade600)),
+          ),
+          const Text(': ',
+              style: TextStyle(fontSize: 12, color: Colors.grey)),
+          Expanded(
+            child: Text(value,
+                style: const TextStyle(
+                    fontSize: 12, fontWeight: FontWeight.w600)),
+          ),
+        ],
+      ),
     );
   }
 }

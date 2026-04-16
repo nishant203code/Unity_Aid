@@ -487,11 +487,11 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
                           elevation: 2,
                         ),
                         onPressed: () {
-                          Navigator.pop(context); // Close dialog
+                          Navigator.pop(context); // close detail sheet
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => DonatePage(
+                              builder: (_) => DonatePage(
                                 prefilledCaseId: donationCase.id,
                               ),
                             ),

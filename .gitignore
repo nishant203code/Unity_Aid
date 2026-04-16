@@ -43,3 +43,17 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Node modules (backend dependencies)
+**/node_modules/
+**/package-lock.json
+
+# Flutter build output
+frontend/build/
+
+# Analysis output files
+frontend/analyze_*.txt
+
+# iOS & macOS build
+frontend/ios/
+frontend/macos/

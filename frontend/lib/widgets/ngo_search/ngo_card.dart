@@ -5,8 +5,13 @@ import '../../screens/ngo_search/ngo_detail_page.dart';
 
 class NGOCard extends StatelessWidget {
   final NGO ngo;
+  final String? distanceText;
 
-  const NGOCard({super.key, required this.ngo});
+  const NGOCard({
+    super.key,
+    required this.ngo,
+    this.distanceText,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +50,36 @@ class NGOCard extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text(
-                          ngo.location,
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                          ),
+                        Row(
+                          children: [
+                            Text(
+                              ngo.location,
+                              style: TextStyle(
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                            if (distanceText != null) ...[
+                              const SizedBox(width: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  distanceText!,
+                                  style: TextStyle(
+                                    color: AppColors.primary,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
                       ],
                     ),

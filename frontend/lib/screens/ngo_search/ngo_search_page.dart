@@ -3,6 +3,8 @@ import '../../models/ngo_model.dart';
 import '../../widgets/theme/app_colors.dart';
 import '../../widgets/ngo_search/ngo_card.dart';
 import '../../widgets/ngo_search/ngo_search_bar.dart';
+import '../../services/location_service.dart';
+import 'package:geolocator/geolocator.dart';
 
 class NGOSearchPage extends StatefulWidget {
   const NGOSearchPage({super.key});
@@ -16,6 +18,35 @@ class _NGOSearchPageState extends State<NGOSearchPage> {
   double minMembers = 0;
   double minFollowers = 0;
   final controller = TextEditingController();
+
+  Position? userPosition;
+  bool sortByLocation = true;
+
+  @override
+  void initState() {
+    super.initState();
+    filtered = ngos;
+    _initializeLocation();
+  }
+
+  /// Initialize user location
+  Future<void> _initializeLocation() async {
+    final position = await LocationService.getCurrentLocation();
+    if (mounted) {
+      setState(() {
+        userPosition = position;
+      });
+      // Apply filters with new location for sorting
+      applyFilters();
+    }
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
   void applyFilters() {
     setState(() {
       filtered = ngos.where((ngo) {
@@ -30,6 +61,27 @@ class _NGOSearchPageState extends State<NGOSearchPage> {
             matchesMembers &&
             matchesFollowers;
       }).toList();
+
+      // Sort by distance if user location is available
+      if (sortByLocation && userPosition != null) {
+        filtered.sort((a, b) {
+          final distanceA = LocationService.calculateDistance(
+            userPosition!.latitude,
+            userPosition!.longitude,
+            a.latitude,
+            a.longitude,
+          );
+
+          final distanceB = LocationService.calculateDistance(
+            userPosition!.latitude,
+            userPosition!.longitude,
+            b.latitude,
+            b.longitude,
+          );
+
+          return distanceA.compareTo(distanceB);
+        });
+      }
     });
   }
 
@@ -39,6 +91,8 @@ class _NGOSearchPageState extends State<NGOSearchPage> {
       name: "Care Foundation",
       description: "Providing disaster relief and emergency aid.",
       location: "Delhi",
+      latitude: 28.6139,
+      longitude: 77.2090,
       logoUrl: "https://i.pravatar.cc/150?img=10",
       members: 120,
       followers: 5400,
@@ -47,6 +101,8 @@ class _NGOSearchPageState extends State<NGOSearchPage> {
       name: "HopeWorks",
       description: "Helping underprivileged communities thrive.",
       location: "Mumbai",
+      latitude: 19.0760,
+      longitude: 72.8777,
       logoUrl: "https://i.pravatar.cc/150?img=11",
       members: 80,
       followers: 3200,
@@ -54,12 +110,6 @@ class _NGOSearchPageState extends State<NGOSearchPage> {
   ];
 
   List<NGO> filtered = [];
-
-  @override
-  void initState() {
-    filtered = ngos;
-    super.initState();
-  }
 
   void search(String query) {
     applyFilters();
@@ -86,7 +136,24 @@ class _NGOSearchPageState extends State<NGOSearchPage> {
               child: ListView.builder(
                 itemCount: filtered.length,
                 itemBuilder: (context, index) {
-                  return NGOCard(ngo: filtered[index]);
+                  final ngo = filtered[index];
+                  String? distanceText;
+
+                  // Calculate distance if user location is available
+                  if (userPosition != null && sortByLocation) {
+                    final distance = LocationService.calculateDistance(
+                      userPosition!.latitude,
+                      userPosition!.longitude,
+                      ngo.latitude,
+                      ngo.longitude,
+                    );
+                    distanceText = LocationService.formatDistance(distance);
+                  }
+
+                  return NGOCard(
+                    ngo: ngo,
+                    distanceText: distanceText,
+                  );
                 },
               ),
             ),
@@ -107,6 +174,7 @@ class _NGOSearchPageState extends State<NGOSearchPage> {
         String tempLocation = selectedLocation;
         double tempMembers = minMembers;
         double tempFollowers = minFollowers;
+        bool tempSortByLocation = sortByLocation;
 
         return StatefulBuilder(
           builder: (context, setModalState) {
@@ -135,6 +203,41 @@ class _NGOSearchPageState extends State<NGOSearchPage> {
                   ),
 
                   const SizedBox(height: 20),
+
+                  /// SORT BY LOCATION TOGGLE
+                  if (userPosition != null)
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(Icons.location_on),
+                              const SizedBox(width: 8),
+                              const Text(
+                                "Sort by Nearest Location",
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                          ),
+                          Switch(
+                            value: tempSortByLocation,
+                            onChanged: (val) {
+                              setModalState(() {
+                                tempSortByLocation = val;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  if (userPosition != null) const SizedBox(height: 20),
 
                   /// LOCATION DROPDOWN
                   DropdownButtonFormField<String>(
@@ -197,6 +300,7 @@ class _NGOSearchPageState extends State<NGOSearchPage> {
                           selectedLocation = tempLocation;
                           minMembers = tempMembers;
                           minFollowers = tempFollowers;
+                          sortByLocation = tempSortByLocation;
                         });
                         applyFilters();
                         Navigator.pop(context);
