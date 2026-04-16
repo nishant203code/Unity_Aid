@@ -68,6 +68,7 @@ class NGOProfilePage extends StatelessWidget {
 
             /// BASIC INFORMATION
             _buildSection(
+              context,
               title: "Basic Information",
               children: [
                 _InfoTile(
@@ -108,6 +109,7 @@ class NGOProfilePage extends StatelessWidget {
             if (currentNGO.registrationNumber != null ||
                 currentNGO.legalStatus != null)
               _buildSection(
+                context,
                 title: "Legal & Registration",
                 children: [
                   if (currentNGO.registrationNumber != null)
@@ -156,7 +158,7 @@ class NGOProfilePage extends StatelessWidget {
             /// CERTIFICATES
             if (currentNGO.certificates != null &&
                 currentNGO.certificates!.isNotEmpty)
-              _buildCertificatesSection(currentNGO),
+              _buildCertificatesSection(context, currentNGO),
 
             if (currentNGO.certificates != null &&
                 currentNGO.certificates!.isNotEmpty)
@@ -165,6 +167,7 @@ class NGOProfilePage extends StatelessWidget {
             /// MISSION & VISION
             if (currentNGO.mission != null || currentNGO.vision != null)
               _buildSection(
+                context,
                 title: "Mission & Vision",
                 children: [
                   if (currentNGO.mission != null)
@@ -190,6 +193,7 @@ class NGOProfilePage extends StatelessWidget {
             /// CONTACT INFORMATION
             if (currentNGO.email != null || currentNGO.phone != null)
               _buildSection(
+                context,
                 title: "Contact Information",
                 children: [
                   if (currentNGO.email != null)
@@ -227,6 +231,7 @@ class NGOProfilePage extends StatelessWidget {
             if (currentNGO.bankName != null ||
                 currentNGO.bankAccountNumber != null)
               _buildSection(
+                context,
                 title: "Banking Information",
                 children: [
                   if (currentNGO.bankName != null)
@@ -256,13 +261,13 @@ class NGOProfilePage extends StatelessWidget {
 
             /// IMPACT METRICS
             if (currentNGO.impactMetrics != null)
-              _buildImpactMetricsSection(currentNGO.impactMetrics!),
+              _buildImpactMetricsSection(context, currentNGO.impactMetrics!),
 
             if (currentNGO.impactMetrics != null) const SizedBox(height: 20),
 
             /// PROJECTS
             if (currentNGO.projects != null && currentNGO.projects!.isNotEmpty)
-              _buildProjectsSection(currentNGO),
+              _buildProjectsSection(context, currentNGO),
 
             if (currentNGO.projects != null && currentNGO.projects!.isNotEmpty)
               const SizedBox(height: 20),
@@ -270,7 +275,7 @@ class NGOProfilePage extends StatelessWidget {
             /// BOARD MEMBERS
             if (currentNGO.boardMembers != null &&
                 currentNGO.boardMembers!.isNotEmpty)
-              _buildBoardMembersSection(currentNGO),
+              _buildBoardMembersSection(context, currentNGO),
 
             if (currentNGO.boardMembers != null &&
                 currentNGO.boardMembers!.isNotEmpty)
@@ -363,14 +368,15 @@ class NGOProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildSection({
+  Widget _buildSection(
+    BuildContext context, {
     required String title,
     required List<Widget> children,
   }) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -400,11 +406,11 @@ class NGOProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildCertificatesSection(NGO ngo) {
+  Widget _buildCertificatesSection(BuildContext context, NGO ngo) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -449,11 +455,11 @@ class NGOProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildImpactMetricsSection(ImpactMetrics metrics) {
+  Widget _buildImpactMetricsSection(BuildContext context, ImpactMetrics metrics) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -497,11 +503,11 @@ class NGOProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProjectsSection(NGO ngo) {
+  Widget _buildProjectsSection(BuildContext context, NGO ngo) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -552,11 +558,11 @@ class NGOProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildBoardMembersSection(NGO ngo) {
+  Widget _buildBoardMembersSection(BuildContext context, NGO ngo) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -777,9 +783,9 @@ class _InfoTile extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
-                    color: Colors.grey,
+                    color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -789,7 +795,7 @@ class _InfoTile extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: valueColor ?? Colors.black87,
+                    color: valueColor ?? (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black87),
                   ),
                   maxLines: maxLines,
                   overflow: TextOverflow.ellipsis,

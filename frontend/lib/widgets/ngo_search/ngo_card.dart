@@ -55,7 +55,7 @@ class NGOCard extends StatelessWidget {
                             Text(
                               ngo.location,
                               style: TextStyle(
-                                color: Colors.grey.shade600,
+                                color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey.shade600,
                               ),
                             ),
                             if (distanceText != null) ...[

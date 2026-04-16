@@ -231,7 +231,7 @@ class _NGODetailPageState extends State<NGODetailPage> {
                 children: ngo.projectTypes!
                     .map((type) => Chip(
                           label: Text(type),
-                          backgroundColor: Colors.blue.shade50,
+                          backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.blue.shade900 : Colors.blue.shade50,
                         ))
                     .toList(),
               ),
@@ -507,7 +507,7 @@ class _NGODetailPageState extends State<NGODetailPage> {
                       children: [
                         Text(
                           member.position,
-                          style: TextStyle(color: Colors.blue.shade700),
+                          style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.blue.shade300 : Colors.blue.shade700),
                         ),
                         const SizedBox(height: 4),
                         Text(member.background),
@@ -561,8 +561,8 @@ class _NGODetailPageState extends State<NGODetailPage> {
                           Chip(
                             label: Text(project.status),
                             backgroundColor: project.status == 'Completed'
-                                ? Colors.green.shade100
-                                : Colors.blue.shade100,
+                                ? (Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1B3B24) : Colors.green.shade100)
+                                : (Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E3A5F) : Colors.blue.shade100),
                           ),
                         ],
                       ),
@@ -593,20 +593,20 @@ class _NGODetailPageState extends State<NGODetailPage> {
                       Row(
                         children: [
                           Icon(Icons.calendar_today,
-                              size: 16, color: Colors.grey.shade600),
+                              size: 16, color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey.shade600),
                           const SizedBox(width: 4),
                           Text(
                             'Started: ${project.startDate.year}-${project.startDate.month}-${project.startDate.day}',
-                            style: TextStyle(color: Colors.grey.shade600),
+                            style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey.shade600),
                           ),
                           if (project.endDate != null) ...[
                             const SizedBox(width: 16),
                             Icon(Icons.event_available,
-                                size: 16, color: Colors.grey.shade600),
+                                size: 16, color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey.shade600),
                             const SizedBox(width: 4),
                             Text(
                               'Ended: ${project.endDate!.year}-${project.endDate!.month}-${project.endDate!.day}',
-                              style: TextStyle(color: Colors.grey.shade600),
+                              style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey.shade600),
                             ),
                           ],
                         ],
@@ -616,19 +616,19 @@ class _NGODetailPageState extends State<NGODetailPage> {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: Colors.green.shade50,
+                            color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1B3B24) : Colors.green.shade50,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Row(
                             children: [
                               Icon(Icons.check_circle,
-                                  color: Colors.green.shade700),
+                                  color: Theme.of(context).brightness == Brightness.dark ? Colors.green.shade400 : Colors.green.shade700),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
                                   'Outcome: ${project.outcome!}',
                                   style:
-                                      TextStyle(color: Colors.green.shade900),
+                                      TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.green.shade100 : Colors.green.shade900),
                                 ),
                               ),
                             ],
@@ -740,7 +740,7 @@ class _NGODetailPageState extends State<NGODetailPage> {
                                     Text(
                                       '${review.date.year}-${review.date.month}-${review.date.day}',
                                       style: TextStyle(
-                                        color: Colors.grey.shade600,
+                                        color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey.shade600,
                                         fontSize: 12,
                                       ),
                                     ),
@@ -955,9 +955,9 @@ class _NGODetailPageState extends State<NGODetailPage> {
             flex: 2,
             child: Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Colors.grey,
+                color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey,
               ),
             ),
           ),
@@ -1015,7 +1015,7 @@ class _NGODetailPageState extends State<NGODetailPage> {
           borderRadius: BorderRadius.circular(8),
           child: LinearProgressIndicator(
             value: percentage / 100,
-            backgroundColor: Colors.grey.shade200,
+            backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade800 : Colors.grey.shade200,
             valueColor: AlwaysStoppedAnimation<Color>(color),
             minHeight: 24,
           ),
@@ -1031,7 +1031,7 @@ class _NGODetailPageState extends State<NGODetailPage> {
         color: Theme.of(context).cardColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.shade300,
+            color: Theme.of(context).brightness == Brightness.dark ? Colors.black45 : Colors.grey.shade300,
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),

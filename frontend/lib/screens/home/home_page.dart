@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/theme/app_colors.dart';
+import '../ngo_search/ngo_search_page.dart';
 import 'widgets/home_stat_card.dart';
 import 'widgets/animated_circular_stat.dart';
 
@@ -152,7 +153,20 @@ class HomePage extends StatelessWidget {
                   ),
                   elevation: 6,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  if (!isNGO) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const NGOSearchPage(),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Locate Emergencies coming soon!')),
+                    );
+                  }
+                },
 
                 /// 🔥 DYNAMIC ICON
                 icon: Icon(
