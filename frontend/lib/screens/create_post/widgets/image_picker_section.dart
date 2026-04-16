@@ -64,13 +64,18 @@ class ImagePickerSectionState extends State<ImagePickerSection> {
   @override
   Widget build(BuildContext context) {
     final allMedia = getAllMedia();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           "Attachments (Images, Videos, Audio)",
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+            color: isDark ? Colors.white : Colors.black87,
+          ),
         ),
         const SizedBox(height: 12),
 
@@ -97,7 +102,7 @@ class ImagePickerSectionState extends State<ImagePickerSection> {
                       child: Container(
                         width: 90,
                         height: 90,
-                        color: Colors.grey.shade200,
+                        color: isDark ? const Color(0xFF3A3A3A) : Colors.grey.shade200,
                         child: isAudio
                             ? const Center(
                                 child: Icon(Icons.audio_file_outlined),

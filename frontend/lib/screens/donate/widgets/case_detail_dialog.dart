@@ -23,8 +23,9 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
       maxChildSize: 0.95,
       builder: (context, scrollController) {
         return Container(
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(
             children: [
@@ -165,12 +166,12 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
                             Row(
                               children: [
                                 Icon(Icons.location_on,
-                                    size: 18, color: Colors.grey.shade600),
+                                    size: 18, color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey.shade600),
                                 const SizedBox(width: 4),
                                 Text(
                                   donationCase.location,
                                   style: TextStyle(
-                                    color: Colors.grey.shade600,
+                                    color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey.shade600,
                                     fontSize: 14,
                                   ),
                                 ),
@@ -211,7 +212,7 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
                               child: Text(
                                 donationCase.caseStory,
                                 style: TextStyle(
-                                  color: Colors.grey.shade800,
+                                  color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade300 : Colors.grey.shade800,
                                   fontSize: 15,
                                   height: 1.6,
                                 ),
@@ -248,7 +249,7 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
                                             child: Text(
                                               entry.value,
                                               style: TextStyle(
-                                                color: Colors.grey.shade800,
+                                                color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade300 : Colors.grey.shade800,
                                                 fontSize: 14,
                                               ),
                                             ),
@@ -267,18 +268,18 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
                             // Current Status
                             _buildSectionTitle('Current Status'),
                             _buildInfoCard(
-                              backgroundColor: Colors.blue.shade50,
+                              backgroundColor: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E3A5F) : Colors.blue.shade50,
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Icon(Icons.info_outline,
-                                      color: Colors.blue.shade700),
+                                      color: Theme.of(context).brightness == Brightness.dark ? Colors.blue.shade300 : Colors.blue.shade700),
                                   const SizedBox(width: 12),
                                   Expanded(
                                     child: Text(
                                       donationCase.currentStatus,
                                       style: TextStyle(
-                                        color: Colors.blue.shade900,
+                                        color: Theme.of(context).brightness == Brightness.dark ? Colors.blue.shade100 : Colors.blue.shade900,
                                         fontSize: 14,
                                       ),
                                     ),
@@ -395,7 +396,7 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
 
                             // Supporters Info
                             _buildInfoCard(
-                              backgroundColor: Colors.green.shade50,
+                              backgroundColor: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1B3B24) : Colors.green.shade50,
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
@@ -409,7 +410,7 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
                                   Container(
                                     height: 40,
                                     width: 1,
-                                    color: Colors.green.shade200,
+                                    color: Theme.of(context).brightness == Brightness.dark ? Colors.green.shade800 : Colors.green.shade200,
                                   ),
                                   _buildStatColumn(
                                     icon: Icons.schedule,
@@ -419,7 +420,7 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
                                   Container(
                                     height: 40,
                                     width: 1,
-                                    color: Colors.green.shade200,
+                                    color: Theme.of(context).brightness == Brightness.dark ? Colors.green.shade800 : Colors.green.shade200,
                                   ),
                                   _buildStatColumn(
                                     icon: Icons.share,
@@ -461,7 +462,7 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
                           Text(
                             'Still Needed',
                             style: TextStyle(
-                              color: Colors.grey.shade600,
+                              color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey.shade600,
                               fontSize: 12,
                             ),
                           ),
@@ -527,9 +528,9 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSurface : Colors.grey.shade50,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.transparent : Colors.grey.shade200),
       ),
       child: Column(
         children: [
@@ -549,7 +550,7 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
                   Text(
                     'raised of â‚¹${_formatAmount(donationCase.targetAmount)}',
                     style: TextStyle(
-                      color: Colors.grey.shade600,
+                      color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey.shade600,
                       fontSize: 12,
                     ),
                   ),
@@ -578,7 +579,7 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
             child: LinearProgressIndicator(
               value: donationCase.progressPercentage / 100,
               minHeight: 12,
-              backgroundColor: Colors.grey.shade300,
+              backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade800 : Colors.grey.shade300,
               valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
             ),
           ),
@@ -624,7 +625,7 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
           child: Text(
             label,
             style: TextStyle(
-              color: Colors.grey.shade600,
+              color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey.shade600,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -649,7 +650,7 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: Colors.green.shade700),
+        Icon(icon, color: Theme.of(context).brightness == Brightness.dark ? Colors.green.shade400 : Colors.green.shade700),
         const SizedBox(height: 4),
         Text(
           value,
@@ -661,7 +662,7 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
         Text(
           label,
           style: TextStyle(
-            color: Colors.grey.shade600,
+            color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey.shade600,
             fontSize: 11,
           ),
         ),

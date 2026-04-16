@@ -62,16 +62,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   Widget _sectionCard(String title, List<Widget> children) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? AppColors.darkCard : Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.primary.withOpacity(0.08)),
+        border: Border.all(color: AppColors.primary.withOpacity(0.10)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withOpacity(isDark ? 0.18 : 0.04),
             blurRadius: 18,
             offset: const Offset(0, 8),
           ),
@@ -82,9 +84,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w700,
+              color: isDark ? AppColors.darkTextPrimary : Colors.black87,
             ),
           ),
           const SizedBox(height: 14),

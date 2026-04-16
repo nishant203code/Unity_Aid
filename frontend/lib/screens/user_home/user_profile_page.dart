@@ -47,6 +47,7 @@ class UserProfilePage extends StatelessWidget {
 
             /// PERSONAL INFO SECTION
             _buildSection(
+              context,
               title: "Personal Information",
               children: [
                 _InfoTile(
@@ -78,6 +79,7 @@ class UserProfilePage extends StatelessWidget {
 
             /// FAMILY INFO SECTION
             _buildSection(
+              context,
               title: "Family Information",
               children: [
                 _InfoTile(
@@ -97,6 +99,7 @@ class UserProfilePage extends StatelessWidget {
 
             /// ADDRESS SECTION
             _buildSection(
+              context,
               title: "Address",
               children: [
                 _InfoTile(
@@ -111,12 +114,13 @@ class UserProfilePage extends StatelessWidget {
             const SizedBox(height: 20),
 
             /// JOINED NGOs SECTION
-            _buildJoinedNGOsSection(currentUser),
+            _buildJoinedNGOsSection(context, currentUser),
 
             const SizedBox(height: 20),
 
             /// ACCOUNT INFO
             _buildSection(
+              context,
               title: "Account Information",
               children: [
                 _InfoTile(
@@ -233,14 +237,15 @@ class UserProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildSection({
+  Widget _buildSection(
+    BuildContext context, {
     required String title,
     required List<Widget> children,
   }) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -270,9 +275,10 @@ class UserProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildJoinedNGOsSection(UserModel user) {
+  Widget _buildJoinedNGOsSection(BuildContext context, UserModel user) {
     if (user.joinedNGOIds.isEmpty) {
       return _buildSection(
+        context,
         title: "Joined NGOs",
         children: [
           const Padding(
@@ -286,7 +292,7 @@ class UserProfilePage extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -544,9 +550,9 @@ class _InfoTile extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
-                    color: Colors.grey,
+                    color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -556,7 +562,7 @@ class _InfoTile extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: valueColor ?? Colors.black87,
+                    color: valueColor ?? (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black87),
                   ),
                   maxLines: maxLines,
                   overflow: TextOverflow.ellipsis,

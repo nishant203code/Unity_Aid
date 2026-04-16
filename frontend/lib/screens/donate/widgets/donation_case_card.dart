@@ -104,7 +104,7 @@ class DonationCaseCard extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.category,
-                          size: 16, color: Colors.grey.shade600),
+                          size: 16, color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey.shade600),
                       const SizedBox(width: 4),
                       Text(
                         donationCase.category,
@@ -116,13 +116,13 @@ class DonationCaseCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 16),
                       Icon(Icons.location_on,
-                          size: 16, color: Colors.grey.shade600),
+                          size: 16, color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey.shade600),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
                           donationCase.location,
                           style: TextStyle(
-                            color: Colors.grey.shade600,
+                            color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey.shade600,
                             fontSize: 12,
                           ),
                           overflow: TextOverflow.ellipsis,
@@ -148,7 +148,7 @@ class DonationCaseCard extends StatelessWidget {
                   Text(
                     donationCase.shortDescription,
                     style: TextStyle(
-                      color: Colors.grey.shade700,
+                      color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade300 : Colors.grey.shade700,
                       fontSize: 14,
                     ),
                     maxLines: 2,
@@ -173,7 +173,7 @@ class DonationCaseCard extends StatelessWidget {
                           Text(
                             'Goal: ₹${_formatAmount(donationCase.targetAmount)}',
                             style: TextStyle(
-                              color: Colors.grey.shade600,
+                              color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey.shade600,
                               fontSize: 12,
                             ),
                           ),
@@ -197,12 +197,12 @@ class DonationCaseCard extends StatelessWidget {
                           Row(
                             children: [
                               Icon(Icons.people,
-                                  size: 16, color: Colors.grey.shade600),
+                                  size: 16, color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey.shade600),
                               const SizedBox(width: 4),
                               Text(
                                 '${donationCase.supportersCount} supporters',
                                 style: TextStyle(
-                                  color: Colors.grey.shade600,
+                                  color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey.shade600,
                                   fontSize: 12,
                                 ),
                               ),
@@ -215,7 +215,7 @@ class DonationCaseCard extends StatelessWidget {
                                 size: 16,
                                 color: donationCase.isExpiringSoon
                                     ? Colors.red
-                                    : Colors.grey.shade600,
+                                    : (Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey.shade600),
                               ),
                               const SizedBox(width: 4),
                               Text(
@@ -223,7 +223,7 @@ class DonationCaseCard extends StatelessWidget {
                                 style: TextStyle(
                                   color: donationCase.isExpiringSoon
                                       ? Colors.red
-                                      : Colors.grey.shade600,
+                                      : (Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey.shade600),
                                   fontSize: 12,
                                   fontWeight: donationCase.isExpiringSoon
                                       ? FontWeight.bold
