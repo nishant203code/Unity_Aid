@@ -12,6 +12,7 @@ service-account*.json
 
 # Dependencies
 node_modules/
+package-lock.json
 
 # TypeScript Build Output
 functions/lib/

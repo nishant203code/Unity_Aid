@@ -1,59 +1,137 @@
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.build/
-.buildlog/
-.history
-.svn/
-.swiftpm/
-migrate_working_dir/
+# ============================================
+#  UnityAid — Root .gitignore
+# ============================================
 
-# IntelliJ related
+# ─── Credentials & Secrets ───
+.env
+.env.*
+!.env.example
+.env.local
+.env.development
+.env.production
+*.secret
+*.pem
+*.p12
+*.key
+*.keystore
+*.jks
+serviceAccountKey.json
+service-account*.json
+*-credentials.json
+gcloud-*.json
+.runtimeconfig.json
+.firebaserc
+
+# Firebase project-specific config (contains API keys)
+**/google-services.json
+**/GoogleService-Info.plist
+
+# ─── Dependencies ───
+node_modules/
+.pnp/
+.pnp.js
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# ─── Build Outputs ───
+dist/
+build/
+[Bb]uild/
+[Bb]uilds/
+out/
+*.apk
+*.aab
+*.aar
+*.ipa
+
+# ─── OS Files ───
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*~
+
+# ─── Logs ───
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+firebase-debug.log
+firestore-debug.log
+pubsub-debug.log
+ui-debug.log
+debug_output.txt
+analyze_output.txt
+analysis.log
+
+# ─── IDE & Editor ───
+.vscode/
+.idea/
 *.iml
 *.ipr
 *.iws
-.idea/
+*.swp
+*.swo
+.gradle/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+# ─── Archives ───
+*.zip
+*.tar.gz
+*.rar
+*.7z
 
-# Flutter/Dart/Pub related
+# ─── Flutter / Dart ───
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
+.flutter-plugins
 .flutter-plugins-dependencies
+.packages
 .pub-cache/
 .pub/
-/build/
-/coverage/
+pubspec.lock
+coverage/
+*.symbols
+*.map.json
+.metadata
 
-# Symbolication related
-app.*.symbols
+# ─── Android ───
+**/android/.gradle/
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/local.properties
 
-# Obfuscation related
-app.*.map.json
+# ─── iOS ───
+**/ios/Pods/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+Pods/
+*.xcworkspace/
+*.xcodeproj/
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+# ─── macOS ───
+**/macos/Flutter/GeneratedPluginRegistrant.swift
 
-# Node modules (backend dependencies)
-**/node_modules/
-**/package-lock.json
+# ─── Firebase Functions Build Output ───
+backend/functions/lib/
+*.js.map
+typings/
 
-# Flutter build output
-frontend/build/
+# ─── DataConnect Generated Code ───
+**/dataconnect_generated/
 
-# Analysis output files
-frontend/analyze_*.txt
-
-# iOS & macOS build
-frontend/ios/
-frontend/macos/
+# ─── Temp / Cache ───
+temp/
+.cache/
+.temp/
+*.tmp
