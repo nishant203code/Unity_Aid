@@ -1,159 +1,137 @@
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.build/
-.buildlog/
-.history
-.svn/
-.swiftpm/
-migrate_working_dir/
+# ============================================
+#  UnityAid — Root .gitignore
+# ============================================
 
-# IntelliJ related
-*.iml
-*.ipr
-*.iws
-.idea/
-
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
-frontend/.dart_tool/
-frontend/.flutter-plugins-dependencies
-.pub-cache/
-.pub/
-frontend/build/
-frontend/coverage/
-
-# Symbolication related
-frontend/app.*.symbols
-
-# Obfuscation related
-frontend/app.*.map.json
-
-# Android Studio will place build artifacts here
-frontend/android/app/debug
-frontend/android/app/profile
-frontend/android/app/release
-
-# Build directories
-/build/
-frontend/build/
-
-# Archive and compressed files
-*.zip
-*.tar.gz
-*.rar
-*.7z
-
-# OS specific files
-Thumbs.db
-.DS_Store
-*.swp
-*~
-
-# Local environment variables
+# ─── Credentials & Secrets ───
 .env
+.env.*
+!.env.example
 .env.local
-
-# IDE cache folders
-frontend/.gradle/
-frontend/*.gradle
-frontend/local.properties
-
-# ===== Unity specific =====
-[Ll]ibrary/
-[Tt]emp/
-[Oo]bj/
-[Bb]uild/
-[Bb]uilds/
-[Ll]ogs/
-[Uu]ser[Ss]ettings/
-*.sln
-*.csproj
-*.unitypackage
-
-# ===== Firebase & Google Services =====
-# (Removed firebase components from gitignore per user request)
-GoogleService-Info.plist
+.env.development
+.env.production
+*.secret
+*.pem
+*.p12
+*.key
+*.keystore
+*.jks
+serviceAccountKey.json
+service-account*.json
+*-credentials.json
+gcloud-*.json
 .runtimeconfig.json
 .firebaserc
 
-# Logs and temporary files
-analyze_output.txt
-debug_output.txt
-temp/
-.cache/
-*.log
+# Firebase project-specific config files
+# (google-services.json contains API keys & OAuth client IDs)
+**/google-services.json
+**/GoogleService-Info.plist
 
-# Firebase tools & emulator
-functions/lib/
-
-# Node modules & npm
+# ─── Dependencies ───
 node_modules/
-package-lock.json
-yarn.lock
-*.local
+.pnp/
+.pnp.js
+venv/
+.venv/
+__pycache__/
+*.pyc
 
-# ===== Flutter/Dart specific =====
-frontend/.dart_tool/
-frontend/.flutter-plugins-dependencies
-frontend/.metadata
-frontend/build/
-frontend/pubspec.lock
-frontend/.packages
-frontend/ios/Flutter/Generated.xcconfig
-frontend/ios/Flutter/flutter_export_environment.sh
-
-# Android build output
-frontend/android/.gradle/
-frontend/android/app/debug/
-frontend/android/app/profile/
-frontend/android/app/release/
+# ─── Build Outputs ───
+dist/
+build/
+[Bb]uild/
+[Bb]uilds/
+out/
 *.apk
 *.aab
 *.aar
+*.ipa
 
-# iOS build output
-frontend/ios/Pods/
-frontend/ios/Pods/
-frontend/ios/Flutter/Flutter.framework
-Pods/
-*.xcworkspace/
-*.xcodeproj/
+# ─── OS Files ───
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*~
 
-# Web build output
-frontend/web/js/
-frontend/web/wasm/
+# ─── Logs ───
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+firebase-debug.log
+firestore-debug.log
+pubsub-debug.log
+ui-debug.log
+debug_output.txt
+analyze_output.txt
+analysis.log
 
-# DataConnect generated code
-frontend/lib/dataconnect_generated/
-**/dataconnect_generated/
-
-# TypeScript/JavaScript build
-functions/lib/
-*.js.map
-typings/
-
-# Gradle
-frontend/android/.gradle/
-frontend/android/local.properties
-frontend/android/gradlew
-frontend/android/gradlew.bat
-
-# IDE-specific
+# ─── IDE & Editor ───
 .vscode/
 .idea/
 *.iml
 *.ipr
 *.iws
+*.swp
+*.swo
+.gradle/
+
+# ─── Archives ───
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# ─── Flutter / Dart ───
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+pubspec.lock
+coverage/
+*.symbols
+*.map.json
+
+# ─── Android ───
+**/android/.gradle/
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/local.properties
+
+# ─── iOS ───
+**/ios/Pods/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+Pods/
 *.xcworkspace/
 *.xcodeproj/
-.gradle/
-*.swp
-*~
-.DS_Store
-Thumbs.db
+
+# ─── macOS ───
+**/macos/Flutter/GeneratedPluginRegistrant.swift
+
+# ─── Firebase Functions ───
+backend/functions/lib/
+*.js.map
+typings/
+
+# ─── DataConnect Generated Code ───
+**/dataconnect_generated/
+
+# ─── Temp / Cache ───
+temp/
+.cache/
+.temp/
+*.tmp

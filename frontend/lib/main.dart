@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'firebase_options.dart';
 import 'screens/splash_screen.dart';
 import 'screens/news_feed/news_feed_page.dart';
@@ -13,11 +16,29 @@ import 'screens/settings/settings_page.dart';
 import 'widgets/theme/theme_provider.dart';
 import 'widgets/theme/app_colors.dart';
 
+const bool _useFirebaseEmulators = bool.fromEnvironment(
+  'USE_FIREBASE_EMULATORS',
+  defaultValue: false,
+);
+
+const String _emulatorHost = String.fromEnvironment(
+  'FIREBASE_EMULATOR_HOST',
+  defaultValue: '127.0.0.1',
+);
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  if (_useFirebaseEmulators) {
+    // Toggle with --dart-define at runtime, avoiding code edits between local and prod runs.
+    FirebaseAuth.instance.useAuthEmulator(_emulatorHost, 9099);
+    FirebaseFirestore.instance.useFirestoreEmulator(_emulatorHost, 8080);
+    FirebaseStorage.instance.useStorageEmulator(_emulatorHost, 9199);
+  }
+
   runApp(
     ChangeNotifierProvider(
       create: (_) => ThemeProvider(),

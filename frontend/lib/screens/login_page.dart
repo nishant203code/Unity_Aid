@@ -25,19 +25,67 @@ class _LoginPageState extends State<LoginPage> {
   int selectedRole = 0;
   bool isLoading = false;
 
+  // ✅ FIX: Cooldown to prevent rapid repeat login attempts
+  DateTime? _lastLoginAttempt;
+  static const _loginCooldown = Duration(seconds: 3);
+
+  // ✅ FIX: Email format regex
+  static final _emailRegex = RegExp(r'^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}$');
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   Future<void> handleLogin() async {
     final email = emailController.text.trim();
     final password = passwordController.text;
-    if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter email and password')),
-      );
+
+    // ✅ FIX 1: Validate email format before submitting
+    if (email.isEmpty) {
+      _showError('Please enter your email address.');
       return;
     }
+    if (!_emailRegex.hasMatch(email)) {
+      _showError('Please enter a valid email address (e.g. name@example.com).');
+      return;
+    }
+
+    // ✅ FIX 2: Password must be non-empty and at least 8 characters
+    if (password.isEmpty) {
+      _showError('Please enter your password.');
+      return;
+    }
+    if (password.length < 8) {
+      _showError('Password must be at least 8 characters.');
+      return;
+    }
+
+    // ✅ FIX 3: Cooldown — block rapid repeat submissions
+    final now = DateTime.now();
+    if (_lastLoginAttempt != null &&
+        now.difference(_lastLoginAttempt!) < _loginCooldown) {
+      final remaining =
+          _loginCooldown.inSeconds -
+          now.difference(_lastLoginAttempt!).inSeconds;
+      _showError('Please wait $remaining seconds before trying again.');
+      return;
+    }
+    _lastLoginAttempt = now;
 
     setState(() => isLoading = true);
     try {
       await AuthService.signInWithEmail(email, password);
+
+      // ✅ FIX 4: Verify the session/auth token was actually set
+      final user = AuthService.currentUser;
+      if (user == null) {
+        _showError('Login succeeded but session was not created. Please try again.');
+        return;
+      }
+
       if (!mounted) return;
       await _navigateAfterAuth(isNGO: selectedRole == 1);
     } on FirebaseAuthException catch (e) {
@@ -58,20 +106,47 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  /// Helper to show a warning-style snackbar for validation errors
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
+    );
+  }
+
   Future<void> handleGoogleSignIn() async {
     setState(() => isLoading = true);
     try {
       final result = await AuthService.signInWithGoogle();
       if (result == null) {
-        if (mounted) setState(() => isLoading = false);
-        return; // User cancelled
+        // User cancelled — just reset loading, no error
+        if (mounted) {
+          setState(() => isLoading = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Google Sign-In was cancelled.'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        }
+        return;
       }
       if (!mounted) return;
       await _navigateAfterAuth(isNGO: selectedRole == 1);
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AuthService.getErrorMessage(e.code)),
+          backgroundColor: Colors.red,
+        ),
+      );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Google Sign-In failed: $e'), backgroundColor: Colors.red),
+        SnackBar(
+          content: Text('Google Sign-In failed: $e'),
+          backgroundColor: Colors.red,
+        ),
       );
     } finally {
       if (mounted) setState(() => isLoading = false);

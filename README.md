@@ -3,6 +3,7 @@
 > A comprehensive Flutter application connecting donors with NGOs and charitable causes
 
 [![Flutter Version](https://img.shields.io/badge/Flutter-3.0%2B-blue.svg)](https://flutter.dev/)
+[![Firebase](https://img.shields.io/badge/Firebase-Backend-orange.svg)](https://firebase.google.com/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 UnityAid is a mobile application designed to bridge the gap between donors and Non-Governmental Organizations (NGOs). The platform facilitates transparent donations, real-time communication, and community engagement for social causes.
@@ -14,13 +15,14 @@ UnityAid is a mobile application designed to bridge the gap between donors and N
 - [Features](#features)
 - [Screenshots](#screenshots)
 - [Tech Stack](#tech-stack)
-- [Installation](#installation)
-- [Usage](#usage)
+- [Prerequisites](#prerequisites)
+- [Quick Start](#-quick-start)
+- [Credentials Setup](#-credentials-setup-important)
+- [Firebase Configuration](#-firebase-configuration)
+- [Running the Project](#-running-the-project)
 - [Project Structure](#project-structure)
-- [Configuration](#configuration)
 - [Contributing](#contributing)
 - [License](#license)
-- [Contact](#contact)
 
 ---
 
@@ -51,8 +53,6 @@ UnityAid is a mobile application designed to bridge the gap between donors and N
 
 ## 📸 Screenshots
 
-> Add your application screenshots here to showcase the UI and features
-
 ### Authentication Screens
 | User Dashboard | Login | Sign Up |
 |:------------:|:-----:|:-------:|
@@ -73,98 +73,217 @@ UnityAid is a mobile application designed to bridge the gap between donors and N
 |:----------:|:--------:|:------------:|
 | ![News](screenshots/news.jpg) | ![Settings](screenshots/settings.jpg) | ![Verification](screenshots/verification.jpg) |
 
-**📝 Note**: Create a `screenshots` folder in the root directory and add your app screenshots with the corresponding names.
-
 ---
 
 ## 🛠️ Tech Stack
 
-### Frontend
-- **Framework**: [Flutter](https://flutter.dev/) (SDK 3.0+)
-- **Language**: Dart
-- **State Management**: Provider
-
-### Key Dependencies
-- `image_picker` - Image selection functionality
-- `cached_network_image` - Efficient image loading and caching
-- `url_launcher` - Launch URLs and external links
-- `provider` - State management solution
-- `cupertino_icons` - iOS-style icons
-
-### Integrations
-- **Firebase**: Native Firestore integration and robust Firebase Authentication
-- **DigiLocker API**: Verification system for NGOs
-- **Payment Gateway**: Seamless processing for donations
-- **AI Chat Service**: Smart donor assistance
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | Flutter (SDK 3.0+), Dart, Provider |
+| **Backend** | Firebase Cloud Functions (TypeScript) |
+| **Database** | Cloud Firestore |
+| **Auth** | Firebase Authentication (Email/Password + Google) |
+| **Storage** | Firebase Storage |
+| **Messaging** | Firebase Cloud Messaging (FCM) |
+| **Payments** | Razorpay |
+| **Data API** | Firebase DataConnect (GraphQL) |
 
 ---
 
-## 🚀 Installation
+## 📦 Prerequisites
 
-### Prerequisites
-- Flutter SDK (3.0 or higher)
-- Dart SDK (included with Flutter)
-- Android Studio / VS Code
-- Git
+Ensure you have the following installed before starting:
 
-### Steps
+| Tool | Version | Check Command |
+|------|---------|---------------|
+| **Flutter SDK** | 3.0+ | `flutter --version` |
+| **Dart SDK** | (included with Flutter) | `dart --version` |
+| **Node.js** | 18+ | `node -v` |
+| **npm** | 9+ | `npm -v` |
+| **Java JDK** | **21+** | `java -version` |
+| **Firebase CLI** | Latest | `firebase --version` |
+| **Git** | Any | `git --version` |
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/unityaid.git
-   cd unityaid
-   ```
+> ⚠️ **Java 21+ is required** for Firebase Emulators. Download from [Adoptium](https://adoptium.net/).
 
-2. **Navigate to the frontend**
-   ```bash
-   cd frontend
-   ```
-
-3. **Install dependencies**
-   ```bash
-   flutter pub get
-   ```
-
-4. **Run the app**
-   ```bash
-   # For Android
-   flutter run
-
-   # For iOS (macOS only)
-   flutter run -d ios
-
-   # For Web
-   flutter run -d chrome
-   ```
-
-5. **Build APK (Android)**
-   ```bash
-   flutter build apk --release
-   ```
-
-6. **Build iOS App (macOS only)**
-   ```bash
-   flutter build ios --release
-   ```
+### Install Firebase CLI (if not installed)
+```bash
+npm install -g firebase-tools
+firebase login
+```
 
 ---
 
-## 📖 Usage
+## 🚀 Quick Start
 
-### For Donors
+```bash
+# 1. Clone the repository
+git clone https://github.com/yourusername/Unity_Aid.git
+cd Unity_Aid
 
-1. **Sign Up**: Create an account as a donor
-2. **Browse**: Explore donation cases and NGO profiles
-3. **Donate**: Select a cause and make a contribution
-4. **Track**: Monitor the impact of your donations through updates
+# 2. Set up credentials (see Credentials Setup section below)
 
-### For NGOs
+# 3. Install backend dependencies
+cd backend/functions
+npm install
 
-1. **Register**: Sign up as an NGO
-2. **Verify**: Complete verification through DigiLocker
-3. **Create Campaigns**: Post donation cases and fundraising campaigns
-4. **Engage**: Share updates and communicate with donors
-5. **Monitor**: Track donations and campaign performance through the dashboard
+# 4. Build backend TypeScript
+npm run build
+
+# 5. Install frontend dependencies
+cd ../../frontend
+flutter pub get
+
+# 6. Start Firebase Emulators (Terminal 1)
+cd ../backend
+firebase emulators:start
+
+# 7. Run Flutter app (Terminal 2)
+cd ../frontend
+flutter run
+```
+
+---
+
+## 🔐 Credentials Setup (IMPORTANT)
+
+The following files contain **secrets and API keys** and are **NOT included** in the repository. You must create them locally.
+
+### Files You Must Create
+
+| File | Location | How to Obtain |
+|------|----------|---------------|
+| `google-services.json` | `frontend/android/app/` | Firebase Console → Project Settings → Android app → Download |
+| `GoogleService-Info.plist` | `frontend/ios/Runner/` | Firebase Console → Project Settings → iOS app → Download |
+| `firebase_options.dart` | `frontend/lib/` | Run `flutterfire configure` in the `frontend/` directory |
+| `.firebaserc` | `backend/` | Run `firebase use --add` and select your project |
+| `serviceAccountKey.json` | `backend/` | Firebase Console → Project Settings → Service Accounts → Generate Key |
+| `.env` | `backend/` and `frontend/` | Copy from `.env.example` and fill in values |
+
+### Step-by-Step
+
+#### 1. Create a Firebase Project
+1. Go to [Firebase Console](https://console.firebase.google.com)
+2. Click **Add Project** → Name it (e.g., `unity-aid`)
+3. Enable **Google Analytics** (optional)
+
+#### 2. Register Android App
+1. Firebase Console → **Project Settings** → **Add App** → Android
+2. Package name: `com.example.unityaid`
+3. Download `google-services.json`
+4. Place it at: `frontend/android/app/google-services.json`
+
+#### 3. Register iOS App (macOS only)
+1. Firebase Console → **Add App** → iOS
+2. Bundle ID: `com.example.unityaid`
+3. Download `GoogleService-Info.plist`
+4. Place it at: `frontend/ios/Runner/GoogleService-Info.plist`
+
+#### 4. Generate `firebase_options.dart`
+```bash
+cd frontend
+dart pub global activate flutterfire_cli
+flutterfire configure
+```
+
+#### 5. Enable Firebase Services
+In Firebase Console, enable:
+- **Authentication** → Sign-in methods: Email/Password, Google
+- **Cloud Firestore** → Create database (start in test mode)
+- **Storage** → Create bucket
+- **Cloud Messaging** → (auto-enabled)
+
+#### 6. Set Up Backend
+```bash
+cd backend
+firebase login
+firebase use --add    # Select your Firebase project
+cp .env.example .env  # Edit with your actual values
+```
+
+#### 7. Set Up Environment Variables
+```bash
+# Backend
+cp backend/.env.example backend/.env
+# Edit backend/.env with your Firebase project details
+
+# Frontend
+cp frontend/.env.example frontend/.env
+# Edit frontend/.env with your Firebase API keys
+```
+
+---
+
+## 🔥 Firebase Configuration
+
+### `backend/.firebaserc` (create this file)
+```json
+{
+  "projects": {
+    "default": "your-firebase-project-id"
+  }
+}
+```
+
+### Firebase Emulator Ports (pre-configured in `firebase.json`)
+
+| Service | Port |
+|---------|------|
+| Auth Emulator | `localhost:9099` |
+| Firestore Emulator | `localhost:8080` |
+| Functions Emulator | `localhost:5001` |
+| Storage Emulator | `localhost:9199` |
+| Pub/Sub Emulator | `localhost:8085` |
+| Emulator UI | `localhost:4000` |
+
+### Deploy to Firebase (Production)
+```bash
+cd backend
+
+# Deploy everything
+firebase deploy
+
+# Deploy specific services
+firebase deploy --only functions
+firebase deploy --only firestore:rules
+firebase deploy --only storage
+firebase deploy --only dataconnect
+```
+
+---
+
+## ▶️ Running the Project
+
+You need **two separate terminals** running simultaneously:
+
+### Terminal 1 — Backend (Firebase Emulators)
+```bash
+cd backend/functions
+npm run build          # Compile TypeScript → JavaScript
+cd ..
+firebase emulators:start
+```
+> Emulator UI available at: http://localhost:4000
+
+### Terminal 2 — Frontend (Flutter App)
+```bash
+cd frontend
+flutter pub get        # Install dependencies (first time)
+flutter run            # Run on connected device/emulator
+```
+
+### Useful Commands
+
+| Command | Description | Run From |
+|---------|-------------|----------|
+| `npm run build` | Compile TypeScript functions | `backend/functions/` |
+| `npm run build:watch` | Auto-compile on changes | `backend/functions/` |
+| `firebase emulators:start` | Start all emulators | `backend/` |
+| `flutter pub get` | Install Flutter dependencies | `frontend/` |
+| `flutter run` | Run app in debug mode | `frontend/` |
+| `flutter run -d chrome` | Run as web app | `frontend/` |
+| `flutter build apk --release` | Build Android APK | `frontend/` |
+| `firebase functions:log` | View function logs | `backend/` |
 
 ---
 
@@ -172,51 +291,51 @@ UnityAid is a mobile application designed to bridge the gap between donors and N
 
 ```text
 Unity_Aid/
-├── backend/               # Firebase Backend & Cloud Functions
-│   ├── dataconnect/       # Backend connection models/schema
-│   ├── functions/         # Firebase Cloud Functions (Typescript)
-│   ├── firebase.json      # Firebase configuration definitions
-│   └── firestore.rules    # Security rules for database
+├── backend/                    # Firebase Backend
+│   ├── dataconnect/            # Firebase DataConnect (GraphQL API)
+│   │   ├── schema/             # GraphQL schemas
+│   │   ├── example/            # Sample queries/mutations
+│   │   └── dataconnect.yaml    # DataConnect configuration
+│   ├── functions/              # Firebase Cloud Functions (TypeScript)
+│   │   ├── src/
+│   │   │   ├── index.ts        # Entry point — exports all functions
+│   │   │   ├── config.ts       # Firebase Admin SDK initialization
+│   │   │   ├── types/          # Shared TypeScript interfaces
+│   │   │   ├── utils/          # Helpers (FCM notifications, etc.)
+│   │   │   └── triggers/       # Cloud Function triggers
+│   │   │       ├── onPostCreated.ts
+│   │   │       ├── onCaseVerified.ts
+│   │   │       └── dailyCasesAlert.ts
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   ├── firebase.json           # Firebase project configuration
+│   ├── firestore.rules         # Firestore security rules
+│   ├── firestore.indexes.json  # Firestore index definitions
+│   └── storage.rules           # Storage security rules
 │
-├── frontend/              # Flutter Client Application
-│   ├── android/           # Android native workspace
-│   ├── ios/               # iOS native workspace
-│   ├── lib/               # Single Source of Truth for Flutter codebase
-│   │   ├── models/        # Application data models
-│   │   ├── screens/       # User interfaces & routes
-│   │   ├── services/      # Backend communication (AuthService, UserService)
-│   │   ├── theme/         # Shared styling configuration
-│   │   ├── widgets/       # Reusable UI components
-│   │   └── main.dart      # Application entry point
-│   └── pubspec.yaml       # Core Flutter dependency declarations
+├── frontend/                   # Flutter Mobile App
+│   ├── android/                # Android native project
+│   ├── ios/                    # iOS native project
+│   ├── lib/
+│   │   ├── main.dart           # Application entry point
+│   │   ├── firebase_options.dart # Firebase config (auto-generated)
+│   │   ├── login_page.dart     # Authentication screen
+│   │   ├── models/             # Data models
+│   │   ├── screens/            # UI screens
+│   │   ├── services/           # Backend communication layer
+│   │   │   ├── auth_service.dart
+│   │   │   ├── user_service.dart
+│   │   │   ├── upload_service.dart
+│   │   │   ├── notification_service.dart
+│   │   │   └── razorpay_payment_service.dart
+│   │   └── widgets/            # Reusable UI components
+│   ├── assets/                 # Images and static assets
+│   └── pubspec.yaml            # Flutter dependencies
 │
-└── README.md              # Project documentation
+├── screenshots/                # App screenshots for README
+├── LICENSE
+└── README.md
 ```
-
----
-
-## ⚙️ Configuration
-
-### Environment Setup
-
-Create necessary configuration files for API keys and secrets:
-
-```dart
-// lib/config/api_config.dart
-class ApiConfig {
-  static const String digiLockerApiKey = 'YOUR_DIGILOCKER_KEY';
-  static const String paymentGatewayKey = 'YOUR_PAYMENT_KEY';
-  static const String aiChatApiKey = 'YOUR_AI_API_KEY';
-}
-```
-
-### Firebase Setup (if applicable)
-
-1. Create a Firebase project
-2. Add Android/iOS apps to Firebase
-3. Download `google-services.json` (Android) or `GoogleService-Info.plist` (iOS)
-4. Place files in respective directories
-5. Update dependencies in `pubspec.yaml`
 
 ---
 
@@ -242,7 +361,6 @@ We welcome contributions to UnityAid! Here's how you can help:
 ### Guidelines
 - Follow the existing code style
 - Write meaningful commit messages
-- Add comments for complex logic
 - Test your changes thoroughly
 - Update documentation as needed
 
@@ -261,18 +379,19 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Course: Theory of App Development
 
 **Links**
-- Project Repository: [GitHub](https://github.com/yourusername/unityaid)
-- Documentation: See additional README files
-  - [NGO Dashboard Guide](NGO_DASHBOARD_README.md)
-  - [NGO Dashboard Quick Reference](NGO_DASHBOARD_QUICKREF.md)
-  - [Donation Cases Guide](DONATION_CASES_README.md)
-  - [Migration Guide](MIGRATION_GUIDE.md)
+- Project Repository: [GitHub](https://github.com/yourusername/Unity_Aid)
+- Additional Docs:
+  - [NGO Dashboard Guide](frontend/NGO_DASHBOARD_README.md)
+  - [Donation Cases Guide](frontend/DONATION_CASES_README.md)
+  - [Migration Guide](frontend/MIGRATION_GUIDE.md)
+  - [Backend Setup Guide](backend/SETUP.md)
 
 ---
 
 ## 🙏 Acknowledgments
 
 - Flutter team for the amazing framework
+- Firebase for the backend infrastructure
 - All contributors and supporters
 - NGOs and charitable organizations using UnityAid
 - Open source community
@@ -289,17 +408,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [ ] Social media integration
 - [ ] Export donation receipts
 - [ ] Advanced search filters
-
----
-
-## 📝 Additional Documentation
-
-For more detailed information, check out these guides:
-
-- **[NGO Dashboard README](NGO_DASHBOARD_README.md)** - Comprehensive guide for NGO dashboard features
-- **[NGO Dashboard Quick Reference](NGO_DASHBOARD_QUICKREF.md)** - Quick reference for NGO operations
-- **[Donation Cases README](DONATION_CASES_README.md)** - Guide for managing donation cases
-- **[Migration Guide](MIGRATION_GUIDE.md)** - Guide for migrating between versions
 
 ---
 

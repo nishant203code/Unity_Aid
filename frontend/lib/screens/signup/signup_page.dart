@@ -29,11 +29,70 @@ class _SignupPageState extends State<SignupPage> {
   final fatherController = TextEditingController();
   final occupationController = TextEditingController();
   final passwordController = TextEditingController();
+  // ✅ NEW: Confirm password controller
+  final confirmPasswordController = TextEditingController();
 
   String? gender;
   String? category;
 
+  // ✅ Email regex for validation
+  static final _emailRegex = RegExp(r'^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}$');
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    addressController.dispose();
+    contactController.dispose();
+    emailController.dispose();
+    aadharController.dispose();
+    motherTongueController.dispose();
+    fatherController.dispose();
+    occupationController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    pageController.dispose();
+    super.dispose();
+  }
+
+  /// ✅ FIX: Validate Step 1 fields before allowing navigation to Step 2
   void nextStep() {
+    if (currentStep == 0) {
+      // Validate Step 1 fields: name, email, password, confirm password
+      final name = nameController.text.trim();
+      final email = emailController.text.trim();
+      final password = passwordController.text;
+      final confirmPassword = confirmPasswordController.text;
+
+      if (name.isEmpty) {
+        _showError('Please enter your full name.');
+        return;
+      }
+      if (email.isEmpty) {
+        _showError('Please enter your email address.');
+        return;
+      }
+      if (!_emailRegex.hasMatch(email)) {
+        _showError('Please enter a valid email address.');
+        return;
+      }
+      if (password.isEmpty) {
+        _showError('Please enter a password.');
+        return;
+      }
+      if (password.length < 8) {
+        _showError('Password must be at least 8 characters.');
+        return;
+      }
+      if (confirmPassword.isEmpty) {
+        _showError('Please re-enter your password.');
+        return;
+      }
+      if (password != confirmPassword) {
+        _showError('Passwords do not match.');
+        return;
+      }
+    }
+
     pageController.nextPage(
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeInOut,
@@ -47,17 +106,28 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
+  /// ✅ FIX: Full validation before signup submission
   Future<void> handleSignup() async {
+    final name = nameController.text.trim();
     final email = emailController.text.trim();
     final password = passwordController.text;
+    final confirmPassword = confirmPasswordController.text;
 
-    if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fill in email and password'),
-          backgroundColor: Colors.red,
-        ),
-      );
+    // Re-validate critical fields even at the final step
+    if (name.isEmpty) {
+      _showError('Name is required. Please go back to Step 1.');
+      return;
+    }
+    if (email.isEmpty || !_emailRegex.hasMatch(email)) {
+      _showError('A valid email is required. Please go back to Step 1.');
+      return;
+    }
+    if (password.isEmpty || password.length < 8) {
+      _showError('Password must be at least 8 characters. Go back to Step 1.');
+      return;
+    }
+    if (password != confirmPassword) {
+      _showError('Passwords do not match. Please go back to Step 1.');
       return;
     }
 
@@ -67,6 +137,15 @@ class _SignupPageState extends State<SignupPage> {
       await AuthService.signUpWithEmail(email, password);
 
       if (!mounted) return;
+
+      // ✅ Show success message before navigating
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Account created successfully! Complete your profile.'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
 
       // Navigate to profile completion screen
       Navigator.pushReplacement(
@@ -94,6 +173,13 @@ class _SignupPageState extends State<SignupPage> {
     } finally {
       if (mounted) setState(() => isLoading = false);
     }
+  }
+
+  /// Helper to show error snackbar
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
+    );
   }
 
   @override
@@ -161,7 +247,13 @@ class _SignupPageState extends State<SignupPage> {
                                     phoneField(contactController),
                                     otpField(
                                         emailController, "Email", Icons.email),
-                                    PasswordStrengthField(passwordController),
+                                    // ✅ UPDATED: Pass confirmPasswordController
+                                    PasswordStrengthField(
+                                      passwordController,
+                                      confirmController:
+                                          confirmPasswordController,
+                                    ),
+                                    const SizedBox(height: 18),
                                     nextButton(nextStep),
                                   ],
                                 ),
