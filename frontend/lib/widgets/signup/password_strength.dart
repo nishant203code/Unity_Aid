@@ -142,7 +142,7 @@ class _PasswordStrengthFieldState extends State<PasswordStrengthField> {
         if (widget.confirmController != null) ...[
           const SizedBox(height: 18),
           Focus(
-            // ✅ Validate on blur (when user leaves the field)
+            // Validate on blur (when user leaves the field)
             onFocusChange: (hasFocus) {
               if (!hasFocus) _validateConfirmPassword();
             },
@@ -175,7 +175,7 @@ class _PasswordStrengthFieldState extends State<PasswordStrengthField> {
                   borderRadius: BorderRadius.circular(15),
                   borderSide: BorderSide.none,
                 ),
-                // ✅ Inline error shown below the field
+                // Inline error shown below the field
                 errorText: _confirmError,
                 errorStyle: const TextStyle(
                   color: Colors.orangeAccent,

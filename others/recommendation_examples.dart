@@ -328,7 +328,7 @@ class RecommendationExamples {
     testStatistics();
     
     print('\n' + '=' * 50);
-    print('✅ All tests completed!');
+    print('All tests completed!');
   }
 }
 

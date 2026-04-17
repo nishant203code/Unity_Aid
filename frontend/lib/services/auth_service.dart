@@ -5,10 +5,10 @@ import 'package:google_sign_in/google_sign_in.dart';
 class AuthService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // ✅ FIX: Added scopes (email + profile) and the Web client ID from
-  //    google-services.json → oauth_client → client_type 3.
-  //    Without serverClientId the idToken comes back null on Android,
-  //    which makes signInWithCredential fail silently.
+  // Configure Google Sign-In with scopes and the Web client ID from
+  // google-services.json → oauth_client → client_type 3.
+  // Without serverClientId the idToken comes back null on Android,
+  // which makes signInWithCredential fail silently.
   static final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: ['email', 'profile'],
     serverClientId:
@@ -49,14 +49,14 @@ class AuthService {
   }
 
   // ─────────────────────────────────────────────
-  //  GOOGLE SIGN-IN (v6 API) — FIXED
+  //  GOOGLE SIGN-IN (v6 API)
   // ─────────────────────────────────────────────
 
   /// Returns a [UserCredential] on success, `null` if user cancelled.
   /// Throws [FirebaseAuthException] for errors the UI should display.
   static Future<UserCredential?> signInWithGoogle() async {
     try {
-      // 1️⃣ Show the Google sign-in popup
+      // Show the Google sign-in popup
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       // User tapped the back / cancel button
@@ -65,13 +65,13 @@ class AuthService {
         return null;
       }
 
-      // 2️⃣ Obtain auth tokens
+      // Obtain auth tokens
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
 
-      // ✅ FIX: Validate that tokens were actually returned.
-      //    When serverClientId is wrong or the SHA-1 doesn't match,
-      //    idToken silently comes back null.
+      // Validate that tokens were actually returned.
+      // When serverClientId is wrong or the SHA-1 doesn't match,
+      // idToken silently comes back null.
       if (googleAuth.idToken == null && googleAuth.accessToken == null) {
         debugPrint(
             '[AuthService] Google Sign-In: tokens are null — check '
@@ -82,13 +82,13 @@ class AuthService {
         );
       }
 
-      // 3️⃣ Build Firebase credential
+      // Build Firebase credential
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      // 4️⃣ Sign in to Firebase with the Google credential
+      // Sign in to Firebase with the Google credential
       final userCredential = await _auth.signInWithCredential(credential);
 
       debugPrint(
@@ -96,14 +96,14 @@ class AuthService {
       return userCredential;
 
     } on FirebaseAuthException catch (e) {
-      // ✅ FIX: Propagate Firebase-specific errors so the UI can show
-      //    the right message (token expired, account-exists, etc.)
+      // Propagate Firebase-specific errors so the UI can show
+      // the right message (token expired, account-exists, etc.)
       debugPrint('[AuthService] Google Sign-In FirebaseAuthException: '
           'code=${e.code}, message=${e.message}');
       rethrow;
     } catch (e) {
-      // ✅ FIX: Catch platform / network errors and log them for debugging.
-      //    Check for common Google Sign-In error strings.
+      // Catch platform / network errors and log them for debugging.
+      // Check for common Google Sign-In error strings.
       final errorStr = e.toString().toLowerCase();
 
       if (errorStr.contains('sign_in_canceled') ||
@@ -208,7 +208,7 @@ class AuthService {
         return 'Invalid OTP code. Please try again';
       case 'session-expired':
         return 'OTP has expired. Please request a new one';
-      // ✅ NEW: Google Sign-In specific error codes
+      // Google Sign-In specific error codes
       case 'account-exists-with-different-credential':
         return 'An account already exists with a different sign-in method';
       case 'network-request-failed':

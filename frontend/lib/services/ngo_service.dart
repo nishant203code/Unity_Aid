@@ -82,6 +82,35 @@ class NgoService {
   }
 
   // ─────────────────────────────────────────────
+  //  CREATE
+  // ─────────────────────────────────────────────
+
+  /// Create a new NGO document in Firestore.
+  ///
+  /// Sets `ownerUid` so the creator can update/delete later (per Firestore rules).
+  /// Returns the Firestore document ID on success, `null` on failure.
+  static Future<String?> createNGO(NGO ngo) async {
+    final user = AuthService.currentUser;
+    if (user == null) {
+      debugPrint('NgoService.createNGO: not authenticated');
+      return null;
+    }
+
+    try {
+      final data = ngo.toJson();
+      data['ownerUid'] = user.uid;
+      data['createdAt'] = FieldValue.serverTimestamp();
+
+      final docRef = await _ngosCollection.add(data);
+      debugPrint('NgoService: NGO created with ID ${docRef.id}');
+      return docRef.id;
+    } catch (e) {
+      debugPrint('NgoService.createNGO error: $e');
+      return null;
+    }
+  }
+
+  // ─────────────────────────────────────────────
   //  VERIFICATION
   // ─────────────────────────────────────────────
 

@@ -7,6 +7,7 @@ import '../widgets/auth_widgets.dart';
 import 'signup/signup_page.dart';
 import 'ngo_verification_page.dart';
 import 'complete_profile_screen.dart';
+import 'complete_ngo_profile_screen.dart';
 import 'user_home/user_home_page.dart';
 import 'ngo_home/ngo_home_page.dart';
 
@@ -25,11 +26,11 @@ class _LoginPageState extends State<LoginPage> {
   int selectedRole = 0;
   bool isLoading = false;
 
-  // ✅ FIX: Cooldown to prevent rapid repeat login attempts
+  // Cooldown to prevent rapid repeat login attempts
   DateTime? _lastLoginAttempt;
   static const _loginCooldown = Duration(seconds: 3);
 
-  // ✅ FIX: Email format regex
+  // Email format regex
   static final _emailRegex = RegExp(r'^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}$');
 
   @override
@@ -43,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
     final email = emailController.text.trim();
     final password = passwordController.text;
 
-    // ✅ FIX 1: Validate email format before submitting
+    // Validate email format before submitting
     if (email.isEmpty) {
       _showError('Please enter your email address.');
       return;
@@ -53,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    // ✅ FIX 2: Password must be non-empty and at least 8 characters
+    // Password must be non-empty and at least 8 characters
     if (password.isEmpty) {
       _showError('Please enter your password.');
       return;
@@ -63,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    // ✅ FIX 3: Cooldown — block rapid repeat submissions
+    // Cooldown — block rapid repeat submissions
     final now = DateTime.now();
     if (_lastLoginAttempt != null &&
         now.difference(_lastLoginAttempt!) < _loginCooldown) {
@@ -79,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await AuthService.signInWithEmail(email, password);
 
-      // ✅ FIX 4: Verify the session/auth token was actually set
+      // Verify the session/auth token was actually set
       final user = AuthService.currentUser;
       if (user == null) {
         _showError('Login succeeded but session was not created. Please try again.');
@@ -173,7 +174,9 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (_) => CompleteProfileScreen(isNGO: isNGO),
+            builder: (_) => isNGO
+                ? const CompleteNGOProfileScreen()
+                : CompleteProfileScreen(isNGO: isNGO),
           ),
         );
       }
@@ -183,7 +186,9 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => CompleteProfileScreen(isNGO: isNGO),
+          builder: (_) => isNGO
+              ? const CompleteNGOProfileScreen()
+              : CompleteProfileScreen(isNGO: isNGO),
         ),
       );
     }

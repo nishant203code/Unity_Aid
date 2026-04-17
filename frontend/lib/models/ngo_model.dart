@@ -168,8 +168,10 @@ class NGO {
       if (registrationNumber != null) 'registrationNumber': registrationNumber,
       if (fcraNumber != null) 'fcraNumber': fcraNumber,
       if (darpanNumber != null) 'darpanNumber': darpanNumber,
+      if (legalStatus != null) 'legalStatus': legalStatus,
       if (ownerName != null) 'ownerName': ownerName,
       if (panNumber != null) 'panNumber': panNumber,
+      if (tanNumber != null) 'tanNumber': tanNumber,
       if (mission != null) 'mission': mission,
       if (vision != null) 'vision': vision,
       if (website != null) 'website': website,
@@ -180,6 +182,13 @@ class NGO {
       if (bankName != null) 'bankName': bankName,
       if (bankAccountNumber != null) 'bankAccountNumber': bankAccountNumber,
       if (ifscCode != null) 'ifscCode': ifscCode,
+      if (certificates != null) 'certificates': certificates,
+      if (targetCommunities != null) 'targetCommunities': targetCommunities,
+      if (projectTypes != null) 'projectTypes': projectTypes,
+      if (fundingSources != null) 'fundingSources': fundingSources,
+      if (testimonials != null) 'testimonials': testimonials,
+      if (mediaMentions != null) 'mediaMentions': mediaMentions,
+      if (socialMedia != null) 'socialMedia': socialMedia,
     };
   }
 }
