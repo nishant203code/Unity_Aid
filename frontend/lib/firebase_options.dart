@@ -53,10 +53,11 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDzo1KlBxHNRdd9XVVGWXF0fWLnCWtDwBE',
-    appId: '1:725657890800:android:2fe14e8388d2e10fd77735',
-    messagingSenderId: '725657890800',
-    projectId: 'unity-aid-e8db3',
-    storageBucket: 'unity-aid-e8db3.firebasestorage.app',
+    apiKey: 'AIzaSyCyvmskJj0tcAVZHhpJHnIhe-VT2kUwoio',
+    appId: '1:744853977639:android:63a16cf6aedef35f056c02',
+    messagingSenderId: '744853977639',
+    projectId: 'unityaid-8e1b4',
+    storageBucket: 'unityaid-8e1b4.firebasestorage.app',
   );
+
 }

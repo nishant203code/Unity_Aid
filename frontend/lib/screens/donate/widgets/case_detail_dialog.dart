@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../../../models/donation_case_model.dart';
 import '../../../widgets/theme/app_colors.dart';
 import '../donate_page.dart';
@@ -48,60 +48,65 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Hero Image
-                      Stack(
-                        children: [
-                          Image.network(
-                            donationCase.imageUrl,
-                            height: 250,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Container(
+                      SizedBox(
+                        height: 250,
+                        width: double.infinity,
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            Image.network(
+                              donationCase.imageUrl,
                               height: 250,
-                              color: Colors.grey.shade300,
-                              child: const Icon(Icons.image, size: 64),
-                            ),
-                          ),
-                          Positioned(
-                            top: 16,
-                            right: 16,
-                            child: IconButton(
-                              icon: const Icon(Icons.close, color: Colors.white),
-                              onPressed: () => Navigator.pop(context),
-                              style: IconButton.styleFrom(
-                                backgroundColor: Colors.black54,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Container(
+                                height: 250,
+                                color: Colors.grey.shade300,
+                                child: const Icon(Icons.image, size: 64),
                               ),
                             ),
-                          ),
-                          if (donationCase.isVerified)
                             Positioned(
                               top: 16,
-                              left: 16,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 6),
-                                decoration: BoxDecoration(
-                                  color: Colors.green,
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.verified,
-                                        color: Colors.white, size: 16),
-                                    SizedBox(width: 4),
-                                    Text(
-                                      'Verified Case',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
+                              right: 16,
+                              child: IconButton(
+                                icon: const Icon(Icons.close, color: Colors.white),
+                                onPressed: () => Navigator.pop(context),
+                                style: IconButton.styleFrom(
+                                  backgroundColor: Colors.black54,
                                 ),
                               ),
                             ),
-                        ],
+                            if (donationCase.isVerified)
+                              Positioned(
+                                top: 16,
+                                left: 16,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    color: Colors.green,
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.verified,
+                                          color: Colors.white, size: 16),
+                                      SizedBox(width: 4),
+                                      Text(
+                                        'Verified Case',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
 
                       Padding(
@@ -467,7 +472,7 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
                             ),
                           ),
                           Text(
-                            'Ã¢â€šÂ¹${_formatAmount(donationCase.remainingAmount)}',
+                            '\u20B9${_formatAmount(donationCase.remainingAmount)}',
                             style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -541,14 +546,14 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Ã¢â€šÂ¹${_formatAmount(donationCase.raisedAmount)}',
+                    '\u20B9${_formatAmount(donationCase.raisedAmount)}',
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    'raised of Ã¢â€šÂ¹${_formatAmount(donationCase.targetAmount)}',
+                    'raised of \u20B9${_formatAmount(donationCase.targetAmount)}',
                     style: TextStyle(
                       color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade400 : Colors.grey.shade600,
                       fontSize: 12,
@@ -686,13 +691,21 @@ class _CaseDetailDialogState extends State<CaseDetailDialog> {
   }
 
   String _formatAmount(double amount) {
-    if (amount >= 100000) {
-      return '${(amount / 100000).toStringAsFixed(2)}L';
-    } else if (amount >= 1000) {
-      return '${(amount / 1000).toStringAsFixed(1)}K';
-    } else {
-      return amount.toStringAsFixed(0);
+    // Format as Indian number system with commas (e.g. 3,20,000)
+    final intAmount = amount.toInt();
+    final str = intAmount.toString();
+    if (str.length <= 3) return str;
+    // Indian number format: last 3 digits, then groups of 2
+    final lastThree = str.substring(str.length - 3);
+    final remaining = str.substring(0, str.length - 3);
+    final buffer = StringBuffer();
+    for (int i = 0; i < remaining.length; i++) {
+      if (i > 0 && (remaining.length - i) % 2 == 0) {
+        buffer.write(',');
+      }
+      buffer.write(remaining[i]);
     }
+    return '${buffer.toString()},${lastThree}';
   }
 }
 
