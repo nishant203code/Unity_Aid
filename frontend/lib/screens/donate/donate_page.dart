@@ -1,6 +1,7 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import '../../models/donation_case_model.dart';
 import '../../widgets/theme/app_colors.dart';
-import '../../data/sample_donation_cases.dart';
+import '../../services/donation_service.dart';
 import 'widgets/donation_stats.dart';
 import 'widgets/donation_target_selector.dart';
 import 'widgets/donation_case_card.dart';
@@ -21,17 +22,37 @@ class _DonatePageState extends State<DonatePage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   String selectedCategory = 'All';
+  List<DonationCase> _allCases = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _loadCases();
     
     // If prefilled case ID is provided, go directly to donation form
     if (widget.prefilledCaseId != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _tabController.animateTo(1);
       });
+    }
+  }
+
+  Future<void> _loadCases() async {
+    setState(() => _isLoading = true);
+    try {
+      final cases = await DonationService.getDonationCases();
+      if (mounted) {
+        setState(() {
+          _allCases = cases;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -68,13 +89,12 @@ class _DonatePageState extends State<DonatePage>
   }
 
   Widget _buildCaseListTab() {
-    final allCases = getSampleDonationCases();
     final categories = ['All', 'Medical Emergency', 'Education', 'Disaster Relief', 
                         'Medical Aid', 'Community Development'];
 
     final filteredCases = selectedCategory == 'All'
-        ? allCases
-        : allCases.where((c) => c.category == selectedCategory).toList();
+        ? _allCases
+        : _allCases.where((c) => c.category == selectedCategory).toList();
 
     return Column(
       children: [

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../widgets/theme/app_colors.dart';
 import '../../widgets/theme/input_decoration.dart';
@@ -6,6 +7,7 @@ import 'widgets/image_picker_section.dart';
 import 'widgets/post_submit_button.dart';
 import 'widgets/deepfake_upload_dialog.dart';
 import '../../services/deepfake_detection_service.dart';
+import '../../services/post_service.dart';
 
 enum _IssueType { personal, social }
 
@@ -244,37 +246,83 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   /// Submit post data
-  void _submitPost(List<dynamic> media) {
+  Future<void> _submitPost(List<dynamic> media) async {
     if (_isSubmitting) return;
 
     setState(() => _isSubmitting = true);
 
-    // TODO: Validate form fields
-    // TODO: Upload media files to storage
-    // TODO: Create post in Firestore
+    try {
+      // Convert dynamic media list to XFile list
+      final mediaFiles = media
+          .whereType<XFile>()
+          .toList();
 
-    debugPrint('Post Submitted');
-    debugPrint('Title: ${titleController.text}');
-    debugPrint('Description: ${descriptionController.text}');
-    debugPrint('Location: ${locationController.text}');
-    debugPrint('Fund Goal: ${fundGoalController.text}');
-    debugPrint('Issue Type: $_issueType');
-    debugPrint('Media Files: ${media.length}');
+      final post = await PostService.createPost(
+        title: titleController.text.trim(),
+        description: descriptionController.text.trim(),
+        location: locationController.text.trim(),
+        fundGoal: double.tryParse(fundGoalController.text.trim()) ?? 0,
+        issueType: _issueType == _IssueType.personal ? 'personal' : 'social',
+        mediaFiles: mediaFiles,
+        // Personal issue fields
+        victimName: victimNameController.text.trim().isEmpty
+            ? null
+            : victimNameController.text.trim(),
+        victimAge: victimAgeController.text.trim().isEmpty
+            ? null
+            : victimAgeController.text.trim(),
+        victimGender: victimGenderController.text.trim().isEmpty
+            ? null
+            : victimGenderController.text.trim(),
+        relation: relationController.text.trim().isEmpty
+            ? null
+            : relationController.text.trim(),
+        victimBackground: victimBackgroundController.text.trim().isEmpty
+            ? null
+            : victimBackgroundController.text.trim(),
+        // Social issue fields
+        contactPerson: contactPersonController.text.trim().isEmpty
+            ? null
+            : contactPersonController.text.trim(),
+        policeStation: policeStationController.text.trim().isEmpty
+            ? null
+            : policeStationController.text.trim(),
+        socialIssueDetails: socialIssueDetailsController.text.trim().isEmpty
+            ? null
+            : socialIssueDetailsController.text.trim(),
+      );
 
-    // Show success message
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Post submitted successfully!'),
-        backgroundColor: Colors.green,
-      ),
-    );
+      if (!mounted) return;
 
-    setState(() => _isSubmitting = false);
-
-    // Navigate back after delay
-    Future.delayed(const Duration(seconds: 1), () {
-      Navigator.pop(context);
-    });
+      if (post != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Post submitted successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Future.delayed(const Duration(seconds: 1), () {
+          if (mounted) Navigator.pop(context);
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to submit post. Please try again.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
+    }
   }
 
   @override

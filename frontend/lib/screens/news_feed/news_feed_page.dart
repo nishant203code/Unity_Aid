@@ -1,6 +1,7 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../../models/post_model.dart';
 import '../../widgets/theme/app_colors.dart';
+import '../../services/post_service.dart';
 import 'widgets/post_card.dart';
 
 class NewsFeedPage extends StatefulWidget {
@@ -28,74 +29,25 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
     {'label': 'Critical', 'icon': Icons.warning_amber_outlined},
   ];
 
-  final List<Post> _allPosts = [
-    Post(
-      userName: "Rahul Sharma",
-      profilePic: "https://i.pravatar.cc/150?img=5",
-      location: "Delhi",
-      mediaUrls: [
-        "https://images.unsplash.com/photo-1627398242454-45a1465c2479",
-        "https://images.unsplash.com/photo-1593113598332-cd288d649433"
-      ],
-      caseTitle: "Car Accident Emergency",
-      caseId: "UA10234",
-      description:
-          "Met with a severe accident last night. Need urgent financial help for surgeries. Met with a severe accident last night. Need urgent financial help for surgeries.",
-      raised: 25000,
-      goal: 50000,
-      status: VerificationStatus.verified,
-    ),
-    Post(
-      userName: "Anita Verma",
-      profilePic: "https://i.pravatar.cc/150?img=8",
-      location: "Mumbai",
-      mediaUrls: [
-        "https://images.unsplash.com/photo-1593113598332-cd288d649433"
-      ],
-      caseTitle: "House Fire Relief",
-      caseId: "UA10290",
-      description:
-          "Lost our home in a fire accident. Any support would mean the world to us. Lost our home in a fire accident. Any support would mean the world to us.",
-      raised: 40000,
-      goal: 80000,
-      status: VerificationStatus.falseCase,
-    ),
-    Post(
-      userName: "Suresh Patel",
-      profilePic: "https://i.pravatar.cc/150?img=12",
-      location: "Ahmedabad",
-      mediaUrls: [
-        "https://images.unsplash.com/photo-1579684385127-1ef15d508118"
-      ],
-      caseTitle: "Cancer Treatment Support",
-      caseId: "UA10301",
-      description:
-          "Fighting stage 3 cancer and need help covering treatment costs. Every contribution matters. Fighting stage 3 cancer and need help covering treatment costs.",
-      raised: 73000,
-      goal: 150000,
-      status: VerificationStatus.verified,
-    ),
-  ];
-
-  List<Post> get _filteredPosts {
+  List<Post> _applyFilter(List<Post> posts) {
     switch (_selectedFilter) {
-      case 1: // Most Upvoted â€” sort by raised (proxy for upvotes in demo)
-        final sorted = List<Post>.from(_allPosts);
+      case 1: // Most Upvoted — sort by raised (proxy for upvotes)
+        final sorted = List<Post>.from(posts);
         sorted.sort((a, b) => b.raised.compareTo(a.raised));
         return sorted;
       case 2: // Verified only
-        return _allPosts
+        return posts
             .where((p) => p.status == VerificationStatus.verified)
             .toList();
-      case 3: // Nearby â€” just show all in demo
-        return _allPosts;
-      case 4: // Critical â€” highest goal gap
-        final sorted = List<Post>.from(_allPosts);
+      case 3: // Nearby — just show all for now
+        return posts;
+      case 4: // Critical — highest goal gap
+        final sorted = List<Post>.from(posts);
         sorted.sort(
             (a, b) => (b.goal - b.raised).compareTo(a.goal - a.raised));
         return sorted;
-      default: // Recent
-        return _allPosts;
+      default: // Recent (already sorted by createdAt desc from Firestore)
+        return posts;
     }
   }
 
@@ -117,19 +69,54 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
           child: _buildFilterBar(),
         ),
       ),
-      body: ScrollConfiguration(
-        behavior: const ScrollBehavior().copyWith(overscroll: false),
-        child: _filteredPosts.isEmpty
-            ? _buildEmptyState()
-            : ListView.builder(
-                padding: EdgeInsets.zero,
-                itemCount: _filteredPosts.length,
-                itemBuilder: (_, index) => PostCard(
-                  post: _filteredPosts[index],
-                  onDonateTap: widget.onDonateTap,
-                  isNGO: widget.isNGO,
-                ),
+      body: StreamBuilder<List<Post>>(
+        stream: PostService.getPostsStream(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.error_outline, size: 64, color: Colors.red.shade300),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Failed to load posts',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () => setState(() {}),
+                    child: const Text('Retry'),
+                  ),
+                ],
               ),
+            );
+          }
+
+          final allPosts = snapshot.data ?? [];
+          final filteredPosts = _applyFilter(allPosts);
+
+          if (filteredPosts.isEmpty) {
+            return _buildEmptyState();
+          }
+
+          return RefreshIndicator(
+            onRefresh: () async => setState(() {}),
+            child: ListView.builder(
+              padding: EdgeInsets.zero,
+              itemCount: filteredPosts.length,
+              itemBuilder: (_, index) => PostCard(
+                post: filteredPosts[index],
+                onDonateTap: widget.onDonateTap,
+                isNGO: widget.isNGO,
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -217,4 +204,3 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
     });
   }
 }
-

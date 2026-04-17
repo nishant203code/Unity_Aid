@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../services/ngo_service.dart';
 
 enum _CaseHandling { social, individual, both }
 
@@ -265,6 +266,8 @@ class _NgoVerificationPageState extends State<NgoVerificationPage> {
   /// SUBMIT BUTTON
   //-----------------------------------------
 
+  bool _isSubmitting = false;
+
   Widget submitButton() {
     return SizedBox(
       width: double.infinity,
@@ -276,26 +279,67 @@ class _NgoVerificationPageState extends State<NgoVerificationPage> {
             borderRadius: BorderRadius.circular(14),
           ),
         ),
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            // TODO:
-            // send NGO data to database
+        onPressed: _isSubmitting ? null : () async {
+          if (!_formKey.currentState!.validate()) return;
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text("NGO Verification Submitted"),
+          setState(() => _isSubmitting = true);
+
+          final success = await NgoService.submitVerification(
+            ngoName: nameController.text.trim(),
+            ownerName: ownerController.text.trim(),
+            darpanId: darpanController.text.trim(),
+            panNumber: panController.text.trim(),
+            gstin: gstinController.text.trim(),
+            mainAddress: addressController.text.trim(),
+            branchAddress: branchAddressController.text.trim(),
+            peopleAssociated: int.tryParse(peopleAssociatedController.text.trim()) ?? 0,
+            casesHandled: int.tryParse(casesHandledController.text.trim()) ?? 0,
+            caseHandlingType: caseHandling.name,
+            bankAccountNumber: accountController.text.trim(),
+            bankName: bankController.text.trim(),
+            bankBranch: bankBranchController.text.trim(),
+            ifscCode: ifscController.text.trim(),
+            fcraId: isFcraRegistered ? fcraIdController.text.trim() : null,
+            isFcraRegistered: isFcraRegistered,
+          );
+
+          if (!mounted) return;
+          setState(() => _isSubmitting = false);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                success
+                    ? 'NGO Verification Submitted Successfully!'
+                    : 'Failed to submit. Please try again.',
               ),
-            );
+              backgroundColor: success ? Colors.green : Colors.red,
+            ),
+          );
+
+          if (success) {
+            Future.delayed(const Duration(seconds: 1), () {
+              if (mounted) Navigator.pop(context);
+            });
           }
         },
-        child: const Text(
-          "Submit for Verification",
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
-        ),
+        child: _isSubmitting
+            ? const SizedBox(
+                height: 22,
+                width: 22,
+                child: CircularProgressIndicator(
+                  color: Colors.black,
+                  strokeWidth: 2.5,
+                ),
+              )
+            : const Text(
+                "Submit for Verification",
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
       ),
     );
   }

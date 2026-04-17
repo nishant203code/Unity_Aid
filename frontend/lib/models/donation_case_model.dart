@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class DonationCase {
   final String id;
   final String title;
@@ -71,4 +73,76 @@ class DonationCase {
   bool get isUrgent => urgencyLevel == "Critical" || urgencyLevel == "High";
   
   bool get isExpiringSoon => daysRemaining <= 7;
+
+  factory DonationCase.fromJson(Map<String, dynamic> json, {String? docId}) {
+    return DonationCase(
+      id: docId ?? json['id'] as String? ?? '',
+      title: json['title'] as String? ?? '',
+      shortDescription: json['shortDescription'] as String? ?? '',
+      fullDescription: json['fullDescription'] as String? ?? '',
+      category: json['category'] as String? ?? 'Other',
+      location: json['location'] as String? ?? '',
+      imageUrl: json['imageUrl'] as String? ?? '',
+      targetAmount: (json['targetAmount'] as num?)?.toDouble() ?? 0.0,
+      raisedAmount: (json['raisedAmount'] as num?)?.toDouble() ?? 0.0,
+      deadline: json['deadline'] is Timestamp
+          ? (json['deadline'] as Timestamp).toDate()
+          : json['deadline'] is String
+              ? DateTime.tryParse(json['deadline'] as String) ?? DateTime.now().add(const Duration(days: 30))
+              : DateTime.now().add(const Duration(days: 30)),
+      urgencyLevel: json['urgencyLevel'] as String? ?? 'Medium',
+      beneficiaryName: json['beneficiaryName'] as String? ?? '',
+      beneficiaryAge: json['beneficiaryAge'] as int?,
+      beneficiaryGender: json['beneficiaryGender'] as String?,
+      caseStory: json['caseStory'] as String? ?? '',
+      requirements: (json['requirements'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
+      currentStatus: json['currentStatus'] as String? ?? 'Active',
+      handlingNGO: json['handlingNGO'] as String?,
+      ngoLogoUrl: json['ngoLogoUrl'] as String?,
+      isVerified: json['isVerified'] as bool? ?? false,
+      supportersCount: json['supportersCount'] as int? ?? 0,
+      createdDate: json['createdDate'] is Timestamp
+          ? (json['createdDate'] as Timestamp).toDate()
+          : json['createdDate'] is String
+              ? DateTime.tryParse(json['createdDate'] as String) ?? DateTime.now()
+              : DateTime.now(),
+      additionalImages: (json['additionalImages'] as List<dynamic>?)
+          ?.map((e) => e.toString())
+          .toList(),
+      documents: (json['documents'] as Map<String, dynamic>?)
+          ?.map((k, v) => MapEntry(k, v.toString())),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'shortDescription': shortDescription,
+      'fullDescription': fullDescription,
+      'category': category,
+      'location': location,
+      'imageUrl': imageUrl,
+      'targetAmount': targetAmount,
+      'raisedAmount': raisedAmount,
+      'deadline': Timestamp.fromDate(deadline),
+      'urgencyLevel': urgencyLevel,
+      'beneficiaryName': beneficiaryName,
+      if (beneficiaryAge != null) 'beneficiaryAge': beneficiaryAge,
+      if (beneficiaryGender != null) 'beneficiaryGender': beneficiaryGender,
+      'caseStory': caseStory,
+      'requirements': requirements,
+      'currentStatus': currentStatus,
+      if (handlingNGO != null) 'handlingNGO': handlingNGO,
+      if (ngoLogoUrl != null) 'ngoLogoUrl': ngoLogoUrl,
+      'isVerified': isVerified,
+      'supportersCount': supportersCount,
+      'createdDate': Timestamp.fromDate(createdDate),
+      if (additionalImages != null) 'additionalImages': additionalImages,
+      if (documents != null) 'documents': documents,
+    };
+  }
 }

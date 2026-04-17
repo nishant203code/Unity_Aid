@@ -102,6 +102,86 @@ class NGO {
     this.bankAccountNumber,
     this.ifscCode,
   });
+
+  /// Create an NGO from a Firestore document map.
+  /// Only deserializes the core fields; nested objects are not yet stored.
+  factory NGO.fromJson(Map<String, dynamic> json) {
+    return NGO(
+      name: json['name'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      location: json['location'] as String? ?? '',
+      latitude: (json['latitude'] as num?)?.toDouble() ?? 0.0,
+      longitude: (json['longitude'] as num?)?.toDouble() ?? 0.0,
+      logoUrl: json['logoUrl'] as String? ?? '',
+      members: json['members'] as int? ?? 0,
+      followers: json['followers'] as int? ?? 0,
+      registrationNumber: json['registrationNumber'] as String?,
+      fcraNumber: json['fcraNumber'] as String?,
+      darpanNumber: json['darpanNumber'] as String?,
+      legalStatus: json['legalStatus'] as String?,
+      panNumber: json['panNumber'] as String?,
+      tanNumber: json['tanNumber'] as String?,
+      ownerName: json['ownerName'] as String?,
+      mission: json['mission'] as String?,
+      vision: json['vision'] as String?,
+      website: json['website'] as String?,
+      email: json['email'] as String?,
+      phone: json['phone'] as String?,
+      address: json['address'] as String?,
+      rating: (json['rating'] as num?)?.toDouble(),
+      bankName: json['bankName'] as String?,
+      bankAccountNumber: json['bankAccountNumber'] as String?,
+      ifscCode: json['ifscCode'] as String?,
+      certificates: (json['certificates'] as List<dynamic>?)
+          ?.map((e) => e.toString())
+          .toList(),
+      targetCommunities: (json['targetCommunities'] as List<dynamic>?)
+          ?.map((e) => e.toString())
+          .toList(),
+      projectTypes: (json['projectTypes'] as List<dynamic>?)
+          ?.map((e) => e.toString())
+          .toList(),
+      fundingSources: (json['fundingSources'] as List<dynamic>?)
+          ?.map((e) => e.toString())
+          .toList(),
+      testimonials: (json['testimonials'] as List<dynamic>?)
+          ?.map((e) => e.toString())
+          .toList(),
+      mediaMentions: (json['mediaMentions'] as List<dynamic>?)
+          ?.map((e) => e.toString())
+          .toList(),
+      socialMedia: (json['socialMedia'] as Map<String, dynamic>?)
+          ?.map((k, v) => MapEntry(k, v.toString())),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'description': description,
+      'location': location,
+      'latitude': latitude,
+      'longitude': longitude,
+      'logoUrl': logoUrl,
+      'members': members,
+      'followers': followers,
+      if (registrationNumber != null) 'registrationNumber': registrationNumber,
+      if (fcraNumber != null) 'fcraNumber': fcraNumber,
+      if (darpanNumber != null) 'darpanNumber': darpanNumber,
+      if (ownerName != null) 'ownerName': ownerName,
+      if (panNumber != null) 'panNumber': panNumber,
+      if (mission != null) 'mission': mission,
+      if (vision != null) 'vision': vision,
+      if (website != null) 'website': website,
+      if (email != null) 'email': email,
+      if (phone != null) 'phone': phone,
+      if (address != null) 'address': address,
+      if (rating != null) 'rating': rating,
+      if (bankName != null) 'bankName': bankName,
+      if (bankAccountNumber != null) 'bankAccountNumber': bankAccountNumber,
+      if (ifscCode != null) 'ifscCode': ifscCode,
+    };
+  }
 }
 
 class AnnualReport {

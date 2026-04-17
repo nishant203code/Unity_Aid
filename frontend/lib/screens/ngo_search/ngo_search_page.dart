@@ -3,6 +3,7 @@ import '../../models/ngo_model.dart';
 import '../../widgets/ngo_search/ngo_card.dart';
 import '../../widgets/ngo_search/ngo_search_bar.dart';
 import '../../services/location_service.dart';
+import '../../services/ngo_service.dart';
 import 'package:geolocator/geolocator.dart';
 
 class NGOSearchPage extends StatefulWidget {
@@ -21,11 +22,29 @@ class _NGOSearchPageState extends State<NGOSearchPage> {
   Position? userPosition;
   bool sortByLocation = true;
 
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
-    filtered = ngos;
+    _loadNGOs();
     _initializeLocation();
+  }
+
+  Future<void> _loadNGOs() async {
+    setState(() => _isLoading = true);
+    try {
+      final results = await NgoService.getNGOs();
+      if (mounted) {
+        setState(() {
+          _allNgos = results;
+          filtered = results;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   /// Initialize user location
@@ -48,7 +67,7 @@ class _NGOSearchPageState extends State<NGOSearchPage> {
 
   void applyFilters() {
     setState(() {
-      filtered = ngos.where((ngo) {
+      filtered = _allNgos.where((ngo) {
         final matchesSearch =
             ngo.name.toLowerCase().contains(controller.text.toLowerCase());
         final matchesLocation =
@@ -84,30 +103,7 @@ class _NGOSearchPageState extends State<NGOSearchPage> {
     });
   }
 
-  /// TEMP DATA (replace with Firebase later)
-  final List<NGO> ngos = [
-    NGO(
-      name: "Care Foundation",
-      description: "Providing disaster relief and emergency aid.",
-      location: "Delhi",
-      latitude: 28.6139,
-      longitude: 77.2090,
-      logoUrl: "https://i.pravatar.cc/150?img=10",
-      members: 120,
-      followers: 5400,
-    ),
-    NGO(
-      name: "HopeWorks",
-      description: "Helping underprivileged communities thrive.",
-      location: "Mumbai",
-      latitude: 19.0760,
-      longitude: 72.8777,
-      logoUrl: "https://i.pravatar.cc/150?img=11",
-      members: 80,
-      followers: 3200,
-    ),
-  ];
-
+  List<NGO> _allNgos = [];
   List<NGO> filtered = [];
 
   void search(String query) {
@@ -132,29 +128,42 @@ class _NGOSearchPageState extends State<NGOSearchPage> {
             ),
             const SizedBox(height: 10),
             Expanded(
-              child: ListView.builder(
-                itemCount: filtered.length,
-                itemBuilder: (context, index) {
-                  final ngo = filtered[index];
-                  String? distanceText;
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : filtered.isEmpty
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.search_off, size: 64, color: Colors.grey.shade400),
+                              const SizedBox(height: 12),
+                              Text('No NGOs found', style: TextStyle(color: Colors.grey.shade600)),
+                            ],
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: filtered.length,
+                          itemBuilder: (context, index) {
+                            final ngo = filtered[index];
+                            String? distanceText;
 
-                  // Calculate distance if user location is available
-                  if (userPosition != null && sortByLocation) {
-                    final distance = LocationService.calculateDistance(
-                      userPosition!.latitude,
-                      userPosition!.longitude,
-                      ngo.latitude,
-                      ngo.longitude,
-                    );
-                    distanceText = LocationService.formatDistance(distance);
-                  }
+                            // Calculate distance if user location is available
+                            if (userPosition != null && sortByLocation) {
+                              final distance = LocationService.calculateDistance(
+                                userPosition!.latitude,
+                                userPosition!.longitude,
+                                ngo.latitude,
+                                ngo.longitude,
+                              );
+                              distanceText = LocationService.formatDistance(distance);
+                            }
 
-                  return NGOCard(
-                    ngo: ngo,
-                    distanceText: distanceText,
-                  );
-                },
-              ),
+                            return NGOCard(
+                              ngo: ngo,
+                              distanceText: distanceText,
+                            );
+                          },
+                        ),
             ),
           ],
         ),
