@@ -28,9 +28,13 @@ const String _emulatorHost = String.fromEnvironment(
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    // Already initialized on hot restart — safe to ignore
+  }
 
   if (_useFirebaseEmulators) {
     // Toggle with --dart-define at runtime, avoiding code edits between local and prod runs.

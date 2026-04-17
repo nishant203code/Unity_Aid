@@ -26,6 +26,15 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+            <meta-data
+              android:name="io.flutter.embedding.android.FlutterActivityLaunchConfigs"
+              android:value="default_background_mode=transparent" />
+            <meta-data
+              android:name="io.flutter.embedding.android.SplashScreenDrawable"
+              android:value="" />
+            <meta-data
+              android:name="io.flutter.embedding.android.FlutterViewRenderingMode"
+              android:value="texture" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
